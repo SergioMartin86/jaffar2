@@ -9,5 +9,9 @@ int main(int argc, char *argv[])
 
  blastemInstance blastem("libblastem.so", false);
 
+ printf("Blastem created.\n");
+
+ blastem.initialize();
+
  printf("Blastem initialized.\n");
 }

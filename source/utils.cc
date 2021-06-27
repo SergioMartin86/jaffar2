@@ -79,3 +79,80 @@ std::string slurp(std::ifstream &in)
   sstr << in.rdbuf();
   return sstr.str();
 }
+
+// From blastem util.c
+char * path_dirname(const char *path)
+{
+ const char *lastslash = NULL;
+ const char *cur;
+ for (cur = path; *cur; cur++)
+ {
+  if (is_path_sep(*cur)) {
+   lastslash = cur;
+  }
+ }
+ if (!lastslash) {
+  return NULL;
+ }
+ char *dir = malloc(lastslash-path+1);
+ memcpy(dir, path, lastslash-path);
+ dir[lastslash-path] = 0;
+
+ return dir;
+}
+
+char * basename_no_extension(const char *path)
+{
+ const char *lastdot = NULL;
+ const char *lastslash = NULL;
+ const char *cur;
+ for (cur = path; *cur; cur++)
+ {
+  if (*cur == '.') {
+   lastdot = cur;
+  } else if (is_path_sep(*cur)) {
+   lastslash = cur + 1;
+  }
+ }
+ if (!lastdot) {
+  lastdot = cur;
+ }
+ if (!lastslash) {
+  lastslash = path;
+ }
+ char *barename = malloc(lastdot-lastslash+1);
+ memcpy(barename, lastslash, lastdot-lastslash);
+ barename[lastdot-lastslash] = 0;
+
+ return barename;
+}
+
+char *path_extension(char const *path)
+{
+ char const *lastdot = NULL;
+ char const *lastslash = NULL;
+ char const *cur;
+ for (cur = path; *cur; cur++)
+ {
+  if (*cur == '.') {
+   lastdot = cur;
+  } else if (is_path_sep(*cur)) {
+   lastslash = cur + 1;
+  }
+ }
+ if (!lastdot || (lastslash && lastslash > lastdot)) {
+  //no extension
+  return NULL;
+ }
+ return strdup(lastdot+1);
+}
+
+char is_path_sep(char c)
+{
+#ifdef _WIN32
+ if (c == '\\') {
+  return 1;
+ }
+#endif
+ return c == '/';
+}

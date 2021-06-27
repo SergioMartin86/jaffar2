@@ -1,7 +1,7 @@
 project('jaffar2', 'c', 'cpp',
   version: '1.0.0',
   license: 'GPL-3.0-only',
-  default_options : ['cpp_std=c++17', 'default_library=static', 'buildtype=release', 'c_args=-DSDL_VIDEO_DRIVER_DUMMY'],
+  default_options : ['cpp_std=c++17', 'default_library=static', 'buildtype=debugoptimized', 'c_args=-DSDL_VIDEO_DRIVER_DUMMY'],
 )
 
 cc = meson.get_compiler('c')
@@ -46,7 +46,8 @@ deps = [
 ]
   
 run_command('make', '-C', 'extern/blastem', 'clean')
-run_command('make', '-C', 'extern/blastem', 'libblastem.so')
+run_command('make', '-C', 'extern/blastem', 'libblastem.so', '-j8')
+#run_command('make', '-C', 'extern/blastem', 'libblastem.so', 'DEBUG=true', '-j8')
 
 executable('jaffar2-test',
   'source/test.cc',
@@ -55,5 +56,5 @@ executable('jaffar2-test',
   include_directories: inc,
   link_with: [ ],
   link_args: [ '-ldl', '-lncurses' ],
-  cpp_args: [ '-Wfatal-errors' ]
+  cpp_args: [ '-Wfatal-errors', '-fpermissive' ]
   )
