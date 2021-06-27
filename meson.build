@@ -41,11 +41,5 @@ deps = [
   abs_cont
 ]
   
-sdlPopLib = shared_library('blastemLib',
-  blastemFiles,
-  c_args: [ '-DDISABLE_ALL_FIXES' ],
-  dependencies : [ sdl2_dep, sdl2_image_dep ],
-  link_args: [ '-lm' ]
-  )
-  
-
+run_command('make', '-C', 'extern/blastem', 'clean')
+run_command('make', '-C', 'extern/blastem', 'libblastem.so')
