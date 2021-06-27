@@ -1,3 +1,15 @@
+jaffar.best.sav
+jaffar.current.sav
+subprojects/abseil-cpp*
+subprojects/SDL2*
+subprojects/json-*
+subprojects/abseil-cpp*
+subprojects/packagecache
+build
+tools/llvm/
+tools/run-clang-format/
+*.p1r
+
 # Prerequisites
 *.d
 
