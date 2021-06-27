@@ -14,7 +14,11 @@ inc = include_directories([
  'extern/json/single_include'
   ])
 
-
+jaffar2Files = [
+  'source/blastemInstance.cc',
+  'source/utils.cc',
+  'extern/metrohash64/metrohash64.cc'
+]
 
 default_library='static'
 abs_base = subproject('abseil').get_variable('absl_base_dep')
@@ -43,3 +47,13 @@ deps = [
   
 run_command('make', '-C', 'extern/blastem', 'clean')
 run_command('make', '-C', 'extern/blastem', 'libblastem.so')
+
+executable('jaffar2-test',
+  'source/test.cc',
+  jaffar2Files,
+  dependencies: deps,
+  include_directories: inc,
+  link_with: [ ],
+  link_args: [ '-ldl', '-lncurses' ],
+  cpp_args: [ '-Wfatal-errors' ]
+  )
