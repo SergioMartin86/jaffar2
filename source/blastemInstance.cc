@@ -17,7 +17,6 @@ void blastemInstance::initialize()
  if (romPath == NULL) EXIT_WITH_ERROR("[Jaffar] JAFFAR2_ROM_PATH environment variable not defined.\n");
 
  uint8_t header[10];
- system_type stype = SYSTEM_GENESIS;
 
  FILE* f = fopen(romPath, "rb");
  if (f == NULL)
@@ -52,19 +51,25 @@ void blastemInstance::initialize()
 
  fclose(f);
 
- cart.buffer = buf;
 
  uint32_t opts = 0;
  uint8_t force_region = 0;
 
+ cart.buffer = buf;
+ cart.size = filesize;
  cart.dir = path_dirname(romPath);
  cart.name = basename_no_extension(romPath);
  cart.extension = path_extension(romPath);
+ system_type stype = detect_system_type(&cart);
 
  //allocate new system context
- game_system = alloc_config_system(stype, &cart, opts, force_region);
+ *current_system = alloc_config_system(stype, &cart, opts, force_region);
 
- if (game_system == NULL) EXIT_WITH_ERROR("Failed to configure emulated machine for %s\n", romPath);
+ if (*current_system == NULL) EXIT_WITH_ERROR("Failed to configure emulated machine for %s\n", romPath);
+
+ // Running blastem
+ (*current_system)->start_context(*current_system, "/home/martiser/jaffar2/examples/saves/lvl1.state");
+// render_video_loop();
 }
 
 blastemInstance::blastemInstance(const char* libraryFile, const bool multipleLibraries)
@@ -80,6 +85,11 @@ blastemInstance::blastemInstance(const char* libraryFile, const bool multipleLib
   // Functions
 
   alloc_config_system = (alloc_config_system_t) dlsym(_dllHandle, "alloc_config_system");
+  render_video_loop = (render_video_loop_t) dlsym(_dllHandle, "render_video_loop");
+  detect_system_type = (detect_system_type_t) dlsym(_dllHandle, "detect_system_type");
+
+  // Variables
+  current_system = (system_header**) dlsym(_dllHandle, "current_system");
 }
 
 blastemInstance::~blastemInstance()
