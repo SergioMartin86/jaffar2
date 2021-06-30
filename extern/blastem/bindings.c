@@ -4,7 +4,6 @@
 #include "system.h"
 #include "io.h"
 #include "blastem.h"
-#include "saves.h"
 #include "util.h"
 #include "genesis.h"
 #include "bindings.h"
@@ -312,11 +311,6 @@ void handle_binding_up(keybinding * binding)
 		case UI_ENTER_DEBUGGER:
 			if (allow_content_binds) {
 				current_system->enter_debugger = 1;
-			}
-			break;
-		case UI_SAVE_STATE:
-			if (allow_content_binds) {
-				current_system->save_state = QUICK_SAVE_SLOT+1;
 			}
 			break;
 		case UI_NEXT_SPEED:

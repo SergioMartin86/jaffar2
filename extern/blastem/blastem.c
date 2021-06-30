@@ -26,7 +26,6 @@
 #include "arena.h"
 #include "config.h"
 #include "bindings.h"
-#include "menu.h"
 
 #define BLASTEM_VERSION "0.6.3-pre"
 
@@ -176,7 +175,6 @@ char *save_state_path;
 
 char * save_filename;
 system_header *current_system;
-system_header *menu_system;
 system_header *game_system;
 void persist_save()
 {
@@ -274,13 +272,6 @@ static void on_drag_drop(const char *filename)
 		}
 		current_system->next_rom = strdup(filename);
 		system_request_exit(current_system, 1);
-		if (menu_system && menu_system->type == SYSTEM_GENESIS) {
-			genesis_context *gen = (genesis_context *)menu_system;
-			if (gen->extra) {
-				menu_context *menu = gen->extra;
-				menu->external_game_load = 1;
-			}
-		}
 	} else {
 		init_system_with_media(filename, SYSTEM_UNKNOWN);
 	}
@@ -332,9 +323,6 @@ void init_system_with_media(const char *path, system_type force_stype)
 	if (game_system) {
 		game_system->persist_save(game_system);
 		//swap to game context arena and mark all allocated pages in it free
-		if (current_system == menu_system) {
-			current_system->arena = set_current_arena(game_system->arena);
-		}
 		mark_all_free();
 		game_system->free_context(game_system);
 	} else if(current_system) {
@@ -365,10 +353,6 @@ void init_system_with_media(const char *path, system_type force_stype)
 	if (!game_system) {
 		fatal_error("Failed to configure emulated machine for %s\n", path);
 	}
-	if (menu_system) {
-		menu_system->next_context = game_system;
-	}
-	game_system->next_context = menu_system;
 	setup_saves(&cart, game_system);
 	update_title(game_system->info.name);
 }
@@ -420,10 +404,6 @@ int main(int argc, char ** argv)
 				break;
 			case 'd':
 				start_in_debugger = 1;
-				//allow debugging the menu
-				if (argv[i][2] == 'm') {
-					debug_target = 1;
-				}
 				break;
 			case 'e':
 				i++;
@@ -574,36 +554,7 @@ int main(int argc, char ** argv)
 	}
 	set_bindings();
 	
-	uint8_t menu = !loaded;
 	uint8_t use_nuklear = 0;
-	if (!loaded && !use_nuklear) {
-		//load menu
-		romfname = tern_find_path(config, "ui\0rom\0", TVAL_PTR).ptrval;
-		if (!romfname) {
-			romfname = "menu.bin";
-		}
-		if (is_absolute_path(romfname)) {
-			if (!(cart.size = load_rom(romfname, &cart.buffer, &stype))) {
-				fatal_error("Failed to open UI ROM %s for reading", romfname);
-			}
-		} else {
-			cart.buffer = (uint16_t *)read_bundled_file(romfname, &cart.size);
-			if (!cart.buffer) {
-				fatal_error("Failed to open UI ROM %s for reading", romfname);
-			}
-			uint32_t rom_size = nearest_pow2(cart.size);
-			if (rom_size > cart.size) {
-				cart.buffer = realloc(cart.buffer, rom_size);
-				cart.size = rom_size;
-			}
-		}
-		//force system detection, value on command line is only for games not the menu
-		stype = detect_system_type(&cart);
-		cart.dir = path_dirname(romfname);
-		cart.name = basename_no_extension(romfname);
-		cart.extension = path_extension(romfname);
-		loaded = 1;
-	}
 	char *state_format = tern_find_path(config, "ui\0state_format\0", TVAL_PTR).ptrval;
 	if (state_format && !strcmp(state_format, "gst")) {
 		use_native_states = 0;
@@ -619,23 +570,19 @@ int main(int argc, char ** argv)
 			fatal_error("Failed to detect system type for %s\n", romfname);
 		}
 		
-		current_system = alloc_config_system(stype, &cart, menu ? 0 : opts, force_region);
+		current_system = alloc_config_system(stype, &cart, 0, force_region );
 		if (!current_system) {
 			fatal_error("Failed to configure emulated machine for %s\n", romfname);
 		}
 	
 		setup_saves(&cart, current_system);
 		update_title(current_system->info.name);
-		if (menu) {
-			menu_system = current_system;
-		} else {
 			game_system = current_system;
-		}
 	}
 
 	current_system->debugger_type = dtype;
-	current_system->enter_debugger = start_in_debugger && menu == debug_target;
-	current_system->start_context(current_system,  menu ? NULL : statefile);
+	current_system->enter_debugger = 0;
+	current_system->start_context(current_system, statefile);
 
 	return 0;
 }

@@ -14,7 +14,6 @@
 #include "bindings.h"
 #include "util.h"
 #include "paths.h"
-#include "ppm.h"
 #include "png.h"
 #include "config.h"
 #include "controller_info.h"
@@ -1533,7 +1532,6 @@ static void process_framebuffer(uint32_t *buffer, uint8_t which, int width)
 			} else {
 				free(ext);
 #endif
-				save_ppm(screenshot_file, buffer, shot_width, shot_height, LINEBUF_SIZE*sizeof(uint32_t));
 #ifndef DISABLE_ZLIB
 			}
 #endif
@@ -1570,7 +1568,6 @@ static void process_framebuffer(uint32_t *buffer, uint8_t which, int width)
 			} else {
 				free(ext);
 #endif
-				save_ppm(screenshot_file, locked_pixels, shot_width, shot_height, shot_pitch);
 #ifndef DISABLE_ZLIB
 			}
 #endif

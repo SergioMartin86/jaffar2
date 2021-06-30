@@ -13,7 +13,6 @@
 #include "render.h"
 #include "gst.h"
 #include "util.h"
-#include "saves.h"
 #include "bindings.h"
 #include "config.h"
 #define MCLKS_NTSC 53693175
@@ -119,7 +118,6 @@ static uint8_t *serialize(system_header *sys, size_t *size_out)
 	uint32_t address;
 	if (gen->m68k->resume_pc) {
 		gen->m68k->target_cycle = gen->m68k->current_cycle;
-		gen->header.save_state = SERIALIZE_SLOT+1;
 		resume_68k(gen->m68k);
 		if (size_out) {
 			*size_out = gen->serialize_size;
@@ -482,49 +480,7 @@ m68k_context * sync_components(m68k_context * context, uint32_t address)
 	if (gen->reset_cycle < context->target_cycle) {
 		context->target_cycle = gen->reset_cycle;
 	}
-	if (address) {
-#ifdef NEW_CORE
-		if (gen->header.save_state) {
-#else
-		if (gen->header.save_state && (z_context->pc || !z_context->native_pc || z_context->reset || !z_context->busreq)) {
-#endif
-			uint8_t slot = gen->header.save_state - 1;
-			gen->header.save_state = 0;
-#ifndef NEW_CORE
-			if (z_context->native_pc && !z_context->reset) {
-				//advance Z80 core to the start of an instruction
-				while (!z_context->pc)
-				{
-					sync_z80(z_context, z_context->current_cycle + MCLKS_PER_Z80);
-				}
-			}
-#endif
-			char *save_path = slot >= SERIALIZE_SLOT ? NULL : get_slot_name(&gen->header, slot, use_native_states ? "state" : "gst");
-			if (use_native_states || slot >= SERIALIZE_SLOT) {
-				serialize_buffer state;
-				init_serialize(&state);
-				genesis_serialize(gen, &state, address, slot != EVENTLOG_SLOT);
-				if (slot == SERIALIZE_SLOT) {
-					gen->serialize_tmp = state.data;
-					gen->serialize_size = state.size;
-					context->sync_cycle = context->current_cycle;
-					context->should_return = 1;
-				}
-				else {
-					save_to_file(&state, save_path);
-					free(state.data);
-				}
-			} else {
-				save_gst(gen, save_path, address);
-			}
-			if (slot != SERIALIZE_SLOT) {
-				debug_message("Saved state to %s\n", save_path);
-			}
-			free(save_path);
-		} else if(gen->header.save_state) {
-			context->sync_cycle = context->current_cycle + 1;
-		}
-	}
+
 #ifdef REFRESH_EMULATION
 	last_sync_cycle = context->current_cycle;
 #endif
@@ -1304,7 +1260,7 @@ void set_region(genesis_context *gen, rom_info *info, uint8_t region)
 static uint8_t load_state(system_header *system, uint8_t slot)
 {
 	genesis_context *gen = (genesis_context *)system;
-	char *statepath = get_slot_name(system, slot, "state");
+	char *statepath = "";
 	deserialize_buffer state;
 	uint32_t pc = 0;
 	uint8_t ret;
