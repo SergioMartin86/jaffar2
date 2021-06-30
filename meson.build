@@ -38,7 +38,6 @@ blastemFiles = [
   'extern/blastem/nor.c',
   'extern/blastem/sega_mapper.c',
   'extern/blastem/multi_game.c',
-  'extern/blastem/megawifi.c',
   'extern/blastem/net.c',
   'extern/blastem/serialize.c',
   'extern/blastem/terminal.c',
@@ -63,7 +62,6 @@ blastemFiles = [
   'extern/blastem/render_audio.c',
   'extern/blastem/saves.c',
   'extern/blastem/bindings.c',
-  'extern/blastem/jcart.c',
   'extern/blastem/z80inst.c',
   'extern/blastem/z80_to_x86.c',
 ]
