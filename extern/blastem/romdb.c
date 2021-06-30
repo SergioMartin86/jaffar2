@@ -3,7 +3,6 @@
 #include "config.h"
 #include "romdb.h"
 #include "util.h"
-#include "hash.h"
 #include "genesis.h"
 #include "menu.h"
 #include "nor.h"
@@ -792,7 +791,6 @@ rom_info configure_rom(tern_node *rom_db, void *vrom, uint32_t rom_size, void *l
 	}
 	debug_message("Product ID: %s\n", product_id);
 	uint8_t raw_hash[20];
-	sha1(vrom, rom_size, raw_hash);
 	uint8_t hex_hash[41];
 	bin_to_hex(hex_hash, raw_hash, 20);
 	debug_message("SHA1: %s\n", hex_hash);
