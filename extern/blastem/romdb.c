@@ -6,11 +6,8 @@
 #include "hash.h"
 #include "genesis.h"
 #include "menu.h"
-#include "xband.h"
-#include "realtec.h"
 #include "nor.h"
 #include "sega_mapper.h"
-#include "multi_game.h"
 #include "blastem.h"
 
 #define DOM_TITLE_START 0x120
@@ -71,22 +68,6 @@ void cart_serialize(system_header *sys, serialize_buffer *buf)
 	}
 	start_section(buf, SECTION_MAPPER);
 	save_int8(buf, gen->mapper_type);
-	switch(gen->mapper_type)
-	{
-	case MAPPER_SEGA:
-	case MAPPER_SEGA_SRAM:
-		sega_mapper_serialize(gen, buf);
-		break;
-	case MAPPER_REALTEC:
-		realtec_serialize(gen, buf);
-		break;
-	case MAPPER_XBAND:
-		xband_serialize(gen, buf);
-		break;
-	case MAPPER_MULTI_GAME:
-		multi_game_serialize(gen, buf);
-		break;
-	}
 	end_section(buf);
 }
 
@@ -103,15 +84,6 @@ void cart_deserialize(deserialize_buffer *buf, void *vcontext)
 	case MAPPER_SEGA:
 	case MAPPER_SEGA_SRAM:
 		sega_mapper_deserialize(buf, gen);
-		break;
-	case MAPPER_REALTEC:
-		realtec_deserialize(buf, gen);
-		break;
-	case MAPPER_XBAND:
-		xband_deserialize(buf, gen);
-		break;
-	case MAPPER_MULTI_GAME:
-		multi_game_deserialize(buf, gen);
 		break;
 	}
 }
@@ -798,30 +770,7 @@ void map_iter_fun(char *key, tern_val val, uint8_t valtype, void *data)
 		map->mask = 0;
 		map->flags = MMAP_READ;
 		*value = strtol(tern_find_ptr_default(node, "value", "0"), NULL, 16);
-	} else if (!strcmp(dtype, "multi-game")) {
-		state->info->mapper_type = MAPPER_MULTI_GAME;
-		state->info->mapper_start_index = state->ptr_index++;
-		//make a mirror copy of the ROM so we can efficiently support arbitrary start offsets
-		state->rom = realloc(state->rom, state->rom_size * 2);
-		memcpy(state->rom + state->rom_size, state->rom, state->rom_size);
-		state->rom_size *= 2;
-		//make room for an extra map entry
-		state->info->map_chunks+=1;
-		state->info->map = realloc(state->info->map, sizeof(memmap_chunk) * state->info->map_chunks);
-		memset(state->info->map + state->info->map_chunks - 1, 0, sizeof(memmap_chunk) * 1);
-		map = state->info->map + state->index;
-		map->buffer = state->rom;
-		map->mask = calc_mask(state->rom_size, start, end);
-		map->flags = MMAP_READ | MMAP_PTR_IDX | MMAP_CODE;
-		map->ptr_index = state->info->mapper_start_index;
-		map++;
-		state->index++;
-		map->start = 0xA13000;
-		map->end = 0xA13100;
-		map->mask = 0xFF;
-		map->write_16 = write_multi_game_w;
-		map->write_8 = write_multi_game_b;
-	} else {
+	}  else {
 		fatal_error("Invalid device type %s for ROM DB map entry %d with address %s\n", dtype, state->index, key);
 	}
 	state->index++;
@@ -853,12 +802,6 @@ rom_info configure_rom(tern_node *rom_db, void *vrom, uint32_t rom_size, void *l
 	}
 	if (!entry) {
 		debug_message("Not found in ROM DB, examining header\n\n");
-		if (xband_detect(rom, rom_size)) {
-			return xband_configure_rom(rom_db, rom, rom_size, lock_on, lock_on_size, base_map, base_chunks);
-		}
-		if (realtec_detect(rom, rom_size)) {
-			return realtec_configure_rom(rom, rom_size, base_map, base_chunks);
-		}
 		return configure_rom_heuristics(rom, rom_size, base_map, base_chunks);
 	}
 	rom_info info;

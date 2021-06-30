@@ -9,7 +9,6 @@
 #include <stdlib.h>
 #include "ym2612.h"
 #include "render.h"
-#include "wave.h"
 #include "blastem.h"
 
 //#define DO_DEBUG_PRINT
@@ -108,9 +107,6 @@ static void ym_finalize_log()
 		return;
 	}
 	for (int i = 0; i < NUM_CHANNELS; i++) {
-		if (log_context->channels[i].logfile) {
-			wave_finalize(log_context->channels[i].logfile);
-		}
 	}
 	log_context = NULL;
 }
@@ -213,10 +209,7 @@ void ym_init(ym2612_context * context, uint32_t master_clock, uint32_t clock_div
 				fprintf(stderr, "Failed to open WAVE log file %s for writing\n", fname);
 				continue;
 			}
-			if (!wave_init(f, master_clock / (context->clock_inc * NUM_OPERATORS), 16, 1)) {
-				fclose(f);
-				context->channels[i].logfile = NULL;
-			}
+
 		}
 	}
 	if (options & YM_OPT_WAVE_LOG) {
