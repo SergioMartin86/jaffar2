@@ -40,10 +40,7 @@ char const *save_type_name(uint8_t save_type)
 
 tern_node *load_rom_db()
 {
-	tern_node *db = parse_bundled_config("rom.db");
-	if (!db) {
-		fatal_error("Failed to load ROM DB\n");
-	}
+	tern_node *db = (tern_node*) malloc (sizeof(tern_node));
 	return db;
 }
 
