@@ -119,4 +119,13 @@ Authors
   + Twitch: https://www.twitch.tv/eien86
   + Youtube: https://www.youtube.com/channel/UCSXpK3d6vUq58fjgF5jFoKA
 
-Thanks to Alexander Lyashuk (mooskagh, crem) for developing the original bot that gave birth to the Jaffar series. Also thanks to the developer(s) of BlastEm (https://www.retrodev.com/blastem/) we use to emulate the Genesis version of POP2. 
+Acknowledgements
+=================
+
+The author would like to thank:
+
++ Thanks to Alexander Lyashuk (mooskagh, crem) for developing the original bot that gave birth to the Jaffar series. 
+
++ The developer(s) of BlastEm (https://www.retrodev.com/blastem/), used to drive emulation of the Genesis version of POP2. 
+
++ BlastEm's discord server users: 'Mask of Destiny' and 'Sik' for their help.
