@@ -4,6 +4,8 @@
 
 High-performance fully scalable solver for Prince of Persia 2 tool-assisted speedrunning.  
 
+This solver is based on <Jaffar `https://github.com/SergioMartin86/jaffar`>, a solver for the original Prince of Persia (DOS).
+
 Installation
 ===============
 
