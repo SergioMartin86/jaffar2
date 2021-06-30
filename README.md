@@ -130,4 +130,4 @@ The author would like to thank:
 
 + The developer(s) of BlastEm (https://www.retrodev.com/blastem/), used to drive emulation of the Genesis version of POP2. 
 
-+ BlastEm's discord server users: 'Mask of Destiny' and 'Sik' for their help.
++ BlastEm's discord server users: 'Mask of Destiny', 'WinFutureX', and 'Sik' for their help.

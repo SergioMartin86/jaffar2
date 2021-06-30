@@ -66,7 +66,6 @@ blastemFiles = [
   'extern/blastem/saves.c',
   'extern/blastem/bindings.c',
   'extern/blastem/jcart.c',
-  'extern/blastem/sms.c',
   'extern/blastem/z80inst.c',
   'extern/blastem/z80_to_x86.c',
 ]

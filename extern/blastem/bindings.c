@@ -7,8 +7,6 @@
 #include "saves.h"
 #include "util.h"
 #include "genesis.h"
-#include "sms.h"
-#include "menu.h"
 #include "bindings.h"
 #include "controller_info.h"
 
@@ -31,7 +29,6 @@ typedef enum {
 	UI_TOGGLE_FULLSCREEN,
 	UI_SOFT_RESET,
 	UI_RELOAD,
-	UI_SMS_PAUSE,
 	UI_SCREENSHOT,
 	UI_VGM_LOG,
 	UI_EXIT,
@@ -378,11 +375,6 @@ void handle_binding_up(keybinding * binding)
 				reload_media();
 			}
 			break;
-		case UI_SMS_PAUSE:
-			if (allow_content_binds && current_system->gamepad_down) {
-				current_system->gamepad_down(current_system, GAMEPAD_MAIN_UNIT, MAIN_UNIT_PAUSE);
-			}
-			break;
 		case UI_SCREENSHOT:
 			if (allow_content_binds) {
 				char *path = get_content_config_path("ui\0screenshot_path\0", "ui\0screenshot_template\0", "blastem_%c.ppm");
@@ -404,11 +396,6 @@ void handle_binding_up(keybinding * binding)
 			system_request_exit(current_system, 1);
 			if (current_system->type == SYSTEM_GENESIS) {
 				genesis_context *gen = (genesis_context *)current_system;
-				if (gen->extra) {
-					//TODO: More robust mechanism for detecting menu
-					menu_context *menu = gen->extra;
-					menu->external_game_load = 1;
-				}
 			}
 			break;
 		case UI_PLANE_DEBUG: 
@@ -420,9 +407,6 @@ void handle_binding_up(keybinding * binding)
 				if (current_system->type == SYSTEM_GENESIS) {
 					genesis_context *gen = (genesis_context *)current_system;
 					vdp = gen->vdp;
-				} else if (current_system->type == SYSTEM_SMS) {
-					sms_context *sms = (sms_context *)current_system;
-					vdp = sms->vdp;
 				}
 				if (vdp) {
 					uint8_t debug_type;
@@ -636,8 +620,6 @@ int parse_binding_target(int device_num, char * target, tern_node * padbuttons, 
 			*subtype_a = UI_SOFT_RESET;
 		} else if (!strcmp(target + 3, "reload")) {
 			*subtype_a = UI_RELOAD;
-		} else if (!strcmp(target + 3, "sms_pause")) {
-			*subtype_a = UI_SMS_PAUSE;
 		} else if (!strcmp(target + 3, "screenshot")) {
 			*subtype_a = UI_SCREENSHOT;
 		} else if (!strcmp(target + 3, "vgm_log")) {
