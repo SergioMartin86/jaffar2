@@ -35,7 +35,6 @@ blastemFiles = [
   'extern/blastem/nor.c',
   'extern/blastem/sega_mapper.c',
   'extern/blastem/serialize.c',
-  'extern/blastem/terminal.c',
   'extern/blastem/config.c',
   'extern/blastem/tern.c',
   'extern/blastem/util.c',

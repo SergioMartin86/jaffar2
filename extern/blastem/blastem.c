@@ -23,7 +23,6 @@
 #include "gst.h"
 #include "util.h"
 #include "romdb.h"
-#include "terminal.h"
 #include "arena.h"
 #include "config.h"
 #include "bindings.h"
@@ -480,9 +479,6 @@ int main(int argc, char ** argv)
 					fatal_error("-s must be followed by a savestate filename\n");
 				}
 				statefile = argv[i];
-				break;
-			case 't':
-				force_no_terminal();
 				break;
 			case 'y':
 				opts |= YM_OPT_WAVE_LOG;
