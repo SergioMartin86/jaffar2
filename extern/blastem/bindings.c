@@ -11,9 +11,6 @@
 #include "menu.h"
 #include "bindings.h"
 #include "controller_info.h"
-#ifndef DISABLE_NUKLEAR
-#include "nuklear_ui/blastem_nuklear.h"
-#endif
 
 enum {
 	BIND_NONE,
@@ -404,11 +401,6 @@ void handle_binding_up(keybinding * binding)
 			}
 			break;
 		case UI_EXIT:
-#ifndef DISABLE_NUKLEAR
-			if (is_nuklear_active()) {
-				show_pause_menu();
-			} else {
-#endif
 			system_request_exit(current_system, 1);
 			if (current_system->type == SYSTEM_GENESIS) {
 				genesis_context *gen = (genesis_context *)current_system;
@@ -418,9 +410,6 @@ void handle_binding_up(keybinding * binding)
 					menu->external_game_load = 1;
 				}
 			}
-#ifndef DISABLE_NUKLEAR
-			}
-#endif
 			break;
 		case UI_PLANE_DEBUG: 
 		case UI_VRAM_DEBUG: 

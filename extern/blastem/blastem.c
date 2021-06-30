@@ -29,11 +29,6 @@
 #include "config.h"
 #include "bindings.h"
 #include "menu.h"
-#include "zip.h"
-#include "event_log.h"
-#ifndef DISABLE_NUKLEAR
-#include "nuklear_ui/blastem_nuklear.h"
-#endif
 
 #define BLASTEM_VERSION "0.6.3-pre"
 
@@ -57,22 +52,12 @@ tern_node * config;
 #define SMD_MAGIC3 0xBB
 #define SMD_BLOCK_SIZE 0x4000
 
-#ifdef DISABLE_ZLIB
 #define ROMFILE FILE*
 #define romopen fopen
 #define romread fread
 #define romseek fseek
 #define romgetc fgetc
 #define romclose fclose
-#else
-#include "zlib/zlib.h"
-#define ROMFILE gzFile
-#define romopen gzopen
-#define romread gzfread
-#define romseek gzseek
-#define romgetc gzgetc
-#define romclose gzclose
-#endif
 
 uint16_t *process_smd_block(uint16_t *dst, uint8_t *src, size_t bytes)
 {
@@ -132,58 +117,10 @@ uint8_t is_smd_format(const char *filename, uint8_t *header)
 	return 0;
 }
 
-uint32_t load_rom_zip(const char *filename, void **dst)
-{
-	static const char *valid_exts[] = {"bin", "md", "gen", "sms", "rom", "smd"};
-	const uint32_t num_exts = sizeof(valid_exts)/sizeof(*valid_exts);
-	zip_file *z = zip_open(filename);
-	if (!z) {
-		return 0;
-	}
-	
-	for (uint32_t i = 0; i < z->num_entries; i++)
-	{
-		char *ext = path_extension(z->entries[i].name);
-		if (!ext) {
-			continue;
-		}
-		for (uint32_t j = 0; j < num_exts; j++)
-		{
-			if (!strcasecmp(ext, valid_exts[j])) {
-				size_t out_size = nearest_pow2(z->entries[i].size);
-				*dst = zip_read(z, i, &out_size);
-				if (*dst) {
-					if (is_smd_format(z->entries[i].name, *dst)) {
-						size_t offset;
-						for (offset = 0; offset + SMD_BLOCK_SIZE + SMD_HEADER_SIZE <= out_size; offset += SMD_BLOCK_SIZE)
-						{
-							uint8_t tmp[SMD_BLOCK_SIZE];
-							uint8_t *u8dst = *dst;
-							memcpy(tmp, u8dst + offset + SMD_HEADER_SIZE, SMD_BLOCK_SIZE);
-							process_smd_block((void *)(u8dst + offset), tmp, SMD_BLOCK_SIZE);
-						}
-						out_size = offset;
-					}
-					free(ext);
-					zip_close(z);
-					return out_size;
-				}
-			}
-		}
-		free(ext);
-	}
-	zip_close(z);
-	return 0;
-}
-
 uint32_t load_rom(const char * filename, void **dst, system_type *stype)
 {
 	uint8_t header[10];
 	char *ext = path_extension(filename);
-	if (ext && !strcasecmp(ext, "zip")) {
-		free(ext);
-		return load_rom_zip(filename, dst);
-	}
 	free(ext);
 	ROMFILE f = romopen(filename, "rb");
 	if (!f) {
@@ -349,11 +286,6 @@ static void on_drag_drop(const char *filename)
 	} else {
 		init_system_with_media(filename, SYSTEM_UNKNOWN);
 	}
-#ifndef DISABLE_NUKLEAR
-	if (is_nuklear_active()) {
-		show_play_view();
-	}
-#endif
 }
 
 static system_media cart, lock_on;
@@ -472,7 +404,6 @@ int main(int argc, char ** argv)
 	char * romfname = NULL;
 	char * statefile = NULL;
 	char *reader_addr = NULL, *reader_port = NULL;
-	event_reader reader = {0};
 	debugger_type dtype = DEBUGGER_NATIVE;
 	uint8_t start_in_debugger = 0;
 	uint8_t fullscreen = FULLSCREEN_DEFAULT, use_gl = 1;
@@ -507,11 +438,6 @@ int main(int argc, char ** argv)
 					fatal_error("-e must be followed by a file name\n");
 				}
 				port = parse_addr_port(argv[i]);
-				if (port) {
-					event_log_tcp(argv[i], port);
-				} else {
-					event_log_file(argv[i]);
-				}
 				break;
 			case 'f':
 				fullscreen = !fullscreen;
@@ -660,9 +586,6 @@ int main(int argc, char ** argv)
 	
 	uint8_t menu = !loaded;
 	uint8_t use_nuklear = 0;
-#ifndef DISABLE_NUKLEAR
-	use_nuklear = !headless && is_nuklear_available();
-#endif
 	if (!loaded && !use_nuklear) {
 		//load menu
 		romfname = tern_find_path(config, "ui\0rom\0", TVAL_PTR).ptrval;
@@ -718,19 +641,6 @@ int main(int argc, char ** argv)
 		} else {
 			game_system = current_system;
 		}
-	}
-	
-	if (reader_addr) {
-		init_event_reader_tcp(&reader, reader_addr, reader_port);
-		stype = reader_system_type(&reader);
-		if (stype == SYSTEM_UNKNOWN) {
-			fatal_error("Failed to detect system type for %s\n", romfname);
-		}
-		game_system = current_system = alloc_config_player(stype, &reader);
-		//free inflate stream as it was inflateCopied to an internal event reader in the player
-		inflateEnd(&reader.input_stream);
-		setup_saves(&cart, current_system);
-		update_title(current_system->info.name);
 	}
 
 	current_system->debugger_type = dtype;

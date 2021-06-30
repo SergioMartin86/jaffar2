@@ -35,7 +35,6 @@ typedef void (*system_ptr8_sizet_fun)(system_header *, uint8_t *, size_t);
 
 #include "arena.h"
 #include "romdb.h"
-#include "event_log.h"
 
 struct system_header {
 	system_header           *next_context;
@@ -91,7 +90,7 @@ struct system_media {
 
 system_type detect_system_type(system_media *media);
 system_header *alloc_config_system(system_type stype, system_media *media, uint32_t opts, uint8_t force_region);
-system_header *alloc_config_player(system_type stype, event_reader *reader);
+system_header *alloc_config_player(system_type stype);
 void system_request_exit(system_header *system, uint8_t force_release);
 
 #endif //SYSTEM_H_

@@ -19,7 +19,6 @@
 #include "bindings.h"
 #include "jcart.h"
 #include "config.h"
-#include "event_log.h"
 #define MCLKS_NTSC 53693175
 #define MCLKS_PAL  53203395
 
@@ -442,7 +441,6 @@ m68k_context * sync_components(m68k_context * context, uint32_t address)
 	if (v_context->frame != gen->last_frame) {
 		//printf("reached frame end %d | MCLK Cycles: %d, Target: %d, VDP cycles: %d, vcounter: %d, hslot: %d\n", gen->last_frame, mclks, gen->frame_end, v_context->cycles, v_context->vcounter, v_context->hslot);
 		gen->last_frame = v_context->frame;
-		event_flush(mclks);
 		gen->last_flush_cycle = mclks;
 
 		if(exit_after){
@@ -470,11 +468,9 @@ m68k_context * sync_components(m68k_context * context, uint32_t address)
 			if (gen->reset_cycle != CYCLE_NEVER) {
 				gen->reset_cycle -= deduction;
 			}
-			event_cycle_adjust(mclks, deduction);
 			gen->last_flush_cycle -= deduction;
 		}
 	} else if (mclks - gen->last_flush_cycle > gen->soft_flush_cycles) {
-		event_soft_flush(mclks);
 		gen->last_flush_cycle = mclks;
 	}
 	gen->frame_end = vdp_cycles_to_frame_end(v_context);
@@ -527,9 +523,8 @@ m68k_context * sync_components(m68k_context * context, uint32_t address)
 					gen->serialize_size = state.size;
 					context->sync_cycle = context->current_cycle;
 					context->should_return = 1;
-				} else if (slot == EVENTLOG_SLOT) {
-					event_state(context->current_cycle, &state);
-				} else {
+				}
+				else {
 					save_to_file(&state, save_path);
 					free(state.data);
 				}
@@ -1802,7 +1797,6 @@ genesis_context *alloc_init_genesis(rom_info *rom, void *main_rom, void *lock_on
 	gen->int_latency_prev2 = MCLKS_PER_68K * 16;
 	
 	render_set_video_standard((gen->version_reg & HZ50) ? VID_PAL : VID_NTSC);
-	event_system_start(SYSTEM_GENESIS, (gen->version_reg & HZ50) ? VID_PAL : VID_NTSC, rom->name);
 	
 	gen->ym = malloc(sizeof(ym2612_context));
 	char *fm = tern_find_ptr_default(model, "fm", "discrete 2612");

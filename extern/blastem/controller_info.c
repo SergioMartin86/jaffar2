@@ -224,15 +224,6 @@ void save_controller_mapping(int joystick, char *mapping_string)
 #endif
 }
 
-void delete_controller_info(void)
-{
-	delete_custom_config_at("controller_types.cfg");
-	loaded = 0;
-	tern_free(info_config);
-	info_config = NULL;
-	render_reset_mappings();
-}
-
 char const *labels_xbox[] = {
 	"A", "B", "X", "Y", "Back", NULL, "Start", "Click", "Click", "White", "Black", "LT", "RT"
 };

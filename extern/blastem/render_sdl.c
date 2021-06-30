@@ -1530,7 +1530,6 @@ static void process_framebuffer(uint32_t *buffer, uint8_t which, int width)
 #ifndef DISABLE_ZLIB
 			if (!strcasecmp(ext, "png")) {
 				free(ext);
-				save_png(screenshot_file, buffer, shot_width, shot_height, LINEBUF_SIZE*sizeof(uint32_t));
 			} else {
 				free(ext);
 #endif
@@ -1568,7 +1567,6 @@ static void process_framebuffer(uint32_t *buffer, uint8_t which, int width)
 #ifndef DISABLE_ZLIB
 			if (!strcasecmp(ext, "png")) {
 				free(ext);
-				save_png(screenshot_file, locked_pixels, shot_width, shot_height, shot_pitch);
 			} else {
 				free(ext);
 #endif
