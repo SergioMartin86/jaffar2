@@ -20,7 +20,6 @@
 #include "vdp.h"
 #include "render.h"
 #include "genesis.h"
-#include "gdb_remote.h"
 #include "gst.h"
 #include "util.h"
 #include "romdb.h"
@@ -426,11 +425,6 @@ int main(int argc, char ** argv)
 				if (argv[i][2] == 'm') {
 					debug_target = 1;
 				}
-				break;
-			case 'D':
-				gdb_remote_init();
-				dtype = DEBUGGER_GDB;
-				start_in_debugger = 1;
 				break;
 			case 'e':
 				i++;

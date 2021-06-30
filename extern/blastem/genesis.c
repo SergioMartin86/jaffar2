@@ -13,8 +13,6 @@
 #include "render.h"
 #include "gst.h"
 #include "util.h"
-#include "debug.h"
-#include "gdb_remote.h"
 #include "saves.h"
 #include "bindings.h"
 #include "jcart.h"
@@ -317,7 +315,7 @@ static void adjust_int_cycle(m68k_context * context, vdp_context * v_context)
 	}
 
 	context->target_cycle = context->int_cycle < context->sync_cycle ? context->int_cycle : context->sync_cycle;
-	if (context->should_return || gen->header.enter_debugger) {
+	if (context->should_return) {
 		context->target_cycle = context->current_cycle;
 	} else if (context->target_cycle < context->current_cycle) {
 		//Changes to SR can result in an interrupt cycle that's in the past
@@ -481,7 +479,7 @@ m68k_context * sync_components(m68k_context * context, uint32_t address)
 		vdp_int_ack(v_context);
 		context->int_ack = 0;
 	}
-	if (!address && (gen->header.enter_debugger || gen->header.save_state)) {
+	if (!address && (gen->header.save_state)) {
 		context->sync_cycle = context->current_cycle + 1;
 	}
 	adjust_int_cycle(context, v_context);
@@ -489,14 +487,6 @@ m68k_context * sync_components(m68k_context * context, uint32_t address)
 		context->target_cycle = gen->reset_cycle;
 	}
 	if (address) {
-		if (gen->header.enter_debugger) {
-			gen->header.enter_debugger = 0;
-			if (gen->header.debugger_type == DEBUGGER_NATIVE) {
-				debugger(context, address);
-			} else {
-				gdb_debug_enter(context, address);
-			}
-		}
 #ifdef NEW_CORE
 		if (gen->header.save_state) {
 #else
@@ -1396,21 +1386,9 @@ static void start_genesis(system_header *system, char *statefile)
 				fatal_error("Failed to load save state %s\n", statefile);
 			}
 		}
-		printf("Loaded %s\n", statefile);
-		if (gen->header.enter_debugger) {
-			gen->header.enter_debugger = 0;
-			insert_breakpoint(gen->m68k, pc, gen->header.debugger_type == DEBUGGER_NATIVE ? debugger : gdb_debug_enter);
-		}
 		adjust_int_cycle(gen->m68k, gen->vdp);
-		printf("I'm Here A\n");
 		start_68k_context(gen->m68k, pc);
-		printf("I'm Here B\n");
 	} else {
-		if (gen->header.enter_debugger) {
-			gen->header.enter_debugger = 0;
-			uint32_t address = gen->cart[2] << 16 | gen->cart[3];
-			insert_breakpoint(gen->m68k, address, gen->header.debugger_type == DEBUGGER_NATIVE ? debugger : gdb_debug_enter);
-		}
 		m68k_reset(gen->m68k);
 	}
 	handle_reset_requests(gen);

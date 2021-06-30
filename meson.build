@@ -24,8 +24,6 @@ blastemFiles = [
   'extern/blastem/blastem.c',
   'extern/blastem/system.c',
   'extern/blastem/genesis.c',
-  'extern/blastem/debug.c',
-  'extern/blastem/gdb_remote.c',
   'extern/blastem/vdp.c',
   'extern/blastem/ppm.c',
   'extern/blastem/controller_info.c',
