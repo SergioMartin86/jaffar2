@@ -6,6 +6,7 @@
 typedef system_header* (*alloc_config_system_t)(system_type stype, system_media *media, uint32_t opts, uint8_t force_region);
 typedef void (*render_video_loop_t)(void);
 typedef system_type (*detect_system_type_t)(system_media *media);
+typedef int (*main_t)(int argc, char ** argv);
 
 class blastemInstance
 {
@@ -18,6 +19,7 @@ class blastemInstance
   alloc_config_system_t alloc_config_system;
   render_video_loop_t render_video_loop;
   detect_system_type_t detect_system_type;
+  main_t main;
 
   // blastem variables
   system_header **current_system;

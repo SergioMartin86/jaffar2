@@ -12,6 +12,7 @@ int main(int argc, char *argv[])
  printf("Blastem created.\n");
 
  blastem.initialize();
+ blastem.main(argc, argv);
 
  printf("Blastem initialized.\n");
 }

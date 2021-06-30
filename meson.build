@@ -120,7 +120,7 @@ deps = [
 ]
 
 
-blastemLib = shared_library('blastemLib',
+blastemLib = shared_library('blastem',
   blastemFiles,
   c_args: [   
   '-flto',
