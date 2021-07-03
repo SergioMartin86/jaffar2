@@ -782,100 +782,11 @@ rom_info configure_rom(tern_node *rom_db, void *vrom, uint32_t rom_size, void *l
 
 	}
 	debug_message("Product ID: %s\n", product_id);
-	uint8_t raw_hash[20];
-	uint8_t hex_hash[41];
+	uint8_t* raw_hash = (uint8_t*) calloc(20, sizeof(uint8_t));
+	uint8_t* hex_hash = (uint8_t*) calloc(41, sizeof(uint8_t));
 	bin_to_hex(hex_hash, raw_hash, 20);
 	debug_message("SHA1: %s\n", hex_hash);
-	tern_node * entry = tern_find_node(rom_db, hex_hash);
-	if (!entry) {
-		entry = tern_find_node(rom_db, product_id);
-	}
-	if (!entry) {
-		debug_message("Not found in ROM DB, examining header\n\n");
-		return configure_rom_heuristics(rom, rom_size, base_map, base_chunks);
-	}
-	rom_info info;
-	info.mapper_type = MAPPER_NONE;
-	info.name = tern_find_ptr(entry, "name");
-	if (info.name) {
-		debug_message("Found name: %s\n\n", info.name);
-		info.name = strdup(info.name);
-	} else {
-		info.name = get_header_name(rom);
-	}
-
-	char *dbreg = tern_find_ptr(entry, "regions");
-	info.regions = 0;
-	if (dbreg) {
-		while (*dbreg != 0)
-		{
-			info.regions |= translate_region_char(*(dbreg++));
-		}
-	}
-	if (!info.regions) {
-		info.regions = get_header_regions(rom);
-	}
-
-	info.is_save_lock_on = 0;
-	info.rom = vrom;
-	info.rom_size = rom_size;
-	tern_node *map = tern_find_node(entry, "map");
-	if (map) {
-		info.save_type = SAVE_NONE;
-		info.map_chunks = tern_count(map);
-		if (info.map_chunks) {
-			info.map_chunks += base_chunks;
-			info.save_buffer = NULL;
-			info.save_size = 0;
-			info.map = malloc(sizeof(memmap_chunk) * info.map_chunks);
-			info.eeprom_map = NULL;
-			info.num_eeprom = 0;
-			memset(info.map, 0, sizeof(memmap_chunk) * info.map_chunks);
-			map_iter_state state = {
-				.info = &info, 
-				.rom = rom, 
-				.lock_on = lock_on,
-				.root = entry,
-				.rom_db = rom_db,
-				.rom_size = rom_size, 
-				.lock_on_size = lock_on_size,
-				.index = 0, 
-				.num_els = info.map_chunks - base_chunks,
-				.ptr_index = 0
-			};
-			tern_foreach(map, map_iter_fun, &state);
-			memcpy(info.map + state.index, base_map, sizeof(memmap_chunk) * base_chunks);
-			info.rom = state.rom;
-			info.rom_size = state.rom_size;
-		} else {
-			add_memmap_header(&info, rom, rom_size, base_map, base_chunks);
-		}
-	} else {
-		add_memmap_header(&info, rom, rom_size, base_map, base_chunks);
-	}
-
-	tern_node *device_overrides = tern_find_node(entry, "device_overrides");
-	if (device_overrides) {
-		info.port1_override = tern_find_ptr(device_overrides, "1");
-		info.port2_override = tern_find_ptr(device_overrides, "2");
-		info.ext_override = tern_find_ptr(device_overrides, "ext");
-		if (
-			info.save_type == SAVE_NONE
-			&& (
-				(info.port1_override && startswith(info.port1_override, "heartbeat_trainer."))
-				|| (info.port2_override && startswith(info.port2_override, "heartbeat_trainer."))
-				|| (info.ext_override && startswith(info.ext_override, "heartbeat_trainer."))
-			)
-		) {
-			info.save_type = SAVE_HBPT;
-			info.save_size = atoi(tern_find_path_default(entry, "HeartbeatTrainer\0size\0", (tern_val){.ptrval="512"}, TVAL_PTR).ptrval);
-			info.save_buffer = calloc(info.save_size + 5 + 8, 1);
-			memset(info.save_buffer, 0xFF, info.save_size);
-		}
-	} else {
-		info.port1_override = info.port2_override = info.ext_override = NULL;
-	}
-	info.mouse_mode = tern_find_ptr(entry, "mouse_mode");
-
-	return info;
+	free(raw_hash);
+	free(hex_hash);
+	return configure_rom_heuristics(rom, rom_size, base_map, base_chunks);
 }
