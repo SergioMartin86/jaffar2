@@ -3,6 +3,7 @@
 
 #include "tern.h"
 #include "system.h"
+#include "libco.h"
 
 extern int headless;
 extern int exit_after;
@@ -11,6 +12,9 @@ extern int frame_limit;
 
 extern tern_node * config;
 extern system_header *current_system;
+
+extern cothread_t _jaffarThread;
+extern cothread_t _blastemThread;
 
 extern char *save_state_path;
 extern char *save_filename;

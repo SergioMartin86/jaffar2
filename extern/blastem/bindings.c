@@ -18,7 +18,6 @@ enum {
 
 typedef enum {
 	UI_DEBUG_MODE_INC,
-	UI_ENTER_DEBUGGER,
 	UI_SAVE_STATE,
 	UI_SET_SPEED,
 	UI_NEXT_SPEED,
@@ -308,11 +307,6 @@ void handle_binding_up(keybinding * binding)
 				current_system->inc_debug_mode(current_system);
 			}
 			break;
-		case UI_ENTER_DEBUGGER:
-			if (allow_content_binds) {
-				current_system->enter_debugger = 1;
-			}
-			break;
 		case UI_NEXT_SPEED:
 			if (allow_content_binds) {
 				current_speed++;
@@ -593,8 +587,6 @@ int parse_binding_target(int device_num, char * target, tern_node * padbuttons, 
 		} else if(!strcmp(target + 3, "vdp_debug_pal")) {
 			//legacy binding, ignore
 			return 0;
-		} else if(!strcmp(target + 3, "enter_debugger")) {
-			*subtype_a = UI_ENTER_DEBUGGER;
 		} else if(!strcmp(target + 3, "save_state")) {
 			*subtype_a = UI_SAVE_STATE;
 		} else if(startswith(target + 3, "set_speed.")) {

@@ -2,6 +2,7 @@
 
 #include <string>
 #include "system.h"
+#include "libco.h"
 
 typedef system_header* (*alloc_config_system_t)(system_type stype, system_media *media, uint32_t opts, uint8_t force_region);
 typedef void (*render_video_loop_t)(void);
@@ -24,6 +25,8 @@ class blastemInstance
   // blastem variables
   system_header **current_system;
   system_media cart;
+  cothread_t* _jaffarThread;
+  cothread_t* _blastemThread;
 
   private:
 

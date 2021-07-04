@@ -241,7 +241,6 @@ uint8_t vdp_load_gst(vdp_context * context, FILE * state_file)
 		return 0;
 	}
 	for (int i = 0; i < CRAM_SIZE; i++) {
-		uint16_t value;
 		write_cram_internal(context, i, (tmp_buf[i*2+1] << 8) | tmp_buf[i*2]);
 	}
 	if (fread(tmp_buf, 2, MIN_VSRAM_SIZE, state_file) != MIN_VSRAM_SIZE) {
@@ -453,7 +452,7 @@ uint32_t load_gst(genesis_context * gen, char * fname)
 			return 0;
 		}
 		for(char *curpos = buffer; curpos < (buffer + sizeof(buffer)); curpos += sizeof(uint16_t)) {
-			uint16_t word = read_be_16(curpos);
+			uint16_t word = read_be_16((uint8_t *)curpos);
 			if (word != gen->work_ram[i]) {
 				gen->work_ram[i] = word;
 				m68k_handle_code_write(0xFF0000 | (i << 1), gen->m68k);
@@ -497,7 +496,7 @@ uint8_t save_gst(genesis_context * gen, char *fname, uint32_t m68k_pc)
 	fseek(gstfile, GST_68K_RAM, SEEK_SET);
 	for (int i = 0; i < (32*1024);) {
 		for(char *curpos = buffer; curpos < (buffer + sizeof(buffer)); curpos += sizeof(uint16_t)) {
-			write_be_16(curpos, gen->work_ram[i++]);
+			write_be_16((uint8_t *)curpos, gen->work_ram[i++]);
 		}
 		if (fwrite(buffer, 1, sizeof(buffer), gstfile) != sizeof(buffer)) {
 			fputs("Failed to write 68K RAM to savestate\n", stderr);

@@ -35,6 +35,9 @@
 #define FULLSCREEN_DEFAULT 0
 #endif
 
+cothread_t _jaffarThread;
+cothread_t _blastemThread;
+
 int headless = 0;
 int exit_after = 0;
 int z80_enabled = 1;
@@ -386,7 +389,6 @@ int main(int argc, char ** argv)
 	char * romfname = NULL;
 	char * statefile = NULL;
 	char *reader_addr = NULL, *reader_port = NULL;
-	debugger_type dtype = DEBUGGER_NATIVE;
 	uint8_t start_in_debugger = 0;
 	uint8_t fullscreen = FULLSCREEN_DEFAULT, use_gl = 1;
 	uint8_t debug_target = 0;
@@ -580,8 +582,6 @@ int main(int argc, char ** argv)
 			game_system = current_system;
 	}
 
-	current_system->debugger_type = dtype;
-	current_system->enter_debugger = 0;
 	current_system->start_context(current_system, statefile);
 
 	return 0;

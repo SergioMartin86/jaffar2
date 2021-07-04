@@ -15,11 +15,6 @@ typedef enum {
 	SYSTEM_JAGUAR,
 } system_type;
 
-typedef enum {
-	DEBUGGER_NATIVE,
-	DEBUGGER_GDB
-} debugger_type;
-
 typedef void (*system_fun)(system_header *);
 typedef uint16_t (*system_fun_r16)(system_header *);
 typedef void (*system_str_fun)(system_header *, char *);
@@ -66,14 +61,12 @@ struct system_header {
 	arena                   *arena;
 	char                    *next_rom;
 	char                    *save_dir;
-	uint8_t                 enter_debugger;
 	uint8_t                 should_exit;
 	uint8_t                 save_state;
 	uint8_t                 delayed_load_slot;
 	uint8_t                 has_keyboard;
 	uint8_t                 vgm_logging;
 	uint8_t                 force_release;
-	debugger_type           debugger_type;
 	system_type             type;
 };
 

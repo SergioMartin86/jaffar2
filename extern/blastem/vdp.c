@@ -3789,7 +3789,6 @@ int vdp_control_port_write(vdp_context * context, uint16_t value)
 				}
 			} else if (reg == REG_KMOD_CTRL) {
 				if (!(value & 0xFF)) {
-					context->system->enter_debugger = 1;
 				}
 			} else if (reg == REG_KMOD_MSG) {
 				char c = value;
@@ -3979,7 +3978,6 @@ uint16_t vdp_data_port_read(vdp_context * context)
 	}
 	if (context->cd & 1) {
 		warning("Read from VDP data port while writes are configured, CPU is now frozen. VDP Address: %X, CD: %X\n", context->address, context->cd);
-		context->system->enter_debugger = 1;
 		return context->prefetch;
 	}
 	switch (context->cd)
@@ -3991,7 +3989,6 @@ uint16_t vdp_data_port_read(vdp_context * context)
 		break;
 	default:
 		warning("Read from VDP data port with invalid source, CPU is now frozen. VDP Address: %X, CD: %X\n", context->address, context->cd);
-		context->system->enter_debugger = 1;
 		return context->prefetch;
 	}
 	while (!(context->flags & FLAG_READ_FETCHED)) {
