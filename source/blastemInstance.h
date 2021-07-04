@@ -1,23 +1,19 @@
 #pragma once
 
 #include <string>
-#include "libco.h"
 
-typedef int (*main_t)(int argc, char ** argv);
+typedef void (*start_t)(int, char**);
+typedef void (*resume_t)(void);
 
 class blastemInstance
 {
   public:
-  blastemInstance(const char* libraryFile, const bool multipleLibraries);
+  blastemInstance(int argc, char** argv, const char* libraryFile, const bool multipleLibraries);
   ~blastemInstance();
-  void initialize();
 
   // blastem Functions
-  main_t main;
-
-  // blastem variables
-  cothread_t* _jaffarThread;
-  cothread_t* _blastemThread;
+  start_t start;
+  resume_t resume;
 
   private:
 

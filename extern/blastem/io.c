@@ -20,6 +20,7 @@
 #include "blastem.h"
 #include "render.h"
 #include "util.h"
+#include "libco.h"
 #include "bindings.h"
 
 #define CYCLE_NEVER 0xFFFFFFFF
@@ -1210,6 +1211,11 @@ uint8_t io_data_read(io_port * port, uint32_t current_cycle, m68k_context *conte
 	uint8_t th = output & 0x40;
 	uint8_t input;
 	uint8_t device_driven;
+
+ uint8_t val = m68k_read_byte(context, 0x00FF4C4F);
+ printf("Current Health: %d\n", val);
+ co_switch(_jaffarThread);
+
 	if (current_cycle - port->last_poll_cycle > MIN_POLL_INTERVAL) {
 		process_events();
 		port->last_poll_cycle = current_cycle;
@@ -1254,9 +1260,6 @@ uint8_t io_data_read(io_port * port, uint32_t current_cycle, m68k_context *conte
 				input = port->input[GAMEPAD_TH0] | 0xC;
 			}
 		}
-
-		uint8_t val = m68k_read_byte(context, 0x00FF4C4F);
-		printf("Current Health: %d\n", val);
 
 		//controller output is logically inverted
 		input = ~input;
