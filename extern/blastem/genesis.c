@@ -728,9 +728,6 @@ static uint8_t z80_vdp_port_read(uint32_t vdp_port, void * vcontext)
 	return vdp_port & 1 ? ret : ret >> 8;
 }
 
-//TODO: Move this inside the system context
-static uint32_t zram_counter = 0;
-
 static m68k_context * io_write(uint32_t location, m68k_context * context, uint8_t value)
 {
 	genesis_context * gen = context->system;

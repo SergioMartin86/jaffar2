@@ -113,7 +113,7 @@ static void audio_callback_drc(void *userData, uint8_t *byte_stream, int len)
 		//underflow last frame, but main thread hasn't gotten a chance to call SDL_PauseAudio yet
 		return;
 	}
-	cur_min_buffered = mix_and_convert(byte_stream, len, &min_remaining_buffer);
+	cur_min_buffered = mix_and_convert(byte_stream, len, (int *)&min_remaining_buffer);
 }
 
 static void audio_callback_run_on_audio(void *user_data, uint8_t *byte_stream, int len)
@@ -1499,7 +1499,7 @@ static void process_framebuffer(uint32_t *buffer, uint8_t which, int width)
 		? (video_standard == VID_NTSC ? 243 : 294) - (overscan_top[video_standard] + overscan_bot[video_standard])
 		: 240;
 	FILE *screenshot_file = NULL;
-	uint32_t shot_height, shot_width;
+	uint32_t shot_height;
 	char *ext;
 	if (screenshot_path && which == FRAMEBUFFER_ODD) {
 		screenshot_file = fopen(screenshot_path, "wb");
@@ -1514,7 +1514,6 @@ static void process_framebuffer(uint32_t *buffer, uint8_t which, int width)
 		free(screenshot_path);
 		screenshot_path = NULL;
 		shot_height = video_standard == VID_NTSC ? 243 : 294;
-		shot_width = width;
 	}
 	interlaced = last != which;
 	width -= overscan_left[video_standard] + overscan_right[video_standard];
@@ -1893,7 +1892,6 @@ int render_lookup_axis(char *name)
 
 int32_t render_translate_input_name(int32_t controller, char *name, uint8_t is_axis)
 {
-	tern_node *button_lookup, *axis_lookup;
 	if (controller > MAX_JOYSTICKS || !joysticks[controller]) {
 		return RENDER_NOT_PLUGGED_IN;
 	}
@@ -1938,6 +1936,8 @@ int32_t render_translate_input_name(int32_t controller, char *name, uint8_t is_a
 		return RENDER_AXIS_BIT | cbind.value.axis | is_positive;
 	case SDL_CONTROLLER_BINDTYPE_HAT:
 		return RENDER_DPAD_BIT | (cbind.value.hat.hat << 4) | cbind.value.hat.hat_mask;
+	case SDL_CONTROLLER_BINDTYPE_NONE:
+	 return RENDER_NOT_MAPPED;
 	}
 	return RENDER_NOT_MAPPED;
 }

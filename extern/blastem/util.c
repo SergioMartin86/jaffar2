@@ -851,7 +851,7 @@ dir_entry *get_dir_list(char *path, size_t *numret)
 	dir_entry *ret = malloc(sizeof(dir_entry) * storage);
 	size_t pos = 0;
 	struct dirent* entry;
-	while (entry = readdir(d))
+	while ((entry = readdir(d)))
 	{
 #if defined(__HAIKU__)
 		struct stat sp;

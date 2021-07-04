@@ -94,7 +94,7 @@ char * path_dirname(const char *path)
  if (!lastslash) {
   return NULL;
  }
- char *dir = malloc(lastslash-path+1);
+ char *dir = (char*)malloc(lastslash-path+1);
  memcpy(dir, path, lastslash-path);
  dir[lastslash-path] = 0;
 
@@ -120,7 +120,7 @@ char * basename_no_extension(const char *path)
  if (!lastslash) {
   lastslash = path;
  }
- char *barename = malloc(lastdot-lastslash+1);
+ char *barename = (char*)malloc(lastdot-lastslash+1);
  memcpy(barename, lastslash, lastdot-lastslash);
  barename[lastdot-lastslash] = 0;
 

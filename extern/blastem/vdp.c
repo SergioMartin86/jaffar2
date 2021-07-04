@@ -152,7 +152,7 @@ vdp_context *init_vdp_context(uint8_t region_pal, uint8_t has_max_vsram)
 		context->output_pitch = LINEBUF_SIZE * sizeof(uint32_t);
 	} else {
 		context->cur_buffer = FRAMEBUFFER_ODD;
-		context->fb = render_get_framebuffer(FRAMEBUFFER_ODD, &context->output_pitch);
+		context->fb = render_get_framebuffer(FRAMEBUFFER_ODD, (int*)&context->output_pitch);
 	}
 	context->sprite_draws = MAX_SPRITES_LINE;
 	context->fifo_write = 0;
@@ -945,7 +945,6 @@ static void external_slot(vdp_context * context)
 			} else {
 				val = start->partial ? context->fifo[context->fifo_write].value : start->value;
 			}
-			uint8_t buffer[3] = {start->address & 127, val >> 8, val};
 			write_cram(context, start->address, val);
 			break;
 		}
@@ -963,7 +962,6 @@ static void external_slot(vdp_context * context)
 				} else {
 					context->vsram[(start->address/2) & 63] = start->partial ? context->fifo[context->fifo_write].value : start->value;
 				}
-				uint8_t buffer[3] = {((start->address/2) & 63) + 128, context->vsram[(start->address/2) & 63] >> 8, context->vsram[(start->address/2) & 63]};
 			}
 
 			break;
@@ -984,7 +982,7 @@ static void external_slot(vdp_context * context)
 			
 			context->flags &= ~FLAG_READ_FETCHED;
 		} else {
-			context->prefetch = context->vdpmem[(context->regs[REG_DMASRC_M] << 8) | context->regs[REG_DMASRC_L] ^ 1];
+			context->prefetch = context->vdpmem[(context->regs[REG_DMASRC_M] << 8) | (context->regs[REG_DMASRC_L] ^ 1)];
 			
 			context->flags |= FLAG_READ_FETCHED;
 		}
@@ -1355,7 +1353,7 @@ static void render_normal(vdp_context *context, int32_t col, uint8_t *dst, uint8
 		plane_b_off += 8;
 		for (int i = 0; i < 8; ++plane_a_off, ++plane_b_off, ++sprite_buf, ++i)
 		{
-			uint8_t sprite, plane_a, plane_b;
+			uint8_t  plane_a, plane_b;
 			plane_a = context->tmp_buf_a[plane_a_off & SCROLL_BUFFER_MASK];
 			plane_b = context->tmp_buf_b[plane_b_off & SCROLL_BUFFER_MASK];
 			*(dst++) = composite_normal(context, debug_dst, *sprite_buf, plane_a, plane_b, context->regs[REG_BG_COLOR]) & 0x3F;
@@ -1364,7 +1362,7 @@ static void render_normal(vdp_context *context, int32_t col, uint8_t *dst, uint8
 	} else {
 		for (int i = 0; i < 16; ++plane_a_off, ++plane_b_off, ++sprite_buf, ++i)
 		{
-			uint8_t sprite, plane_a, plane_b;
+			uint8_t plane_a, plane_b;
 			plane_a = context->tmp_buf_a[plane_a_off & SCROLL_BUFFER_MASK];
 			plane_b = context->tmp_buf_b[plane_b_off & SCROLL_BUFFER_MASK];
 			*(dst++) = composite_normal(context, debug_dst, *sprite_buf, plane_a, plane_b, context->regs[REG_BG_COLOR]) & 0x3F;
@@ -1608,7 +1606,6 @@ static void render_map_output(uint32_t line, int32_t col, vdp_context * context)
 			dst = context->compositebuf + BORDER_LEFT + col * 8;
 		} else {
 			dst = context->compositebuf;
-			uint32_t bg_color = context->colors[context->regs[REG_BG_COLOR] & 0x3F];
 			memset(dst, 0, BORDER_LEFT);
 			context->done_composite = dst + BORDER_LEFT;
 			return;
@@ -1619,8 +1616,6 @@ static void render_map_output(uint32_t line, int32_t col, vdp_context * context)
 	}
 	line &= 0xFF;
 	render_map(context->col_2, context->tmp_buf_b, context->buf_b_off+8, context);
-	uint8_t *sprite_buf;
-	uint8_t sprite, plane_a, plane_b;
 	int plane_a_off, plane_b_off;
 	if (col)
 	{
@@ -1628,14 +1623,10 @@ static void render_map_output(uint32_t line, int32_t col, vdp_context * context)
 		dst = context->compositebuf + BORDER_LEFT + col * 8;
 		debug_dst = context->layer_debug_buf + BORDER_LEFT + col * 8;
 		
-		
-		uint8_t a_src, src;
 		if (context->flags & FLAG_WINDOW) {
 			plane_a_off = context->buf_a_off;
-			a_src = DBG_SRC_W;
 		} else {
 			plane_a_off = context->buf_a_off - context->hscroll_a_fine;
-			a_src = DBG_SRC_A;
 		}
 		plane_b_off = context->buf_b_off - context->hscroll_b_fine;
 		//printf("A | tmp_buf offset: %d\n", 8 - (context->hscroll_a & 0x7));
@@ -1893,7 +1884,7 @@ static void vdp_update_per_frame_debug(vdp_context *context)
 {
 	if (context->enabled_debuggers & (1 << VDP_DEBUG_PLANE)) {
 		uint32_t pitch;
-		uint32_t *fb = render_get_framebuffer(context->debug_fb_indices[VDP_DEBUG_PLANE], &pitch);
+		uint32_t *fb = render_get_framebuffer(context->debug_fb_indices[VDP_DEBUG_PLANE], (int*)&pitch);
 		uint16_t hscroll_mask;
 		uint16_t v_mul;
 		uint16_t vscroll_mask = 0x1F | (context->regs[REG_SCROLL] & 0x30) << 1;
@@ -1993,7 +1984,7 @@ static void vdp_update_per_frame_debug(vdp_context *context)
 	
 	if (context->enabled_debuggers & (1 << VDP_DEBUG_VRAM)) {
 		uint32_t pitch;
-		uint32_t *fb = render_get_framebuffer(context->debug_fb_indices[VDP_DEBUG_VRAM], &pitch);
+		uint32_t *fb = render_get_framebuffer(context->debug_fb_indices[VDP_DEBUG_VRAM], (int*)&pitch);
 		
 		uint8_t pal = (context->debug_modes[VDP_DEBUG_VRAM] % 4) << 4;
 		for (int y = 0; y < 512; y++)
@@ -2008,7 +1999,7 @@ static void vdp_update_per_frame_debug(vdp_context *context)
 				{
 					uint8_t byte = context->vdpmem[address++];
 					uint8_t left = byte >> 4 | pal;
-					uint8_t right = byte & 0xF | pal;
+					uint8_t right = (byte & 0xF) | pal;
 					*(line++) = context->colors[left];
 					*(line++) = context->colors[left];
 					*(line++) = context->colors[right];
@@ -2074,11 +2065,11 @@ static void vdp_update_per_frame_debug(vdp_context *context)
 			}
 		}
 		render_framebuffer_updated(context->debug_fb_indices[VDP_DEBUG_CRAM], 512);
-		context->debug_fbs[VDP_DEBUG_CRAM] = render_get_framebuffer(context->debug_fb_indices[VDP_DEBUG_CRAM], &context->debug_fb_pitch[VDP_DEBUG_CRAM]);
+		context->debug_fbs[VDP_DEBUG_CRAM] = render_get_framebuffer(context->debug_fb_indices[VDP_DEBUG_CRAM], (int*)&context->debug_fb_pitch[VDP_DEBUG_CRAM]);
 	}
 	if (context->enabled_debuggers & (1 << VDP_DEBUG_COMPOSITE)) {
 		render_framebuffer_updated(context->debug_fb_indices[VDP_DEBUG_COMPOSITE], LINEBUF_SIZE);
-		context->debug_fbs[VDP_DEBUG_COMPOSITE] = render_get_framebuffer(context->debug_fb_indices[VDP_DEBUG_COMPOSITE], &context->debug_fb_pitch[VDP_DEBUG_COMPOSITE]);
+		context->debug_fbs[VDP_DEBUG_COMPOSITE] = render_get_framebuffer(context->debug_fb_indices[VDP_DEBUG_COMPOSITE], (int*)&context->debug_fb_pitch[VDP_DEBUG_COMPOSITE]);
 	}		
 }
 
@@ -2096,7 +2087,7 @@ void vdp_force_update_framebuffer(vdp_context *context)
 		to_fill * context->output_pitch
 	);
 	render_framebuffer_updated(context->cur_buffer, context->h40_lines > context->output_lines / 2 ? LINEBUF_SIZE : (256+HORIZ_BORDER));
-	context->fb = render_get_framebuffer(context->cur_buffer, &context->output_pitch);
+	context->fb = render_get_framebuffer(context->cur_buffer, (int*)&context->output_pitch);
 	vdp_update_per_frame_debug(context);
 }
 
@@ -2152,7 +2143,7 @@ static void advance_output_line(vdp_context *context)
 		return;
 	}
 	if (!context->fb) {
-		context->fb = render_get_framebuffer(context->cur_buffer, &context->output_pitch);
+		context->fb = render_get_framebuffer(context->cur_buffer, (int*)&context->output_pitch);
 	}
 	output_line += context->top_offset;
 	context->output = (uint32_t *)(((char *)context->fb) + context->output_pitch * output_line);
@@ -2179,7 +2170,7 @@ void vdp_reacquire_framebuffer(vdp_context *context)
 {
 	uint16_t lines_max = context->inactive_start + context->border_bot + context->border_top;
 	if (context->output_lines <= lines_max && context->output_lines > 0) {
-		context->fb = render_get_framebuffer(context->cur_buffer, &context->output_pitch);
+		context->fb = render_get_framebuffer(context->cur_buffer, (int*)&context->output_pitch);
 		context->output = (uint32_t *)(((char *)context->fb) + context->output_pitch * (context->output_lines - 1 + context->top_offset));
 	} else {
 		context->output = NULL;
@@ -2192,18 +2183,14 @@ static void render_border_garbage(vdp_context *context, uint32_t address, uint8_
 	for (int i = 0; i < 4; i++, address++)
 	{
 		uint8_t byte = context->vdpmem[address & 0xFFFF];
-		buf[(buf_off++) & SCROLL_BUFFER_MASK] = base | byte >> 4;
-		buf[(buf_off++) & SCROLL_BUFFER_MASK] = base | byte & 0xF;
+		buf[(buf_off++) & SCROLL_BUFFER_MASK] = base | (byte >> 4);
+		buf[(buf_off++) & SCROLL_BUFFER_MASK] = base | (byte & 0xF);
 	}
 }
 
 static void draw_right_border(vdp_context *context)
 {
 	uint8_t *dst = context->compositebuf + BORDER_LEFT + ((context->regs[REG_MODE_4] & BIT_H40) ? 320 : 256);
-	uint8_t pixel = context->regs[REG_BG_COLOR] & 0x3F;
-	if ((context->test_port & TEST_BIT_DISABLE) != 0) {
-		pixel = 0x3F;
-	}
 	uint8_t test_layer = context->test_port >> 7 & 3;
 	if (test_layer) {
 		switch(test_layer)
@@ -2556,7 +2543,6 @@ static void vdp_h40_line(vdp_context * context)
 {
 	uint16_t address;
 	uint32_t mask;
-	uint32_t const slot_cycles = MCLKS_SLOT_H40;
 	uint8_t bgindex = context->regs[REG_BG_COLOR] & 0x3F;
 	uint8_t test_layer = context->test_port >> 7 & 3;
 	
@@ -3189,11 +3175,8 @@ static void vdp_h32(vdp_context * context, uint32_t target_cycles)
 
 static void vdp_h32_mode4(vdp_context * context, uint32_t target_cycles)
 {
-	uint16_t address;
-	uint32_t mask;
 	uint32_t const slot_cycles = MCLKS_SLOT_H32;
-	uint8_t bgindex = 0x10 | (context->regs[REG_BG_COLOR] & 0xF) + MODE4_OFFSET;
-	uint8_t test_layer = context->test_port >> 7 & 3;
+	uint8_t bgindex = (0x10 | (context->regs[REG_BG_COLOR] & 0xF)) + MODE4_OFFSET;
 	if (!context->output) {
 		//This shouldn't happen normally, but it can theoretically
 		//happen when doing border busting
@@ -3519,8 +3502,8 @@ static void vdp_inactive(vdp_context *context, uint32_t target_cycles, uint8_t i
 			}
 			if (context->done_composite) {
 				uint8_t pixel = context->compositebuf[dst-context->output];
-				if (!(pixel & 0x3F | test_layer)) {
-					pixel = pixel & 0xC0 | bg_index;
+				if (!((pixel & 0x3F) | test_layer)) {
+					pixel = (pixel & 0xC0) | bg_index;
 				}
 				*(dst++) = context->colors[pixel];
 				if ((dst - context->output) == (context->done_composite - context->compositebuf)) {
@@ -3533,8 +3516,8 @@ static void vdp_inactive(vdp_context *context, uint32_t target_cycles, uint8_t i
 			}
 			if (context->done_composite) {
 				uint8_t pixel = context->compositebuf[dst-context->output];
-				if (!(pixel & 0x3F | test_layer)) {
-					pixel = pixel & 0xC0 | bg_index;
+				if (!((pixel & 0x3F) | test_layer)) {
+					pixel = (pixel & 0xC0) | bg_index;
 				}
 				*(dst++) = context->colors[pixel];
 				if ((dst - context->output) == (context->done_composite - context->compositebuf)) {
@@ -3549,8 +3532,8 @@ static void vdp_inactive(vdp_context *context, uint32_t target_cycles, uint8_t i
 			if (context->hslot == (bg_end_slot-1)) {
 				if (context->done_composite) {
 					uint8_t pixel = context->compositebuf[dst-context->output];
-					if (!(pixel & 0x3F | test_layer)) {
-						pixel = pixel & 0xC0 | bg_index;
+					if (!((pixel & 0x3F) | test_layer)) {
+						pixel = (pixel & 0xC0) | bg_index;
 					}
 					*(dst++) = context->colors[pixel];
 					if ((dst - context->output) == (context->done_composite - context->compositebuf)) {
@@ -3776,7 +3759,6 @@ int vdp_control_port_write(vdp_context * context, uint16_t value)
 				/*if (reg == REG_MODE_4 && ((value ^ context->regs[reg]) & BIT_H40)) {
 					printf("Mode changed from H%d to H%d @ %d, frame: %d\n", context->regs[reg] & BIT_H40 ? 40 : 32, value & BIT_H40 ? 40 : 32, context->cycles, context->frame);
 				}*/
-				uint8_t buffer[2] = {reg, value};
 				context->regs[reg] = value;
 				if (reg == REG_MODE_4) {
 					context->double_res = (value & (BIT_INTERLACE | BIT_DOUBLE_RES)) == (BIT_INTERLACE | BIT_DOUBLE_RES);
@@ -4582,7 +4564,7 @@ void vdp_toggle_debug_view(vdp_context *context, uint8_t debug_type)
 			context->enabled_debuggers |= 1 << debug_type;
 		}
 		if (fetch_immediately) {
-			context->debug_fbs[debug_type] = render_get_framebuffer(context->debug_fb_indices[debug_type], &context->debug_fb_pitch[debug_type]);
+			context->debug_fbs[debug_type] = render_get_framebuffer(context->debug_fb_indices[debug_type], (int*)&context->debug_fb_pitch[debug_type]);
 		}
 	}
 }

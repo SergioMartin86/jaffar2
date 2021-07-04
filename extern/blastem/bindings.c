@@ -382,9 +382,6 @@ void handle_binding_up(keybinding * binding)
 			break;
 		case UI_EXIT:
 			system_request_exit(current_system, 1);
-			if (current_system->type == SYSTEM_GENESIS) {
-				genesis_context *gen = (genesis_context *)current_system;
-			}
 			break;
 		case UI_PLANE_DEBUG: 
 		case UI_VRAM_DEBUG: 
