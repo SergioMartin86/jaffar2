@@ -33,7 +33,7 @@ uint32_t MCLKS_PER_68K;
 #ifdef IS_LIB
 #define MAX_SOUND_CYCLES (MCLKS_PER_YM*NUM_OPERATORS*6*4)
 #else
-#define MAX_SOUND_CYCLES 100000	
+#define MAX_SOUND_CYCLES 100000
 #endif
 
 #ifdef NEW_CORE
@@ -115,6 +115,7 @@ void genesis_serialize(genesis_context *gen, serialize_buffer *buf, uint32_t m68
 static uint8_t *serialize(system_header *sys, size_t *size_out)
 {
 	genesis_context *gen = (genesis_context *)sys;
+	uint32_t address;
 	if (gen->m68k->resume_pc) {
 		gen->m68k->target_cycle = gen->m68k->current_cycle;
 		resume_68k(gen->m68k);
@@ -728,6 +729,9 @@ static uint8_t z80_vdp_port_read(uint32_t vdp_port, void * vcontext)
 	return vdp_port & 1 ? ret : ret >> 8;
 }
 
+//TODO: Move this inside the system context
+static uint32_t zram_counter = 0;
+
 static m68k_context * io_write(uint32_t location, m68k_context * context, uint8_t value)
 {
 	genesis_context * gen = context->system;
@@ -760,7 +764,7 @@ static m68k_context * io_write(uint32_t location, m68k_context * context, uint8_
 			} else if (location == 0x6000) {
 				gen->z80_bank_reg = (gen->z80_bank_reg >> 1 | value << 8) & 0x1FF;
 				if (gen->z80_bank_reg < 0x80) {
-					gen->z80->mem_pointers[1] = (uint8_t *)((gen->z80_bank_reg << 15) + ((char *)gen->z80->mem_pointers[2]));
+					gen->z80->mem_pointers[1] = (gen->z80_bank_reg << 15) + ((char *)gen->z80->mem_pointers[2]);
 				} else {
 					gen->z80->mem_pointers[1] = NULL;
 				}
@@ -1216,6 +1220,7 @@ static void *unused_write_b(uint32_t location, void *vcontext, uint8_t value)
 static void set_speed_percent(system_header * system, uint32_t percent)
 {
 	genesis_context *context = (genesis_context *)system;
+	uint32_t old_clock = context->master_clock;
 	context->master_clock = ((uint64_t)context->normal_clock * (uint64_t)percent) / 100;
 	while (context->ym->current_cycle != context->psg->cycles) {
 		sync_sound(context, context->psg->cycles + MCLKS_PER_PSG);
@@ -1255,7 +1260,7 @@ void set_region(genesis_context *gen, rom_info *info, uint8_t region)
 static uint8_t load_state(system_header *system, uint8_t slot)
 {
 	genesis_context *gen = (genesis_context *)system;
-	char *statepath = NULL;
+	char *statepath = "";
 	deserialize_buffer state;
 	uint32_t pc = 0;
 	uint8_t ret;
@@ -1284,7 +1289,6 @@ static uint8_t load_state(system_header *system, uint8_t slot)
 		gen->m68k->resume_pc = get_native_address_trans(gen->m68k, pc);
 	}
 done:
-	free(statepath);
 	return ret;
 }
 
@@ -1424,6 +1428,7 @@ static void free_genesis(system_header *system)
 {
 	genesis_context *gen = (genesis_context *)system;
 	vdp_free(gen->vdp);
+	memmap_chunk *map = (memmap_chunk *)gen->m68k->options->gen.memmap;
 	m68k_options_free(gen->m68k->options);
 	free(gen->cart);
 	free(gen->m68k);
@@ -1600,7 +1605,7 @@ static void *tmss_word_write_8(uint32_t address, void *context, uint8_t value)
 #ifdef BLASTEM_BIG_ENDIAN
 		dest[address & 1] = value;
 #else
-		dest[(address & 1) ^ 1] = value;
+		dest[address & 1 ^ 1] = value;
 #endif
 		m68k_handle_code_write(address & ~1, m68k);
 	}

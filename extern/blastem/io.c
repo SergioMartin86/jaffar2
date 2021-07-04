@@ -20,8 +20,9 @@
 #include "blastem.h"
 #include "render.h"
 #include "util.h"
-#include "libco.h"
 #include "bindings.h"
+#include "genesis.h"
+#include "jaffar.h"
 
 #define CYCLE_NEVER 0xFFFFFFFF
 #define MIN_POLL_INTERVAL 6840
@@ -1198,14 +1199,11 @@ static uint8_t get_output_value(io_port *port, uint32_t current_cycle, uint32_t 
 	return output;
 }
 
-static uint8_t m68k_read_byte(m68k_context *context, uint32_t address)
+uint8_t m68k_read_byte(m68k_context *context, uint32_t address)
 {
  //TODO: share this implementation with builtin debugger
  return read_byte(address, (void **)context->mem_pointers, &context->options->gen, context);
 }
-
-uint16_t curFrameId = 0;
-uint16_t prevFrameId = 0;
 
 uint8_t io_data_read(io_port * port, uint32_t current_cycle, m68k_context *context)
 {
@@ -1215,18 +1213,8 @@ uint8_t io_data_read(io_port * port, uint32_t current_cycle, m68k_context *conte
 	uint8_t input;
 	uint8_t device_driven;
 
- uint8_t val = m68k_read_byte(context, 0x00FF4C4F);
- uint8_t framesPerGameFrame = m68k_read_byte(context, 0x00FF5005);
- *(((uint8_t*)&curFrameId)+1) = m68k_read_byte(context, 0x00FF19C8);
- *(((uint8_t*)&curFrameId)+0) = m68k_read_byte(context, 0x00FF19C9);
-
- if (curFrameId >= prevFrameId + framesPerGameFrame)
- {
-  printf("Current Health: %d\n", val);
-  printf("Frame %d\n", curFrameId);
-  prevFrameId = curFrameId;
-  co_switch(_jaffarThread);
- }
+	// Injecting bot call on read io
+	jaffarInject(context);
 
 	if (current_cycle - port->last_poll_cycle > MIN_POLL_INTERVAL) {
 		process_events();

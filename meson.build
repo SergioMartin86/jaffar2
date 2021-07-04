@@ -18,8 +18,7 @@ inc = include_directories([
 jaffar2Files = [
   'source/blastemInstance.cc',
   'source/utils.cc',
-  'extern/metrohash64/metrohash64.cc',
-  'extern/libco/libco.c'
+  'extern/metrohash64/metrohash64.cc'
 ]
 
 blastemFiles = [
@@ -39,6 +38,7 @@ blastemFiles = [
   'extern/blastem/config.c',
   'extern/blastem/tern.c',
   'extern/blastem/util.c',
+  'extern/blastem/jaffar.c',
   'extern/blastem/paths.c',
   'extern/blastem/gst.c',
   'extern/blastem/68kinst.c',
