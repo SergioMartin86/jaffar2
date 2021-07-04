@@ -582,6 +582,8 @@ int main(int argc, char ** argv)
 			game_system = current_system;
 	}
 
+	current_system->start_context(current_system, statefile);
+
 	return 0;
 }
 
@@ -592,9 +594,7 @@ void blastemWrapper()
 {
   printf("I'm Here A\n");
   main(__argc, __argv);
-  printf("I'm Here B\n");
-  co_switch(_jaffarThread);
-  exit(0);
+  fatal_error("Should not reach this point!\n");
 }
 
 void start(int argc, char** argv)
@@ -605,11 +605,17 @@ void start(int argc, char** argv)
  _blastemThread = co_create(1 << 24, blastemWrapper);
  _jaffarThread = co_active();
 
- co_switch(_blastemThread);
+ size_t step = 0;
+ while(1)
+ {
+  co_switch(_blastemThread);
+  printf("Step %lu - Press enter...", step++);
+  getchar();
+ }
 }
 
 void resume()
 {
- //current_system->start_context(current_system, statefile);
+
 }
 
