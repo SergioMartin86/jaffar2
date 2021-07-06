@@ -34,13 +34,24 @@ blastemInstance::~blastemInstance()
 
 void blastemInstance::updateState()
 {
-  *(((uint8_t*)&_state.currentFrame)+0) = (*_stateData)[*_stateWorkRamOffset + 0x000019C9];
-  *(((uint8_t*)&_state.currentFrame)+1) = (*_stateData)[*_stateWorkRamOffset + 0x000019C8];
+ memcpyBigEndian16(&_state.currentFrame,      &(*_stateData)[*_stateWorkRamOffset + 0x19C8]);
+ memcpyBigEndian8(&_state.framesPerStep,      &(*_stateData)[*_stateWorkRamOffset + 0x5005]);
+ memcpyBigEndian8(&_state.currentLevel,       &(*_stateData)[*_stateWorkRamOffset + 0x4AA5]);
+ memcpyBigEndian8(&_state.drawnRoom,          &(*_stateData)[*_stateWorkRamOffset + 0x4A36]);
+ memcpyBigEndian16(&_state.minutesLeft,       &(*_stateData)[*_stateWorkRamOffset + 0x4C90]);
+ memcpyBigEndian16(&_state.twelthSecondsLeft, &(*_stateData)[*_stateWorkRamOffset + 0x4FC8]);
 }
 
 void blastemInstance::printState()
 {
+ printf("-----------------------------------------------\n");
+ printf("State Information:\n");
  printf("Current Frame: %d\n", _state.currentFrame);
+ printf("Video Frames Per Game Frame: %d\n", _state.framesPerStep);
+ printf("Current Level: %d\n", _state.currentLevel);
+ printf("Drawn Room: %d\n", _state.drawnRoom);
+ printf("Minutes Left: %d\n", _state.minutesLeft - 1);
+ printf("Seconds Left: %d\n", _state.twelthSecondsLeft / 12 );
 }
 
 void blastemInstance::playFrame()

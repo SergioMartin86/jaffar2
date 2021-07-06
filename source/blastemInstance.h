@@ -11,7 +11,7 @@ struct gameStateStruct
  uint8_t framesPerStep;
  uint8_t currentLevel;
  uint8_t drawnRoom;
- uint8_t minutesLeft;
+ uint16_t minutesLeft;
  uint16_t twelthSecondsLeft;
 
  // if (property == "Next Level") return sdlPop->next_level;
@@ -81,6 +81,10 @@ class blastemInstance
   size_t* _stateWorkRamOffset;
 
   private:
+
+  void memcpyBigEndian8(uint8_t* dst, uint8_t* src) { ((uint8_t*)dst)[0] = src[0]; }
+  void memcpyBigEndian16(uint16_t* dst, uint8_t* src) { ((uint8_t*)dst)[0] = src[1]; ((uint8_t*)dst)[1] = src[0]; }
+  void memcpyBigEndian32(uint32_t* dst, uint8_t* src) { ((uint8_t*)dst)[0] = src[3]; ((uint8_t*)dst)[1] = src[2]; ((uint8_t*)dst)[2] = src[1]; ((uint8_t*)dst)[3] = src[0]; }
 
   void *_dllHandle;
 };
