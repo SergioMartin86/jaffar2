@@ -85,5 +85,8 @@ genesis_context *alloc_config_genesis(void *rom, uint32_t rom_size, void *lock_o
 void genesis_serialize(genesis_context *gen, serialize_buffer *buf, uint32_t m68k_pc, uint8_t all);
 void genesis_deserialize(deserialize_buffer *buf, genesis_context *gen);
 
+uint8_t *soft_serialize(system_header *sys, size_t *size_out);
+void soft_deserialize(system_header *sys, uint8_t *data, size_t size);
+
 #endif //GENESIS_H_
 

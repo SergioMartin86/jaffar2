@@ -19,6 +19,9 @@ blastemInstance::blastemInstance(int argc, char** argv, const char* libraryFile,
   // Variables
   start = (start_t) dlsym(_dllHandle, "start");
   resume = (resume_t) dlsym(_dllHandle, "resume");
+  _stateData = (uint8_t**) dlsym(_dllHandle, "_stateData");
+  _stateSize = (size_t*) dlsym(_dllHandle, "_stateSize");
+  _stateWorkRamOffset = (size_t*) dlsym(_dllHandle, "_stateWorkRamOffset");
 
   start(argc, argv);
 }
@@ -27,4 +30,22 @@ blastemInstance::blastemInstance(int argc, char** argv, const char* libraryFile,
 blastemInstance::~blastemInstance()
 {
   dlclose(_dllHandle);
+}
+
+void blastemInstance::updateState()
+{
+  *(((uint8_t*)&_state.currentFrame)+0) = (*_stateData)[*_stateWorkRamOffset + 0x000019C9];
+  *(((uint8_t*)&_state.currentFrame)+1) = (*_stateData)[*_stateWorkRamOffset + 0x000019C8];
+}
+
+void blastemInstance::printState()
+{
+ printf("Current Frame: %d\n", _state.currentFrame);
+}
+
+void blastemInstance::playFrame()
+{
+ resume();
+ updateState();
+ printState();
 }

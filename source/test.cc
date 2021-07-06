@@ -10,4 +10,12 @@ int main(int argc, char *argv[])
  blastemInstance blastem(argc, argv, "libblastem.so", false);
 
  printf("Blastem created.\n");
+
+ size_t step = 0;
+ while(1)
+ {
+  blastem.playFrame();
+  printf("Step %lu - Press enter...\n", step++);
+  getchar();
+ }
 }

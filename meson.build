@@ -38,7 +38,7 @@ blastemFiles = [
   'extern/blastem/config.c',
   'extern/blastem/tern.c',
   'extern/blastem/util.c',
-  'extern/blastem/jaffar.c',
+  'extern/blastem/jaffarInject.c',
   'extern/blastem/paths.c',
   'extern/blastem/gst.c',
   'extern/blastem/68kinst.c',

@@ -22,7 +22,7 @@
 #include "util.h"
 #include "bindings.h"
 #include "genesis.h"
-#include "jaffar.h"
+#include "jaffarInject.h"
 
 #define CYCLE_NEVER 0xFFFFFFFF
 #define MIN_POLL_INTERVAL 6840

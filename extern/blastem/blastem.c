@@ -592,7 +592,6 @@ char** __argv;
 
 void blastemWrapper()
 {
-  printf("I'm Here A\n");
   main(__argc, __argv);
   fatal_error("Should not reach this point!\n");
 }
@@ -604,18 +603,10 @@ void start(int argc, char** argv)
 
  _blastemThread = co_create(1 << 24, blastemWrapper);
  _jaffarThread = co_active();
-
- size_t step = 0;
- while(1)
- {
-  co_switch(_blastemThread);
-  printf("Step %lu - Press enter...", step++);
-  getchar();
- }
 }
 
 void resume()
 {
-
+ co_switch(_blastemThread);
 }
 

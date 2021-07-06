@@ -15,6 +15,7 @@
 #include "util.h"
 #include "bindings.h"
 #include "config.h"
+#include "jaffarInject.h"
 #define MCLKS_NTSC 53693175
 #define MCLKS_PAL  53203395
 
@@ -236,6 +237,128 @@ static void deserialize(system_header *sys, uint8_t *data, size_t size)
 	genesis_deserialize(&buffer, gen);
 	//HACK: Fix this once PC/IR is represented in a better way in 68K core
 	gen->m68k->resume_pc = get_native_address_trans(gen->m68k, gen->m68k->last_prefetch_address);
+}
+
+void soft_deserialize(system_header *sys, uint8_t *data, size_t size)
+{
+ genesis_context *gen = (genesis_context *)sys;
+ deserialize_buffer buffer;
+ init_deserialize(&buffer, data, size);
+
+ register_section_handler(&buffer, (section_handler){.fun = m68k_deserialize, .data = gen->m68k}, SECTION_68000);
+ register_section_handler(&buffer, (section_handler){.fun = z80_deserialize, .data = gen->z80}, SECTION_Z80);
+ register_section_handler(&buffer, (section_handler){.fun = vdp_deserialize, .data = gen->vdp}, SECTION_VDP);
+ register_section_handler(&buffer, (section_handler){.fun = ym_deserialize, .data = gen->ym}, SECTION_YM2612);
+ register_section_handler(&buffer, (section_handler){.fun = psg_deserialize, .data = gen->psg}, SECTION_PSG);
+ register_section_handler(&buffer, (section_handler){.fun = bus_arbiter_deserialize, .data = gen}, SECTION_GEN_BUS_ARBITER);
+ register_section_handler(&buffer, (section_handler){.fun = io_deserialize, .data = gen->io.ports}, SECTION_SEGA_IO_1);
+ register_section_handler(&buffer, (section_handler){.fun = io_deserialize, .data = gen->io.ports + 1}, SECTION_SEGA_IO_2);
+ register_section_handler(&buffer, (section_handler){.fun = io_deserialize, .data = gen->io.ports + 2}, SECTION_SEGA_IO_EXT);
+ register_section_handler(&buffer, (section_handler){.fun = ram_deserialize, .data = gen}, SECTION_MAIN_RAM);
+ register_section_handler(&buffer, (section_handler){.fun = zram_deserialize, .data = gen}, SECTION_SOUND_RAM);
+ register_section_handler(&buffer, (section_handler){.fun = cart_deserialize, .data = gen}, SECTION_MAPPER);
+ register_section_handler(&buffer, (section_handler){.fun = tmss_deserialize, .data = gen}, SECTION_TMSS);
+ uint8_t tmss_old = gen->tmss;
+ gen->tmss = 0xFF;
+ while (buffer.cur_pos < buffer.size)
+ {
+  if (!load_section(&buffer))
+   break;
+ }
+ if (gen->version_reg & 0xF) {
+  if (gen->tmss == 0xFF) {
+   //state lacked a TMSS section, assume that the game ROM is mapped in
+   //and that the VDP is unlocked
+   gen->tmss_lock[0] = 0x5345;
+   gen->tmss_lock[1] = 0x4741;
+   gen->tmss = 1;
+  }
+  if (gen->tmss != tmss_old) {
+   toggle_tmss_rom(gen);
+  }
+  check_tmss_lock(gen);
+ }
+ update_z80_bank_pointer(gen);
+ adjust_int_cycle(gen->m68k, gen->vdp);
+ free(buffer.handlers);
+ buffer.handlers = NULL;
+
+ //HACK: Fix this once PC/IR is represented in a better way in 68K core
+ gen->m68k->resume_pc = get_native_address_trans(gen->m68k, gen->m68k->last_prefetch_address);
+}
+
+
+uint8_t *soft_serialize(system_header *sys, size_t *size_out)
+{
+ genesis_context *gen = (genesis_context *)sys;
+  serialize_buffer state;
+  init_serialize(&state);
+  uint32_t address = read_word(4, (void **)gen->m68k->mem_pointers, &gen->m68k->options->gen, gen->m68k) << 16;
+  address |= read_word(6, (void **)gen->m68k->mem_pointers, &gen->m68k->options->gen, gen->m68k);
+
+  start_section(&state, SECTION_68000);
+  m68k_serialize(gen->m68k, address, &state);
+  end_section(&state);
+
+  start_section(&state, SECTION_Z80);
+  z80_serialize(gen->z80, &state);
+  end_section(&state);
+
+  start_section(&state, SECTION_VDP);
+  vdp_serialize(gen->vdp, &state);
+  end_section(&state);
+
+  start_section(&state, SECTION_YM2612);
+  ym_serialize(gen->ym, &state);
+  end_section(&state);
+
+  start_section(&state, SECTION_PSG);
+  psg_serialize(gen->psg, &state);
+  end_section(&state);
+
+  start_section(&state, SECTION_GEN_BUS_ARBITER);
+  save_int8(&state, gen->z80->reset);
+  save_int8(&state, gen->z80->busreq);
+  save_int16(&state, gen->z80_bank_reg);
+  end_section(&state);
+
+  start_section(&state, SECTION_SEGA_IO_1);
+  io_serialize(gen->io.ports, &state);
+  end_section(&state);
+
+  start_section(&state, SECTION_SEGA_IO_2);
+  io_serialize(gen->io.ports + 1, &state);
+  end_section(&state);
+
+  start_section(&state, SECTION_SEGA_IO_EXT);
+  io_serialize(gen->io.ports + 2, &state);
+  end_section(&state);
+
+  start_section(&state, SECTION_MAIN_RAM);
+  save_int8(&state, RAM_WORDS * 2 / 1024);
+  _stateWorkRamOffset = state.size;
+  save_buffer16(&state, gen->work_ram, RAM_WORDS);
+  end_section(&state);
+
+  start_section(&state, SECTION_SOUND_RAM);
+  save_int8(&state, Z80_RAM_BYTES / 1024);
+  save_buffer8(&state, gen->zram, Z80_RAM_BYTES);
+  end_section(&state);
+
+  if (gen->version_reg & 0xF) {
+   //only save TMSS info if it's present
+   //that will allow a &state saved on a model lacking TMSS
+   //to be loaded on a model that has it
+   start_section(&state, SECTION_TMSS);
+   save_int8(&state, gen->tmss);
+   save_buffer16(&state, gen->tmss_lock, 2);
+   end_section(&state);
+  }
+
+  cart_serialize(&gen->header, &state);
+
+  *size_out = state.size;
+  return state.data;
 }
 
 uint16_t read_dma_value(uint32_t address)
