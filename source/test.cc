@@ -14,8 +14,10 @@ int main(int argc, char *argv[])
  size_t step = 0;
  while(1)
  {
+  printf("Step %lu\n", step++);
+  printf("-------------------------------------\n");
   blastem.playFrame();
-  printf("Step %lu - Press enter...\n", step++);
+  blastem.printState();
   getchar();
  }
 }

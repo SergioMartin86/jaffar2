@@ -13,52 +13,30 @@ struct gameStateStruct
  uint8_t drawnRoom;
  uint16_t minutesLeft;
  uint16_t twelthSecondsLeft;
+ uint8_t slowfallFramesLeft;
 
- // if (property == "Next Level") return sdlPop->next_level;
- // if (property == "Drawn Room") return sdlPop->drawn_room;
- // if (property == "Exit Door Open") return &sdlPop->isExitDoorOpen;
- // if (property == "Checkpoint Reached") return sdlPop->checkpoint;
- // if (property == "Is Feather Fall") return sdlPop->is_feather_fall;
- // if (property == "Current Step") return &_currentStep;
+ // This is a pointer to the genesis bus to a position that gets modified when you reach the checkpoint
+ // It's zero before you reach a checkpoint, but changes when you hit the first one.
+ // When hitting a second checkpoint, the pointer doesn't change but instead the position in memory that it is pointing to
+ // A system needs to be established to keep track of these changes to know what checkpoint it refers to
+ uint32_t checkpointPointer;
 
  uint8_t kidFrame;
  uint8_t kidCurrentHP;
  uint8_t kidMaxHP;
- uint16_t kidRoom;
+ uint8_t kidRoom;
+ uint8_t kidDirection;
  uint16_t kidPositionX;
  uint16_t kidPositionY;
-
- // if (property == "Kid Direction") return &sdlPop->Kid->direction;
- // if (property == "Kid Current Column") return &sdlPop->Kid->curr_col;
- // if (property == "Kid Current Row") return &sdlPop->Kid->curr_row;
- // if (property == "Kid Action") return &sdlPop->Kid->action;
- // if (property == "Kid Fall Velocity X") return &sdlPop->Kid->fall_x;
- // if (property == "Kid Fall Velocity Y") return &sdlPop->Kid->fall_y;
- // if (property == "Kid Repeat") return &sdlPop->Kid->repeat;
- // if (property == "Kid Character Id") return &sdlPop->Kid->charid;
- // if (property == "Kid Has Sword") return &sdlPop->Kid->sword;
- // if (property == "Kid Is Alive") return &sdlPop->Kid->alive;
- // if (property == "Kid Current Sequence") return &sdlPop->Kid->curr_seq;
+ uint8_t kidHasSword;
 
  uint8_t guardFrame;
  uint8_t guardCurrentHP;
  uint8_t guardMaxHP;
- uint16_t guardRoom;
+ uint8_t guardRoom;
+ uint8_t guardDirection;
  uint16_t guardPositionX;
  uint16_t guardPositionY;
-
-// if (property == "Guard Direction") return &sdlPop->Guard->direction;
-// if (property == "Guard Current Column") return &sdlPop->Guard->curr_col;
-// if (property == "Guard Current Row") return &sdlPop->Guard->curr_row;
-// if (property == "Guard Action") return &sdlPop->Guard->action;
-// if (property == "Guard Fall Velocity X") return &sdlPop->Guard->fall_x;
-// if (property == "Guard Fall Velocity Y") return &sdlPop->Guard->fall_y;
-// if (property == "Guard Repeat") return &sdlPop->Guard->repeat;
-// if (property == "Guard Character Id") return &sdlPop->Guard->charid;
-// if (property == "Guard Has Sword") return &sdlPop->Guard->sword;
-// if (property == "Guard Is Alive") return &sdlPop->Guard->alive;
-// if (property == "Guard Current Sequence") return &sdlPop->Guard->curr_seq;
-
 };
 
 class blastemInstance
