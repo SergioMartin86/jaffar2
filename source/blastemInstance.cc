@@ -3,6 +3,7 @@
 #include "libco.h"
 #include <dlfcn.h>
 #include <iostream>
+#include "metrohash64.h"
 #include <omp.h>
 
 
@@ -61,8 +62,48 @@ void blastemInstance::updateState()
  memcpyBigEndian16(&_state.guardPositionY,    &(*_stateData)[*_stateWorkRamOffset + 0x4AF6]);
 }
 
+uint64_t blastemInstance::computeHash()
+{
+  MetroHash64 hash;
+
+  hash.Update(&_state.currentFrame, sizeof(uint16_t));
+  hash.Update(&_state.framesPerStep, sizeof(uint8_t));
+  hash.Update(&_state.currentLevel, sizeof(uint8_t));
+  hash.Update(&_state.drawnRoom, sizeof(uint8_t));
+  hash.Update(&_state.minutesLeft, sizeof(uint16_t));
+  hash.Update(&_state.twelthSecondsLeft, sizeof(uint16_t));
+  hash.Update(&_state.checkpointPointer, sizeof(uint32_t));
+  hash.Update(&_state.slowfallFramesLeft, sizeof(uint8_t));
+
+  hash.Update(&_state.kidFrame, sizeof(uint8_t));
+  hash.Update(&_state.kidCurrentHP, sizeof(uint8_t));
+  hash.Update(&_state.kidMaxHP, sizeof(uint8_t));
+  hash.Update(&_state.kidRoom, sizeof(uint8_t));
+  hash.Update(&_state.kidHasSword, sizeof(uint8_t));
+  hash.Update(&_state.kidDirection, sizeof(uint8_t));
+  hash.Update(&_state.kidPositionX, sizeof(uint16_t));
+  hash.Update(&_state.kidPositionY, sizeof(uint16_t));
+
+  hash.Update(&_state.guardFrame, sizeof(uint8_t));
+  hash.Update(&_state.guardCurrentHP, sizeof(uint8_t));
+  hash.Update(&_state.guardMaxHP, sizeof(uint8_t));
+  hash.Update(&_state.guardRoom, sizeof(uint8_t));
+  hash.Update(&_state.guardDirection, sizeof(uint8_t));
+  hash.Update(&_state.guardPositionX, sizeof(uint16_t));
+  hash.Update(&_state.guardPositionY, sizeof(uint16_t));
+
+  uint64_t result;
+  hash.Finalize(reinterpret_cast<uint8_t *>(&result));
+  return result;
+}
+
 void blastemInstance::printState()
 {
+ printf("General Info:\n");
+ printf(" + Savestate Size: %lu\n", *_stateSize);
+ printf(" + Hash: 0x%lX\n", computeHash());
+
+ printf("Game State:\n");
  printf(" + Current Frame: %d\n", _state.currentFrame);
  printf(" + Video Frames Per Game Frame: %d\n", _state.framesPerStep);
  printf(" + Current Level: %d\n", _state.currentLevel);
@@ -95,3 +136,14 @@ void blastemInstance::playFrame()
  resume();
  updateState();
 }
+
+void blastemInstance::loadState(const uint8_t* state)
+{
+ memcpy(*_stateData, state, *_stateSize);
+}
+
+uint8_t* blastemInstance::saveState()
+{
+  return *_stateData;
+}
+

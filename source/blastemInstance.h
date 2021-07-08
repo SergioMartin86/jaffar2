@@ -46,7 +46,10 @@ class blastemInstance
   void playFrame();
   void updateState();
   void printState();
+  uint64_t computeHash();
   ~blastemInstance();
+  void loadState(const uint8_t* state);
+  uint8_t* saveState();
 
   // blastem Functions
   start_t start;

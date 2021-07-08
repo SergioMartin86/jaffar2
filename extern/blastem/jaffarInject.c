@@ -16,10 +16,10 @@ void jaffarInject(m68k_context *context)
  {
   if (_stateSize > 0) free(_stateData);
   _stateData = soft_serialize(current_system, &_stateSize);
-  //soft_deserialize(current_system, state, size);
 
   prevFrameId = curFrameId;
   co_switch(_jaffarThread);
+  soft_deserialize(current_system, _stateData, _stateSize);
  }
 }
 
