@@ -1,8 +1,8 @@
 #pragma once
 
-#define _STATE_DATA_SIZE 141607
 #define _MAX_MOVE_SIZE 4
 
+#include "blastemInstance.h"
 #include "nlohmann/json.hpp"
 #include "rule.h"
 #include <string>

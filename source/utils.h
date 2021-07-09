@@ -74,4 +74,4 @@ char * path_dirname(const char *path);
 char * basename_no_extension(const char *path);
 char *path_extension(char const *path);
 char is_path_sep(char c);
-
+extern bool saveBinToFile(const uint8_t* src, size_t size, const char *fileName);

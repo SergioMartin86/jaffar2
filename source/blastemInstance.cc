@@ -7,7 +7,7 @@
 #include <omp.h>
 
 
-blastemInstance::blastemInstance(int argc, char** argv, const char* libraryFile, const bool multipleLibraries)
+blastemInstance::blastemInstance(const char* libraryFile, const bool multipleLibraries)
 {
   if (multipleLibraries)
    _dllHandle = dlmopen (LM_ID_NEWLM, libraryFile, RTLD_NOW | RTLD_LOCAL | RTLD_NODELETE);
@@ -23,10 +23,22 @@ blastemInstance::blastemInstance(int argc, char** argv, const char* libraryFile,
   _stateData = (uint8_t**) dlsym(_dllHandle, "_stateData");
   _stateSize = (size_t*) dlsym(_dllHandle, "_stateSize");
   _stateWorkRamOffset = (size_t*) dlsym(_dllHandle, "_stateWorkRamOffset");
-
-  start(argc, argv);
+  _nextMove = (move_t*) dlsym(_dllHandle, "_nextMove");
 }
 
+void blastemInstance::initialize(char* romFile, char* saveFile)
+{
+ int argc = 4;
+ char* argv[4];
+
+ char exec[] = "jaffar";
+ char flag[] = "-s";
+ argv[0] = exec;
+ argv[1] = romFile;
+ argv[2] = flag;
+ argv[3] = saveFile;
+ start(argc, argv);
+}
 
 blastemInstance::~blastemInstance()
 {
@@ -131,8 +143,9 @@ void blastemInstance::printState()
  printf(" + Position Y: %d\n", _state.guardPositionY);
 }
 
-void blastemInstance::playFrame()
+void blastemInstance::playFrame(const std::string& move)
 {
+ strcpy(*_nextMove, move.c_str());
  resume();
  updateState();
 }
@@ -142,8 +155,8 @@ void blastemInstance::loadState(const uint8_t* state)
  memcpy(*_stateData, state, *_stateSize);
 }
 
-uint8_t* blastemInstance::saveState()
+void blastemInstance::saveState(uint8_t* state)
 {
-  return *_stateData;
+ memcpy(state, *_stateData, *_stateSize);
 }
 

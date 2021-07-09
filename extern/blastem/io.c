@@ -1242,9 +1242,6 @@ uint8_t io_data_read(io_port * port, uint32_t current_cycle, m68k_context *conte
 		if (current_cycle >= port->device.pad.timeout_cycle) {
 			port->device.pad.th_counter = 0;
 		}
-		/*if (port->input[GAMEPAD_TH0] || port->input[GAMEPAD_TH1]) {
-			printf("io_data_read | control: %X, TH: %X, GAMEPAD_TH0: %X, GAMEPAD_TH1: %X, TH Counter: %d, Timeout: %d, Cycle: %d\n", control, th, port->input[GAMEPAD_TH0], port->input[GAMEPAD_TH1], port->th_counter,port->timeout_cycle, context->current_cycle);
-		}*/
 		if (th) {
 			if (port->device.pad.th_counter == 3) {
 				input = port->input[GAMEPAD_EXTRA];
@@ -1262,227 +1259,25 @@ uint8_t io_data_read(io_port * port, uint32_t current_cycle, m68k_context *conte
 		}
 
 		//controller output is logically inverted
+		if (strcmp(_nextMove, ".") == 0) input = 0; // Nothing
+		if (strcmp(_nextMove, "L") == 0) input = 4; // Pad L
+		if (strcmp(_nextMove, "R") == 0) input = 8; // Pad R
+		if (strcmp(_nextMove, "U") == 0) input = 64; // Button A
+		if (strcmp(_nextMove, "D") == 0) input = 2; // Pad D -- Crouch
+		if (strcmp(_nextMove, "C") == 0) input = 32; // C -- Sword Draw/Sheath/Attack
+		if (strcmp(_nextMove, "S") == 0) input = 16; // B -- Hold
+		if (strcmp(_nextMove, "SL") == 0) input = 20; // Button B + Pad L Careful step
+		if (strcmp(_nextMove, "SR") == 0) input = 24; // Button B + Pad R Careful step
+		if (strcmp(_nextMove, "SU") == 0) input = 17; // Button B + Pad U Climb up
+		if (strcmp(_nextMove, "LU") == 0) input = 68; // Button A + Pad L Jump Direction
+		if (strcmp(_nextMove, "LD") == 0) input = 6; // Pad D + Pad L Crouch Direction
+		if (strcmp(_nextMove, "RU") == 0) input = 72; // Button A + Pad R Jump Direction
+		if (strcmp(_nextMove, "RD") == 0) input = 10; // Pad D + Pad R Crouch Direction
+
 		input = ~input;
 		device_driven = 0x3F;
 		break;
 	}
-	case IO_MOUSE:
-	{
-		mouse_check_ready(port, current_cycle);
-		uint8_t tr = output & TR;
-		if (th) {
-			if (tr) {
-				input = 0x10;
-			} else {
-				input = 0;
-			}
-		} else {
-
-			int16_t delta_x = port->device.mouse.latched_x - port->device.mouse.last_read_x;
-			int16_t delta_y = port->device.mouse.last_read_y - port->device.mouse.latched_y;
-			switch (port->device.mouse.tr_counter)
-			{
-			case 0:
-				input = 0xB;
-				break;
-			case 1:
-			case 2:
-				input = 0xF;
-				break;
-			case 3:
-				input = 0;
-				if (delta_y > 255 || delta_y < -255) {
-					input |= 8;
-				}
-				if (delta_x > 255 || delta_x < -255) {
-					input |= 4;
-				}
-				if (delta_y < 0) {
-					input |= 2;
-				}
-				if (delta_x < 0) {
-					input |= 1;
-				}
-				break;
-			case 4:
-				input = port->input[0];
-				break;
-			case 5:
-				input = delta_x >> 4 & 0xF;
-				break;
-			case 6:
-				input = delta_x & 0xF;
-				break;
-			case 7:
-				input = delta_y >> 4 & 0xF;
-				break;
-			case 8:
-			default:
-				input = delta_y & 0xF;
-				break;
-			}
-			input |= ((port->device.mouse.tr_counter & 1) == 0) << 4;
-		}
-		device_driven = 0x1F;
-		break;
-	}
-	case IO_SATURN_KEYBOARD:
-	{
-		if (th) {
-			input = 0x11;
-		} else {
-			uint8_t tr = output & TR;
-			uint16_t code = port->device.keyboard.read_pos == 0xFF ? 0 
-				: port->device.keyboard.events[port->device.keyboard.read_pos];
-			switch (port->device.keyboard.tr_counter)
-			{
-			case 0:
-				input = 1;
-				break;
-			case 1:
-				//Saturn peripheral ID
-				input = 3;
-				break;
-			case 2:
-				//data size
-				input = 4;
-				break;
-			case 3:
-				//d-pad
-				//TODO: set these based on keyboard state
-				input = 0xF;
-				break;
-			case 4:
-				//Start ABC
-				//TODO: set these based on keyboard state
-				input = 0xF;
-				break;
-			case 5:
-				//R XYZ
-				//TODO: set these based on keyboard state
-				input = 0xF;
-				break;
-			case 6:
-				//L and KBID
-				//TODO: set L based on keyboard state
-				input = 0x8;
-				break;
-			case 7:
-				//Capslock, Numlock, Scrolllock
-				//TODO: set these based on keyboard state
-				input = 0;
-				break;
-			case 8:
-				input = 6;
-				if (code & 0xFF00) {
-					//break
-					input |= 1;
-				} else if (code) {
-					input |= 8;
-				}
-				break;
-			case 9:
-				input = code >> 4 & 0xF;
-				break;
-			case 10:
-				input = code & 0xF;
-				break;
-			case 11:
-				input = 0;
-				break;
-			default:
-				input = 1;
-				break;
-			}
-			input |= ((port->device.keyboard.tr_counter & 1) == 0) << 4;
-		}
-		device_driven = 0x1F;
-		break;
-	}
-	case IO_XBAND_KEYBOARD:
-	{
-		if (th) {
-			input = 0x1C;
-		} else {
-			uint8_t size;
-			if (port->device.keyboard.mode == KB_SETUP || port->device.keyboard.mode == KB_READ) {
-				switch (port->device.keyboard.tr_counter)
-				{
-				case 0:
-					input = 0x3;
-					break;
-				case 1:
-					input = 0x6;
-					break;
-				case 2:
-					//This is where thoe host indicates a read or write
-					//presumably, the keyboard only outputs this if the host
-					//is not already driving the data bus low
-					input = 0x9;
-					break;
-				case 3:
-					size = get_scancode_bytes(port);
-					if (size) {
-						++size;
-					}
-					if (size > 15) {
-						size = 15;
-					}
-					input = size;
-					break;
-				case 4:
-				case 5:
-					//always send packet type 0 for now
-					input = 0;
-					break;
-				default:
-					if (port->device.keyboard.read_pos == 0xFF) {
-						//we've run out of bytes
-						input = 0;
-					} else if (port->device.keyboard.events[port->device.keyboard.read_pos] & 0xFF00) {
-						if (port->device.keyboard.tr_counter & 1) {
-							input = port->device.keyboard.events[port->device.keyboard.read_pos] >> 8 & 0xF;
-						} else {
-							input = port->device.keyboard.events[port->device.keyboard.read_pos] >> 12;
-						}
-					} else {
-						if (port->device.keyboard.tr_counter & 1) {
-							input = port->device.keyboard.events[port->device.keyboard.read_pos] & 0xF;
-						} else {
-							input = port->device.keyboard.events[port->device.keyboard.read_pos] >> 4;
-						}
-					}
-					break;
-				}
-			} else {
-				input = 0xF;
-			}
-			input |= ((port->device.keyboard.tr_counter & 1) == 0) << 4;
-		}
-		//this is not strictly correct at all times, but good enough for now
-		device_driven = 0x1F;
-		break;
-	}
-#ifndef _WIN32
-	case IO_SEGA_PARALLEL:
-		if (!th)
-		{
-			service_pipe(port);
-		}
-		input = port->input[th ? IO_TH1 : IO_TH0];
-		device_driven = 0x3F;
-		break;
-	case IO_GENERIC:
-		if (port->input[IO_TH0] & 0x80 && port->input[IO_STATE] == IO_WRITTEN)
-		{
-			//device requested a blocking read after writes
-			port->input[IO_STATE] = IO_READ_PENDING;
-		}
-		service_socket(port);
-		input = port->input[IO_TH0];
-		device_driven = 0x7F;
-		break;
-#endif
 	default:
 		input = 0;
 		device_driven = 0;
@@ -1497,6 +1292,7 @@ uint8_t io_data_read(io_port * port, uint32_t current_cycle, m68k_context *conte
 	/*if (port->input[GAMEPAD_TH0] || port->input[GAMEPAD_TH1]) {
 		printf ("value: %X\n", value);
 	}*/
+
 	return value;
 }
 

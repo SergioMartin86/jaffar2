@@ -387,7 +387,7 @@ int main(int argc, char ** argv)
 	int loaded = 0;
 	system_type stype = SYSTEM_UNKNOWN, force_stype = SYSTEM_UNKNOWN;
 	char * romfname = NULL;
-	char * statefile = NULL;
+	char * statefile = argv[3];
 	char *reader_addr = NULL, *reader_port = NULL;
 	uint8_t start_in_debugger = 0;
 	uint8_t fullscreen = FULLSCREEN_DEFAULT, use_gl = 1;
@@ -582,6 +582,7 @@ int main(int argc, char ** argv)
 			game_system = current_system;
 	}
 
+	printf("Savefile: %s\n", statefile);
 	current_system->start_context(current_system, statefile);
 
 	return 0;
@@ -599,8 +600,12 @@ void blastemWrapper()
 void start(int argc, char** argv)
 {
  __argc = argc;
- __argv = argv;
-
+ __argv = (char**) malloc (sizeof(char*) * argc);
+ for (size_t i = 0; i < argc; i++)
+ {
+  __argv[i] = argv[i];
+  printf("%s\n", __argv[i]);
+ }
  _blastemThread = co_create(1 << 24, blastemWrapper);
  _jaffarThread = co_active();
 }

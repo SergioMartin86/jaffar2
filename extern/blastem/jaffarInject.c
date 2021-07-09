@@ -5,6 +5,7 @@ uint16_t prevFrameId = 0;
 size_t _stateSize = 0;
 uint8_t* _stateData;
 size_t _stateWorkRamOffset = 0;
+move_t _nextMove;
 
 void jaffarInject(m68k_context *context)
 {
@@ -20,6 +21,7 @@ void jaffarInject(m68k_context *context)
   prevFrameId = curFrameId;
   co_switch(_jaffarThread);
   soft_deserialize(current_system, _stateData, _stateSize);
+  printf("Next Move: %s\n", _nextMove);
  }
 }
 

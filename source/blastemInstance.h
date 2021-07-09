@@ -2,8 +2,11 @@
 
 #include <string>
 
+#define _STATE_DATA_SIZE 141607
 typedef void (*start_t)(int, char**);
 typedef void (*resume_t)(void);
+#define MAX_MOVE_SIZE 4
+typedef char move_t[MAX_MOVE_SIZE];
 
 struct gameStateStruct
 {
@@ -42,14 +45,15 @@ struct gameStateStruct
 class blastemInstance
 {
   public:
-  blastemInstance(int argc, char** argv, const char* libraryFile, const bool multipleLibraries);
-  void playFrame();
+  blastemInstance(const char* libraryFile, const bool multipleLibraries);
+  void initialize(char* romFile, char* saveFile);
+  void playFrame(const std::string& move);
   void updateState();
   void printState();
   uint64_t computeHash();
   ~blastemInstance();
   void loadState(const uint8_t* state);
-  uint8_t* saveState();
+  void saveState(uint8_t* state);
 
   // blastem Functions
   start_t start;
@@ -60,6 +64,7 @@ class blastemInstance
   uint8_t** _stateData;
   size_t* _stateSize;
   size_t* _stateWorkRamOffset;
+  move_t* _nextMove;
 
   private:
 
