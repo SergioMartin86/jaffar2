@@ -3,7 +3,7 @@
 #include <string>
 
 #define _STATE_DATA_SIZE 141607
-typedef void (*start_t)(int, char**);
+typedef void (*start_t)(int, char**, int);
 typedef void (*resume_t)(void);
 typedef void (*reloadState_t)(void);
 #define MAX_MOVE_SIZE 4
@@ -47,7 +47,7 @@ class blastemInstance
 {
   public:
   blastemInstance(const char* libraryFile, const bool multipleLibraries);
-  void initialize(char* romFile, char* saveFile);
+  void initialize(char* romFile, char* saveFile, const bool headlessMode);
   void playFrame(const std::string& move);
   void updateState();
   void printState();

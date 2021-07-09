@@ -27,6 +27,8 @@
 #include "config.h"
 #include "bindings.h"
 
+extern m68k_context* _context;
+
 #define BLASTEM_VERSION "0.6.3-pre"
 
 #ifdef __ANDROID__
@@ -393,6 +395,7 @@ int main(int argc, char ** argv)
 	uint8_t fullscreen = FULLSCREEN_DEFAULT, use_gl = 1;
 	uint8_t debug_target = 0;
 	char *port;
+
 	for (int i = 1; i < argc; i++) {
 		if (argv[i][0] == '-') {
 			switch(argv[i][1]) {
@@ -582,9 +585,8 @@ int main(int argc, char ** argv)
 			game_system = current_system;
 	}
 
-	printf("Savefile: %s\n", statefile);
+	_context = (m68k_context*)current_system;
 	current_system->start_context(current_system, statefile);
-
 	return 0;
 }
 
@@ -597,17 +599,19 @@ void blastemWrapper()
   fatal_error("Should not reach this point!\n");
 }
 
-void start(int argc, char** argv)
+void start(int argc, char** argv, int isHeadlessMode)
 {
+ headless = isHeadlessMode;
  __argc = argc;
  __argv = (char**) malloc (sizeof(char*) * argc);
  for (size_t i = 0; i < argc; i++)
  {
-  __argv[i] = argv[i];
-  printf("%s\n", __argv[i]);
+  __argv[i] = (char*) malloc(strlen(argv[i]));
+  strcpy(__argv[i], argv[i]);
  }
  _blastemThread = co_create(1 << 24, blastemWrapper);
  _jaffarThread = co_active();
+ co_switch(_blastemThread);
 }
 
 void resume()

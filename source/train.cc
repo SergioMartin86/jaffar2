@@ -10,24 +10,24 @@ void Train::run()
 {
   if (_workerId == 0)
   {
-    printf("[Jaffar] ----------------------------------------------------------------\n");
-    printf("[Jaffar] Launching Jaffar II...\n");
-    printf("[Jaffar] Using configuration file(s): "); for (size_t i = 0; i < _scriptFiles.size(); i++) printf("%s ", _scriptFiles[i].c_str()); printf("\n");
-    printf("[Jaffar] Starting search with %lu workers.\n", _workerCount);
-    printf("[Jaffar] Frame DB entries per worker: %lu\n", _maxLocalDatabaseSize);
+    printf("[Jaffar2] ----------------------------------------------------------------\n");
+    printf("[Jaffar2] Launching Jaffar II...\n");
+    printf("[Jaffar2] Using configuration file(s): "); for (size_t i = 0; i < _scriptFiles.size(); i++) printf("%s ", _scriptFiles[i].c_str()); printf("\n");
+    printf("[Jaffar2] Starting search with %lu workers.\n", _workerCount);
+    printf("[Jaffar2] Frame DB entries per worker: %lu\n", _maxLocalDatabaseSize);
 
     if (_outputSaveBestSeconds > 0)
     {
-      printf("[Jaffar] Saving best frame every: %.3f seconds.\n", _outputSaveBestSeconds);
-      printf("[Jaffar]  + Savefile Path: %s\n", _outputSaveBestPath.c_str());
-      printf("[Jaffar]  + Solution Path: %s\n", _outputSolutionBestPath.c_str());
+      printf("[Jaffar2] Saving best frame every: %.3f seconds.\n", _outputSaveBestSeconds);
+      printf("[Jaffar2]  + Savefile Path: %s\n", _outputSaveBestPath.c_str());
+      printf("[Jaffar2]  + Solution Path: %s\n", _outputSolutionBestPath.c_str());
     }
 
     if (_outputSaveCurrentSeconds > 0)
     {
-      printf("[Jaffar] Saving current frame every: %.3f seconds.\n", _outputSaveCurrentSeconds);
-      printf("[Jaffar]  + Savefile Path: %s\n", _outputSaveCurrentPath.c_str());
-      printf("[Jaffar]  + Solution Path: %s\n", _outputSolutionCurrentPath.c_str());
+      printf("[Jaffar2] Saving current frame every: %.3f seconds.\n", _outputSaveCurrentSeconds);
+      printf("[Jaffar2]  + Savefile Path: %s\n", _outputSaveCurrentPath.c_str());
+      printf("[Jaffar2]  + Solution Path: %s\n", _outputSolutionCurrentPath.c_str());
     }
 
     // Sleep for a second to show this message
@@ -108,21 +108,21 @@ void Train::run()
     // Terminate if DB is depleted and no winning rule was found
     if (_globalFrameCounter == 0)
     {
-      if (_workerId == 0) printf("[Jaffar] Frame database depleted with no winning frames, finishing...\n");
+      if (_workerId == 0) printf("[Jaffar2] Frame database depleted with no winning frames, finishing...\n");
       terminate = true;
     }
 
     // Terminate if a winning rule was found
     if (_winFrameFound == true)
     {
-      if (_workerId == 0) printf("[Jaffar] Winning frame reached in %lu moves, finishing...\n", _currentStep+1);
+      if (_workerId == 0) printf("[Jaffar2] Winning frame reached in %lu moves, finishing...\n", _currentStep+1);
       terminate = true;
     }
 
     // Terminate if maximum number of frames was reached
     if (_currentStep > _maxSteps)
     {
-      if (_workerId == 0) printf("[Jaffar] Maximum frame number reached, finishing...\n");
+      if (_workerId == 0) printf("[Jaffar2] Maximum frame number reached, finishing...\n");
       terminate = true;
     }
 
@@ -136,7 +136,7 @@ void Train::run()
   // Print winning frame if found
   if (_workerId == 0 && _winFrameFound == true)
   {
-    printf("[Jaffar] Win Frame Information:\n");
+    printf("[Jaffar2] Win Frame Information:\n");
     _blastem[0]->loadState(_globalWinFrame.frameStateData);
     _blastem[0]->printState();
 
@@ -145,7 +145,7 @@ void Train::run()
     // Print Move History
     if (_storeMoveList)
     {
-     printf("[Jaffar]  + Move List: ");
+     printf("[Jaffar2]  + Move List: ");
      for (size_t i = 0; i <= _currentStep; i++)
        printf("%s ", _possibleMoves[_globalWinFrame.getMove(i)].c_str());
      printf("\n");
@@ -164,7 +164,7 @@ void Train::run()
 
 void Train::printRuleStatus(const Frame &frame)
 {
- printf("[Jaffar]  + Rule Status: ");
+ printf("[Jaffar2]  + Rule Status: ");
  for (size_t i = 0; i < frame.rulesStatus.size(); i++)
  {
    if (i > 0 && i % 60 == 0) printf("\n                         ");
@@ -879,30 +879,31 @@ void Train::satisfyRule(Frame &frame, const size_t ruleId)
 
 void Train::printTrainStatus()
 {
-  printf("[Jaffar] ----------------------------------------------------------------\n");
-  printf("[Jaffar] Current Step #: %lu / %lu\n", _currentStep, _maxSteps);
-  printf("[Jaffar] Best Reward: %f\n", _globalBestFrameScore);
-  printf("[Jaffar] Database Size: %lu / ~%lu\n", _globalFrameCounter, _maxLocalDatabaseSize * _workerCount);
-  printf("[Jaffar] Frames Processed: (Step/Total): %lu / %lu\n", _stepFramesProcessedCounter, _totalFramesProcessedCounter);
-  printf("[Jaffar] Elapsed Time (Step/Total): %3.3fs / %3.3fs\n", _currentStepTime / 1.0e+9, _searchTotalTime / 1.0e+9);
-  printf("[Jaffar] Performance: %.3f Frames/s\n", (double)_stepFramesProcessedCounter / (_currentStepTime / 1.0e+9));
+  printf("[Jaffar2] ----------------------------------------------------------------\n");
+  printf("[Jaffar2] Current Step #: %lu / %lu\n", _currentStep, _maxSteps);
+  printf("[Jaffar2] Best Reward: %f\n", _globalBestFrameScore);
+  printf("[Jaffar2] Database Size: %lu / ~%lu\n", _globalFrameCounter, _maxLocalDatabaseSize * _workerCount);
+  printf("[Jaffar2] Frames Processed: (Step/Total): %lu / %lu\n", _stepFramesProcessedCounter, _totalFramesProcessedCounter);
+  printf("[Jaffar2] Elapsed Time (Step/Total): %3.3fs / %3.3fs\n", _currentStepTime / 1.0e+9, _searchTotalTime / 1.0e+9);
+  printf("[Jaffar2] Performance: %.3f Frames/s\n", (double)_stepFramesProcessedCounter / (_currentStepTime / 1.0e+9));
 
-  printf("[Jaffar] Frame Distribution Time:   %3.3fs\n", _frameDistributionTime / 1.0e+9);
-  printf("[Jaffar] Frame Computation Time:    %3.3fs\n", _frameComputationTime / 1.0e+9);
-  printf("[Jaffar] Hash Postprocessing Time:  %3.3fs\n", _hashPostprocessingTime / 1.0e+9);
-  printf("[Jaffar] Frame Postprocessing Time: %3.3fs\n", _framePostprocessingTime / 1.0e+9);
+  printf("[Jaffar2] Frame Distribution Time:   %3.3fs\n", _frameDistributionTime / 1.0e+9);
+  printf("[Jaffar2] Frame Computation Time:    %3.3fs\n", _frameComputationTime / 1.0e+9);
+  printf("[Jaffar2] Hash Postprocessing Time:  %3.3fs\n", _hashPostprocessingTime / 1.0e+9);
+  printf("[Jaffar2] Frame Postprocessing Time: %3.3fs\n", _framePostprocessingTime / 1.0e+9);
 
-  printf("[Jaffar] Frame DB Entries: Min %lu (Worker: %lu) / Max %lu (Worker: %lu)\n", _minFrameCount, _minFrameWorkerId, _maxFrameCount, _maxFrameWorkerId);
-  printf("[Jaffar] Hash DB Collisions: %lu\n", _globalHashCollisions);
-  printf("[Jaffar] Hash DB Entries: %lu\n", _hashDatabase.size());
+  printf("[Jaffar2] Frame DB Entries: Min %lu (Worker: %lu) / Max %lu (Worker: %lu)\n", _minFrameCount, _minFrameWorkerId, _maxFrameCount, _maxFrameWorkerId);
+  printf("[Jaffar2] Hash DB Collisions: %lu\n", _globalHashCollisions);
+  printf("[Jaffar2] Hash DB Entries: %lu\n", _hashDatabase.size());
 
-  printf("[Jaffar] Frame DB Size: Min %.3fmb  / Max: %.3fmb\n", (double)(_minFrameCount * Frame::getSerializationSize()) / (1024.0 * 1024.0), (double)(_maxFrameCount * Frame::getSerializationSize()) / (1024.0 * 1024.0));
-  printf("[Jaffar] Hash DB Size: %.3fmb\n", (double)(_hashDatabase.size() * sizeof(std::pair<uint64_t, uint32_t>)) / (1024.0 * 1024.0));
+  printf("[Jaffar2] Frame DB Size: Min %.3fmb  / Max: %.3fmb\n", (double)(_minFrameCount * Frame::getSerializationSize()) / (1024.0 * 1024.0), (double)(_maxFrameCount * Frame::getSerializationSize()) / (1024.0 * 1024.0));
+  printf("[Jaffar2] Hash DB Size: %.3fmb\n", (double)(_hashDatabase.size() * sizeof(std::pair<uint64_t, uint32_t>)) / (1024.0 * 1024.0));
 
-  printf("[Jaffar] Best Frame Information:\n");
+  printf("[Jaffar2] Best Frame Information:\n");
 
   _blastem[0]->loadState(_bestFrame.frameStateData);
   _blastem[0]->printState();
+
   printRuleStatus(_bestFrame);
 
   // Getting kid room
@@ -911,8 +912,8 @@ void Train::printTrainStatus()
   // Getting magnet values for the kid
   auto kidMagnet = getKidMagnetValues(_bestFrame, kidCurrentRoom);
 
-  printf("[Jaffar]  + Kid Horizontal Magnet Intensity / Position: %.1f / %.0f\n", kidMagnet.intensityX, kidMagnet.positionX);
-  printf("[Jaffar]  + Kid Vertical Magnet Intensity: %.1f\n", kidMagnet.intensityY);
+  printf("[Jaffar2]  + Kid Horizontal Magnet Intensity / Position: %.1f / %.0f\n", kidMagnet.intensityX, kidMagnet.positionX);
+  printf("[Jaffar2]  + Kid Vertical Magnet Intensity: %.1f\n", kidMagnet.intensityY);
 
   // Getting guard room
   int guardCurrentRoom = _blastem[0]->_state.guardRoom;
@@ -920,13 +921,13 @@ void Train::printTrainStatus()
   // Getting magnet values for the guard
   auto guardMagnet = getGuardMagnetValues(_bestFrame, guardCurrentRoom);
 
-  printf("[Jaffar]  + Guard Horizontal Magnet Intensity / Position: %.1f / %.0f\n", guardMagnet.intensityX, guardMagnet.positionX);
-  printf("[Jaffar]  + Guard Vertical Magnet Intensity: %.1f\n", guardMagnet.intensityY);
+  printf("[Jaffar2]  + Guard Horizontal Magnet Intensity / Position: %.1f / %.0f\n", guardMagnet.intensityX, guardMagnet.positionX);
+  printf("[Jaffar2]  + Guard Vertical Magnet Intensity: %.1f\n", guardMagnet.intensityY);
 
   // Print Move History
   if (_storeMoveList)
   {
-   printf("[Jaffar]  + Last 30 Moves: ");
+   printf("[Jaffar2]  + Last 30 Moves: ");
    size_t startMove = (size_t)std::max((int)0, (int)_currentStep-30);
    for (size_t i = startMove; i <= _currentStep; i++)
      printf("%s ", _possibleMoves[_bestFrame.getMove(i)].c_str());
@@ -1021,7 +1022,7 @@ float Train::getFrameReward(const Frame &frame)
 
   // Evaluating kidMagnet's reward on the X axis
   const float kidDiffX = std::abs(_blastem[threadId]->_state.kidPositionX - kidMagnet.positionX);
-  reward += (float) kidMagnet.intensityX * (256.0f - kidDiffX);
+  reward += (float) kidMagnet.intensityX * (512.0f - kidDiffX);
 
   // For positive Y axis kidMagnet, rewarding climbing frames
   if ((float) kidMagnet.intensityY > 0.0f)
@@ -1037,7 +1038,7 @@ float Train::getFrameReward(const Frame &frame)
     if (curKidFrame >= 135 && curKidFrame <= 149) reward += (float) kidMagnet.intensityY * (22.0f + (curKidFrame - 134));
 
     // Adding absolute reward for Y position
-    reward += (float) kidMagnet.intensityY * (256.0f - _blastem[threadId]->_state.kidPositionY);
+    reward += (float) kidMagnet.intensityY * (512.0f - _blastem[threadId]->_state.kidPositionY);
   }
 
   // For negative Y axis kidMagnet, rewarding falling/climbing down frames
@@ -1076,13 +1077,13 @@ float Train::getFrameReward(const Frame &frame)
 
   // Evaluating guardMagnet's reward on the X axis
   const float guardDiffX = std::abs(_blastem[threadId]->_state.guardPositionX - guardMagnet.positionX);
-  reward += (float) guardMagnet.intensityX * (256.0f - guardDiffX);
+  reward += (float) guardMagnet.intensityX * (512.0f - guardDiffX);
 
   // For positive Y axis guardMagnet
   if ((float) guardMagnet.intensityY > 0.0f)
   {
    // Adding absolute reward for Y position
-   reward += (float) guardMagnet.intensityY * (256.0f - _blastem[threadId]->_state.guardPositionY);
+   reward += (float) guardMagnet.intensityY * (512.0f - _blastem[threadId]->_state.guardPositionY);
   }
 
   // For negative Y axis guardMagnet, rewarding falling/climbing down frames
@@ -1189,10 +1190,6 @@ Train::Train(int argc, char *argv[])
   _workerId = (size_t)mpiRank;
   _threadCount = omp_get_max_threads();
 
-  // Setting SDL env variables to use the dummy renderer
-  setenv("SDL_VIDEODRIVER", "dummy", 1);
-  setenv("SDL_AUDIODRIVER", "dummy", 1);
-
   // Profiling information
   _searchTotalTime = 0.0;
   _currentStepTime = 0.0;
@@ -1210,38 +1207,38 @@ Train::Train(int argc, char *argv[])
   _currentStep = 0;
 
   // Parsing max hash DB entries
-  if (const char *hashAgeThresholdString = std::getenv("JAFFAR_HASH_AGE_THRESHOLD"))
+  if (const char *hashAgeThresholdString = std::getenv("JAFFAR2_HASH_AGE_THRESHOLD"))
    _hashAgeThreshold = std::stol(hashAgeThresholdString);
   else if (_workerId == 0)
-   EXIT_WITH_ERROR("[Jaffar] JAFFAR_HASH_AGE_THRESHOLD environment variable not defined.\n");
+   EXIT_WITH_ERROR("[Jaffar2] JAFFAR2_HASH_AGE_THRESHOLD environment variable not defined.\n");
 
   // Parsing max frame DB entries
   size_t frameDBMaxMBytes = 0;
-  if (const char *frameDBMaxMBytesEnv = std::getenv("JAFFAR_MAX_WORKER_FRAME_DATABASE_SIZE_MB"))
+  if (const char *frameDBMaxMBytesEnv = std::getenv("JAFFAR2_MAX_WORKER_FRAME_DATABASE_SIZE_MB"))
     frameDBMaxMBytes = std::stol(frameDBMaxMBytesEnv);
   else if (_workerId == 0)
-   EXIT_WITH_ERROR("[Jaffar] JAFFAR_MAX_WORKER_FRAME_DATABASE_SIZE_MB environment variable not defined. Using conservative default...\n");
+   EXIT_WITH_ERROR("[Jaffar2] JAFFAR2_MAX_WORKER_FRAME_DATABASE_SIZE_MB environment variable not defined. Using conservative default...\n");
 
   // Parsing file output frequency
   _outputSaveBestSeconds = -1.0;
-  if (const char *outputSaveBestSecondsEnv = std::getenv("JAFFAR_SAVE_BEST_EVERY_SECONDS")) _outputSaveBestSeconds = std::stof(outputSaveBestSecondsEnv);
+  if (const char *outputSaveBestSecondsEnv = std::getenv("JAFFAR2_SAVE_BEST_EVERY_SECONDS")) _outputSaveBestSeconds = std::stof(outputSaveBestSecondsEnv);
   _outputSaveCurrentSeconds = -1.0;
-  if (const char *outputSaveCurrentSecondsEnv = std::getenv("JAFFAR_SAVE_CURRENT_EVERY_SECONDS")) _outputSaveCurrentSeconds = std::stof(outputSaveCurrentSecondsEnv);
+  if (const char *outputSaveCurrentSecondsEnv = std::getenv("JAFFAR2_SAVE_CURRENT_EVERY_SECONDS")) _outputSaveCurrentSeconds = std::stof(outputSaveCurrentSecondsEnv);
 
   // Parsing savegame files output path
   _outputSaveBestPath = "/tmp/jaffar.best.sav";
-  if (const char *outputSaveBestPathEnv = std::getenv("JAFFAR_SAVE_BEST_PATH")) _outputSaveBestPath = std::string(outputSaveBestPathEnv);
+  if (const char *outputSaveBestPathEnv = std::getenv("JAFFAR2_SAVE_BEST_PATH")) _outputSaveBestPath = std::string(outputSaveBestPathEnv);
   _outputSaveCurrentPath = "/tmp/jaffar.current.sav";
-  if (const char *outputSaveCurrentPathEnv = std::getenv("JAFFAR_SAVE_CURRENT_PATH")) _outputSaveCurrentPath = std::string(outputSaveCurrentPathEnv);
+  if (const char *outputSaveCurrentPathEnv = std::getenv("JAFFAR2_SAVE_CURRENT_PATH")) _outputSaveCurrentPath = std::string(outputSaveCurrentPathEnv);
 
   // Parsing solution files output path
   _outputSolutionBestPath = "/tmp/jaffar.best.sol";
-  if (const char *outputSolutionBestPathEnv = std::getenv("JAFFAR_SOLUTION_BEST_PATH")) _outputSolutionBestPath = std::string(outputSolutionBestPathEnv);
+  if (const char *outputSolutionBestPathEnv = std::getenv("JAFFAR2_SOLUTION_BEST_PATH")) _outputSolutionBestPath = std::string(outputSolutionBestPathEnv);
   _outputSolutionCurrentPath = "/tmp/jaffar.current.sol";
-  if (const char *outputSolutionCurrentPathEnv = std::getenv("JAFFAR_SOLUTION_CURRENT_PATH")) _outputSolutionCurrentPath = std::string(outputSolutionCurrentPathEnv);
+  if (const char *outputSolutionCurrentPathEnv = std::getenv("JAFFAR2_SOLUTION_CURRENT_PATH")) _outputSolutionCurrentPath = std::string(outputSolutionCurrentPathEnv);
 
   // Parsing command line arguments
-  argparse::ArgumentParser program("jaffar-train", "1.0");
+  argparse::ArgumentParser program("jaffar2a-train", "1.0");
 
   program.add_argument("--romFile")
     .help("Specifies the path to the genesis rom file (.bin) from which to start.")
@@ -1337,7 +1334,9 @@ Train::Train(int argc, char *argv[])
   for (int threadId = 0; threadId < _threadCount; threadId++)
   {
     _blastem[threadId] = new blastemInstance("libblastem.so", false);
-    _blastem[threadId]->initialize(romFilePath.c_str(), saveFilePath.c_str());
+    _blastem[threadId]->initialize(romFilePath.c_str(), saveFilePath.c_str(), true);
+    _blastem[threadId]->playFrame(".");
+    printf("PTR: 0x%lX\n", (size_t)_blastem[threadId]);
 
    // Adding rules, pointing to the thread-specific blastem instances
    for (size_t scriptId = 0; scriptId < scriptFilesJs.size(); scriptId++)
@@ -1396,7 +1395,7 @@ Train::Train(int argc, char *argv[])
   // Allocating database flushing mask
   _flushingMask.resize(_ruleCount, 0);
 
-  printf("[Jaffar] MPI Rank %lu/%lu: Blastem initialized.\n", _workerId, _workerCount);
+  printf("[Jaffar2] MPI Rank %lu/%lu: Blastem initialized.\n", _workerId, _workerCount);
   fflush(stdout);
   MPI_Barrier(MPI_COMM_WORLD);
 

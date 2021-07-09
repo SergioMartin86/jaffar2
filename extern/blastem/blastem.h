@@ -24,7 +24,7 @@ void lockon_media(char *lock_on_path);
 void init_system_with_media(const char *path, system_type force_stype);
 void apply_updated_config(void);
 const system_media *current_media(void);
-void start(int argc, char** argv);
+void start(int argc, char** argv, int isHeadlessMode);
 void resume();
 
 

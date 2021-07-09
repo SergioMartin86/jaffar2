@@ -20,7 +20,6 @@ void jaffarInject(m68k_context *context)
 
   _prevFrameId = _curFrameId;
   co_switch(_jaffarThread);
-  printf("Next Move: %s\n", _nextMove);
  }
 }
 

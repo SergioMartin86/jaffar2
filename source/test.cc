@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 
  blastemInstance blastem("libblastem.so", false);
  printf("Blastem created.\n");
- blastem.initialize(argv[1], argv[3]);
+ blastem.initialize(argv[1], argv[3], true);
  printf("Blastem initialized.\n");
 
  blastem.playFrame("L");
@@ -24,6 +24,12 @@ int main(int argc, char *argv[])
   blastem.playFrame("L");
   blastem.printState();
   getchar();
-  if (step % 10 == 5) blastem.loadState(testState);
+  if (step % 20 == 0)
+  {
+   printf("Reloading\n");
+   blastem.loadState(testState);
+  }
+  if (step % 10 == 0)
+   blastem.saveState(testState);
  }
 }
