@@ -5,6 +5,7 @@
 #define _STATE_DATA_SIZE 141607
 typedef void (*start_t)(int, char**);
 typedef void (*resume_t)(void);
+typedef void (*reloadState_t)(void);
 #define MAX_MOVE_SIZE 4
 typedef char move_t[MAX_MOVE_SIZE];
 
@@ -58,6 +59,7 @@ class blastemInstance
   // blastem Functions
   start_t start;
   resume_t resume;
+  reloadState_t reloadState;
 
   // State
   gameStateStruct _state;

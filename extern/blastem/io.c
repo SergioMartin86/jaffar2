@@ -1273,6 +1273,7 @@ uint8_t io_data_read(io_port * port, uint32_t current_cycle, m68k_context *conte
 		if (strcmp(_nextMove, "LD") == 0) input = 6; // Pad D + Pad L Crouch Direction
 		if (strcmp(_nextMove, "RU") == 0) input = 72; // Button A + Pad R Jump Direction
 		if (strcmp(_nextMove, "RD") == 0) input = 10; // Pad D + Pad R Crouch Direction
+		if (strcmp(_nextMove, "SD") == 0) input = 18; // Pad D + Button B Crouch+Drink
 
 		input = ~input;
 		device_driven = 0x3F;

@@ -10,9 +10,12 @@
 #define MAX_MOVE_SIZE 4
 typedef char move_t[MAX_MOVE_SIZE];
 
-extern uint16_t curFrameId;
+extern uint8_t _framesPerGameFrame;
+extern uint16_t _curFrameId;
 extern uint16_t prevFrameId;
 extern size_t _stateWorkRamOffset;
 extern move_t _nextMove;
 
-void jaffarInject(m68k_context *context);
+extern void jaffarInject(m68k_context *context);
+extern void updateFrameInfo();
+extern void reloadState();

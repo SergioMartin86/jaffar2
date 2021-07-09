@@ -20,10 +20,12 @@ blastemInstance::blastemInstance(const char* libraryFile, const bool multipleLib
   // Variables
   start = (start_t) dlsym(_dllHandle, "start");
   resume = (resume_t) dlsym(_dllHandle, "resume");
+  reloadState = (reloadState_t) dlsym(_dllHandle, "reloadState");
   _stateData = (uint8_t**) dlsym(_dllHandle, "_stateData");
   _stateSize = (size_t*) dlsym(_dllHandle, "_stateSize");
   _stateWorkRamOffset = (size_t*) dlsym(_dllHandle, "_stateWorkRamOffset");
   _nextMove = (move_t*) dlsym(_dllHandle, "_nextMove");
+
 }
 
 void blastemInstance::initialize(char* romFile, char* saveFile)
@@ -153,6 +155,7 @@ void blastemInstance::playFrame(const std::string& move)
 void blastemInstance::loadState(const uint8_t* state)
 {
  memcpy(*_stateData, state, *_stateSize);
+ reloadState();
 }
 
 void blastemInstance::saveState(uint8_t* state)
