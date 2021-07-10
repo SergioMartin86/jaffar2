@@ -1262,7 +1262,7 @@ uint8_t io_data_read(io_port * port, uint32_t current_cycle, m68k_context *conte
 		if (strcmp(_nextMove, ".") == 0) input = 0; // Nothing
 		if (strcmp(_nextMove, "L") == 0) input = 4; // Pad L
 		if (strcmp(_nextMove, "R") == 0) input = 8; // Pad R
-		if (strcmp(_nextMove, "U") == 0) input = 64; // Button A
+		if (strcmp(_nextMove, "U") == 0) input = 65; // Button A + U
 		if (strcmp(_nextMove, "D") == 0) input = 2; // Pad D -- Crouch
 		if (strcmp(_nextMove, "C") == 0) input = 32; // C -- Sword Draw/Sheath/Attack
 		if (strcmp(_nextMove, "S") == 0) input = 16; // B -- Hold

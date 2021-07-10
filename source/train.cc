@@ -471,7 +471,8 @@ void Train::computeFrames()
       const auto& baseFrame = _currentFrameDB[baseFrameIdx];
 
       // Getting possible moves for the current frame
-      std::vector<uint8_t> possibleMoveIds = getPossibleMoveIds(*baseFrame);
+      _blastem[threadId]->loadState(baseFrame->frameStateData);
+      std::vector<uint8_t> possibleMoveIds = _blastem[threadId]->getPossibleMoveIds();
 
       // If the restart flag is activated, then also try hitting Ctrl+A
       if (baseFrame->isRestart == true)
@@ -1099,75 +1100,8 @@ float Train::getFrameReward(const Frame &frame)
     reward += (float) -1.0f * guardMagnet.intensityY * (_blastem[threadId]->_state.guardPositionY);
   }
 
-  // Apply bonus when kid is inside a non-visible room
-  if (kidCurrentRoom == 0 || kidCurrentRoom >= 25) reward += 128.0f;
-
   // Returning reward
   return reward;
-}
-
-std::vector<uint8_t> Train::getPossibleMoveIds(const Frame &frame)
-{
-
-  // Move Ids =        0    1    2    3    4    5     6     7     8    9     10    11    12    13   14
-  //_possibleMoves = {".", "S", "U", "L", "R", "D", "LU", "LD", "RU", "RD", "SR", "SL", "SU", "SD", "C" };
-  return {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
-
-//  // Getting thread id
-//  int threadId = omp_get_thread_num();
-//
-//  // Loading frame state
-//  _blastem[threadId]->loadState(frame.frameStateData);
-//
-//  // Getting Kid information
-//  const auto &Kid = *_blastem[threadId]->Kid;
-//
-//  // If dead, do nothing
-//  if (Kid.alive >= 0)
-//    return {0};
-//
-//  // If bumped, nothing to do
-//  if (Kid.action == actions_5_bumped)
-//    return {0};
-//
-//  // If in mid air or free fall, hope to grab on to something
-//  if (Kid.action == actions_3_in_midair || Kid.action == actions_4_in_freefall)
-//    return {0, 1};
-//
-//  // Move, sheath, attack, parry
-//  if (Kid.sword == sword_2_drawn)
-//    return {0, 1, 2, 3, 4, 5};
-//
-//  // Kid is standing or finishing a turn, try all possibilities
-//  if (Kid.frame == frame_15_stand || (Kid.frame >= frame_50_turn && Kid.frame < 53))
-//    return {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
-//
-//  // Turning frame, try all possibilities
-//  if (Kid.frame == frame_48_turn)
-//    return {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
-//
-//  // Start running animation, all movement without shift
-//  if (Kid.frame < 4)
-//    return {0, 2, 3, 4, 5, 6, 7, 8, 9};
-//
-//  // Starting jump up, check directions, jump and shift
-//  if (Kid.frame >= frame_67_start_jump_up_1 && Kid.frame < frame_70_jumphang)
-//    return {0, 1, 2, 3, 4, 5, 6, 8, 12};
-//
-//  // Running, all movement without shift
-//  if (Kid.frame < 15)
-//    return {0, 2, 3, 4, 5, 6, 7, 8, 9};
-//
-//  // Hanging, up and shift are only options
-//  if (Kid.frame >= frame_87_hanging_1 && Kid.frame < 100)
-//    return {0, 1, 2, 12};
-//
-//  // Crouched, can only stand, drink, or hop
-//  if (Kid.frame == frame_109_crouch)
-//    return {0, 1, 3, 4, 5, 7, 9, 13};
-
-  // Default, no nothing
-  return {0};
 }
 
 Train::Train(int argc, char *argv[])

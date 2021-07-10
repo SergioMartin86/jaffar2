@@ -1,7 +1,7 @@
 project('jaffar2', 'c', 'cpp',
   version: '1.0.0',
   license: 'GPL-3.0-only',
-  default_options : ['cpp_std=c++17', 'default_library=static', 'buildtype=debugoptimized', 'c_args=-DSDL_VIDEO_DRIVER_DUMMY'],
+  default_options : ['cpp_std=c++17', 'default_library=static', 'buildtype=debugoptimized'],
 )
 
 cc = meson.get_compiler('c')

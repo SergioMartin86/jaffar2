@@ -115,8 +115,8 @@ void blastemInstance::printState()
  printf("[Jaffar2]  + Current Level: %2d\n", _state.currentLevel);
  printf("[Jaffar2]  + Current Frame: %d\n", _state.currentFrame);
 // printf("[Jaffar]  + IGT: %2lu:%02lu.%03lu\n", getElapsedMins(), getElapsedSecs(), getElapsedMilisecs());
- printf("[Jaffar2]  + [Kid]   Room: %d, Pos.x: %3d, Pos.y: %3d, Frame: %3d, Direction: %s, HP: %d/%d\n", _state.kidRoom, _state.kidPositionX, _state.kidPositionY, _state.kidFrame, _state.kidCurrentHP, _state.kidDirection == 255 ? "L" : "R", _state.kidMaxHP);
- printf("[Jaffar2]  + [Guard] Room: %d, Pos.x: %3d, Pos.y: %3d, Frame: %3d, Direction: %s, HP: %d/%d\n", _state.guardRoom, _state.guardPositionX, _state.guardPositionY, _state.guardFrame, _state.guardCurrentHP, _state.guardDirection == 255 ? "L" : "R", _state.guardMaxHP);
+ printf("[Jaffar2]  + [Kid]   Room: %d, Pos.x: %3d, Pos.y: %3d, Frame: %3d, Direction: %s, HP: %d/%d\n", _state.kidRoom, _state.kidPositionX, _state.kidPositionY, _state.kidFrame, _state.kidDirection == 255 ? "L" : "R", _state.kidCurrentHP, _state.kidMaxHP);
+ printf("[Jaffar2]  + [Guard] Room: %d, Pos.x: %3d, Pos.y: %3d, Frame: %3d, Direction: %s, HP: %d/%d\n", _state.guardRoom, _state.guardPositionX, _state.guardPositionY, _state.guardFrame, _state.guardDirection == 255 ? "L" : "R", _state.guardCurrentHP, _state.guardMaxHP);
 // printf("[Jaffar]  + Exit Room Timer: %d\n", *exit_room_timer);
 // printf("[Jaffar]  + Exit Door Open: %s\n", isLevelExitDoorOpen() ? "Yes" : "No");
 // printf("[Jaffar]  + Reached Checkpoint: 0x%X\n", _state.checkpointPointer);
@@ -154,6 +154,189 @@ void blastemInstance::printState()
 // printf(" + Direction: %s\n", _state.guardDirection == 255 ? "Left" : "Right");
 // printf(" + Position X: %d\n", _state.guardPositionX);
 // printf(" + Position Y: %d\n", _state.guardPositionY);
+}
+
+
+std::vector<uint8_t> blastemInstance::getPossibleMoveIds()
+{
+  // Move Ids =        0    1    2    3    4    5     6     7     8    9     10    11    12    13   14
+  //_possibleMoves = {".", "S", "U", "L", "R", "D", "LU", "LD", "RU", "RD", "SR", "SL", "SU", "SD", "C" };
+  //return {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
+
+  if (_state.kidFrame == 1) return {0, 3, 4, 5}; // Running
+  if (_state.kidFrame == 2) return {0, 3, 4, 5}; // Running
+  if (_state.kidFrame == 3) return {0, 3, 4, 5}; // Running
+  if (_state.kidFrame == 4) return {0, 3, 4, 5}; // Running
+  if (_state.kidFrame == 5) return {0, 3, 4, 5}; // Running
+  if (_state.kidFrame == 6) return {0, 3, 4, 5}; // Running
+  if (_state.kidFrame == 7) return {0, 3, 4, 5, 6, 8}; // Running + Can Jump
+  if (_state.kidFrame == 8) return {0, 3, 4, 5}; // Running
+  if (_state.kidFrame == 9) return {0, 3, 4, 5}; // Running
+  if (_state.kidFrame == 10) return {0, 3, 4, 5}; // Running
+  if (_state.kidFrame == 11) return {0, 3, 4, 5, 6, 8}; // Running + Can Jump
+  if (_state.kidFrame == 12) return {0, 3, 4, 5}; // Running
+  if (_state.kidFrame == 13) return {0, 3, 4, 5}; // Running
+  if (_state.kidFrame == 14) return {0, 3, 4, 5}; // Running
+  if (_state.kidFrame == 15) return {0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14}; // Standing
+  if (_state.kidFrame == 16) return {0}; // Standing Jump
+  if (_state.kidFrame == 17) return {0}; // Standing Jump
+  if (_state.kidFrame == 18) return {0}; // Standing Jump
+  if (_state.kidFrame == 19) return {0}; // Standing Jump
+  if (_state.kidFrame == 20) return {0}; // Standing Jump
+  if (_state.kidFrame == 21) return {0}; // Standing Jump
+  if (_state.kidFrame == 22) return {0}; // Standing Jump
+  if (_state.kidFrame == 23) return {0}; // Standing Jump
+  if (_state.kidFrame == 24) return {0}; // Standing Jump
+  if (_state.kidFrame == 25) return {0}; // Standing Jump
+  if (_state.kidFrame == 26) return {0}; // Standing Jump
+  if (_state.kidFrame == 27) return {0}; // Standing Jump
+  if (_state.kidFrame == 28) return {0}; // Standing Jump
+  if (_state.kidFrame == 29) return {0}; // Standing Jump
+  if (_state.kidFrame == 30) return {0}; // Standing Jump
+  if (_state.kidFrame == 31) return {0}; // Standing Jump
+  if (_state.kidFrame == 32) return {0}; // Standing Jump
+  if (_state.kidFrame == 33) return {0}; // Standing Jump
+  if (_state.kidFrame == 34) return {0}; // Running Jump
+  if (_state.kidFrame == 35) return {0}; // Running Jump
+  if (_state.kidFrame == 36) return {0}; // Running Jump
+  if (_state.kidFrame == 37) return {0}; // Running Jump
+  if (_state.kidFrame == 38) return {0}; // Running Jump
+  if (_state.kidFrame == 39) return {0}; // Running Jump
+  if (_state.kidFrame == 40) return {0}; // Running Jump
+  if (_state.kidFrame == 41) return {0}; // Running Jump
+  if (_state.kidFrame == 42) return {0}; // Running Jump
+  if (_state.kidFrame == 43) return {0}; // Post-Jump
+  if (_state.kidFrame == 45) return {0}; // Turning
+  if (_state.kidFrame == 46) return {0}; // Turning
+  if (_state.kidFrame == 47) return {0}; // Turning
+  if (_state.kidFrame == 48) return {0}; // Turning
+  if (_state.kidFrame == 49) return {0}; // Stopping after run / Recovering
+  if (_state.kidFrame == 50) return {0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14}; // Stopping after run / Recovering (Can act now)
+  if (_state.kidFrame == 51) return {0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14}; // Stopping after run / Recovering (Can act now)
+  if (_state.kidFrame == 52) return {0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14}; // Stopping after run / Recovering (Can act now)
+  if (_state.kidFrame == 53) return {0}; // Stopping after run
+  if (_state.kidFrame == 54) return {0}; // Stopping after run
+  if (_state.kidFrame == 55) return {0}; // Stopping after run
+  if (_state.kidFrame == 56) return {0}; // Stopping after run
+  if (_state.kidFrame == 57) return {0}; // Running Turn
+  if (_state.kidFrame == 58) return {0}; // Running Turn
+  if (_state.kidFrame == 59) return {0}; // Running Turn
+  if (_state.kidFrame == 60) return {0}; // Running Turn
+  if (_state.kidFrame == 61) return {0}; // Running Turn
+  if (_state.kidFrame == 62) return {0}; // Running Turn
+  if (_state.kidFrame == 63) return {0}; // Running Turn
+  if (_state.kidFrame == 64) return {0}; // Running Turn
+  if (_state.kidFrame == 65) return {0}; // Running Turn
+  if (_state.kidFrame == 67) return {0}; // Upwards Jump / Climbing
+  if (_state.kidFrame == 68) return {0}; // Upwards Jump / Climbing
+  if (_state.kidFrame == 69) return {0}; // Upwards Jump / Climbing
+  if (_state.kidFrame == 70) return {0}; // Upwards Jump / Climbing
+  if (_state.kidFrame == 71) return {0}; // Upwards Jump / Climbing
+  if (_state.kidFrame == 72) return {0}; // Upwards Jump / Climbing
+  if (_state.kidFrame == 73) return {0}; // Upwards Jump / Climbing
+  if (_state.kidFrame == 74) return {0}; // Upwards Jump / Climbing
+  if (_state.kidFrame == 75) return {0}; // Upwards Jump / Climbing
+  if (_state.kidFrame == 76) return {0}; // Upwards Jump / Climbing
+  if (_state.kidFrame == 77) return {0}; // Upwards Jump / Climbing
+  if (_state.kidFrame == 78) return {0}; // Upwards Jump / Climbing
+  if (_state.kidFrame == 79) return {0, 1, 12}; // Upwards Jump / Climbing (Can Grab)
+  if (_state.kidFrame == 80) return {0, 1, 12}; // Upwards Jump / Climbing (Can Grab)
+  if (_state.kidFrame == 81) return {0}; // Let go after grab
+  if (_state.kidFrame == 86) return {0}; // Hesitant Careful Step (before a ledge)
+  if (_state.kidFrame == 91) return {0, 1, 12}; // Grabbing ledge, can go up
+  if (_state.kidFrame == 92) return {0, 1, 12}; // Grabbing ledge, can go up
+  if (_state.kidFrame == 93) return {0, 1, 12}; // Grabbing ledge, can go up
+  if (_state.kidFrame == 94) return {0, 1, 12}; // Grabbing ledge, can go up
+  if (_state.kidFrame == 102) return {0, 1}; // Falling
+  if (_state.kidFrame == 103) return {0, 1}; // Falling
+  if (_state.kidFrame == 104) return {0, 1}; // Falling
+  if (_state.kidFrame == 105) return {0, 1}; // Falling
+  if (_state.kidFrame == 106) return {0, 1}; // Falling
+  if (_state.kidFrame == 107) return {0}; // Pre-Crouching
+  if (_state.kidFrame == 108) return {0}; // Pre-Crouching
+  if (_state.kidFrame == 109) return {0, 7, 9}; // Crouching
+  if (_state.kidFrame == 110) return {0}; // Post-Crouching
+  if (_state.kidFrame == 111) return {0}; // Post-Crouching
+  if (_state.kidFrame == 111) return {0}; // Post-Crouching
+  if (_state.kidFrame == 112) return {0}; // Post-Crouching
+  if (_state.kidFrame == 113) return {0}; // Post-Crouching
+  if (_state.kidFrame == 114) return {0}; // Post-Crouching
+  if (_state.kidFrame == 115) return {0}; // Post-Crouching
+  if (_state.kidFrame == 116) return {0}; // Post-Crouching
+  if (_state.kidFrame == 117) return {0}; // Post-Crouching
+  if (_state.kidFrame == 118) return {0}; // Post-Crouching
+  if (_state.kidFrame == 119) return {0}; // Post-Crouching
+  if (_state.kidFrame == 121) return {0}; // Careful Step
+  if (_state.kidFrame == 122) return {0}; // Careful Step
+  if (_state.kidFrame == 123) return {0}; // Careful Step
+  if (_state.kidFrame == 124) return {0}; // Careful Step
+  if (_state.kidFrame == 125) return {0}; // Careful Step
+  if (_state.kidFrame == 126) return {0}; // Careful Step
+  if (_state.kidFrame == 127) return {0}; // Careful Step
+  if (_state.kidFrame == 128) return {0}; // Careful Step
+  if (_state.kidFrame == 129) return {0}; // Careful Step
+  if (_state.kidFrame == 130) return {0}; // Careful Step
+  if (_state.kidFrame == 131) return {0}; // Careful Step
+  if (_state.kidFrame == 132) return {0}; // Careful Step
+  if (_state.kidFrame == 134) return {0}; // [Sword] Final Sheathing Sword
+  if (_state.kidFrame == 135) return {0}; // Climbing Up
+  if (_state.kidFrame == 136) return {0}; // Climbing Down/Up
+  if (_state.kidFrame == 137) return {0}; // Climbing Up
+  if (_state.kidFrame == 138) return {0}; // Climbing Down/Up
+  if (_state.kidFrame == 139) return {0}; // Climbing Up
+  if (_state.kidFrame == 140) return {0}; // Climbing Down/Up
+  if (_state.kidFrame == 141) return {0}; // Climbing Down/Up
+  if (_state.kidFrame == 142) return {0}; // Climbing Down/Up
+  if (_state.kidFrame == 143) return {0}; // Climbing Down/Up
+  if (_state.kidFrame == 144) return {0}; // Climbing Down/Up
+  if (_state.kidFrame == 145) return {0}; // Climbing Down/Up
+  if (_state.kidFrame == 146) return {0}; // Climbing Up
+  if (_state.kidFrame == 147) return {0}; // Climbing Up
+  if (_state.kidFrame == 148) return {0}; // Climbing Down/Up
+  if (_state.kidFrame == 149) return {0}; // Climbing Up
+  if (_state.kidFrame == 150) return {0, 14}; // [Sword] Parrying 2 - Can Attack
+  if (_state.kidFrame == 152) return {0, 2}; // [Sword] Attack
+  if (_state.kidFrame == 153) return {0, 2}; // [Sword] Attack
+  if (_state.kidFrame == 154) return {0, 2}; // [Sword] Attack
+  if (_state.kidFrame == 155) return {0, 2}; // [Sword] Attack
+  if (_state.kidFrame == 156) return {0, 2}; // [Sword] After Attack / Recovering from Hit
+  if (_state.kidFrame == 157) return {0, 2, 3, 4, 5, 14}; // [Sword] After Attack / Recovering from Hit
+  if (_state.kidFrame == 158) return {0, 2, 3, 4, 5, 14}; // [Sword] En Guarde
+  if (_state.kidFrame == 160) return {0}; // [Sword] Walk Backward 2
+  if (_state.kidFrame == 161) return {0, 2, 14}; // [Sword] Attack While parrying
+  if (_state.kidFrame == 162) return {0}; // [Sword] Attack While parrying
+  if (_state.kidFrame == 163) return {0}; // [Sword] Walk Forward
+  if (_state.kidFrame == 164) return {0}; // [Sword] Walk Forward
+  if (_state.kidFrame == 165) return {0, 2, 3, 4, 5, 14}; // [Sword] Walk Forward
+  if (_state.kidFrame == 169) return {0}; // [Sword] Parrying 1
+  if (_state.kidFrame == 170) return {0, 2, 3, 4, 5, 14}; // [Sword] En Guarde
+  if (_state.kidFrame == 171) return {0, 2, 3, 4, 5, 14}; // [Sword] En Guarde
+  if (_state.kidFrame == 172) return {0}; // [Sword] Getting Hit
+  if (_state.kidFrame == 173) return {0}; // [Sword] Getting Hit
+  if (_state.kidFrame == 174) return {0, 2, 3, 4, 5, 14}; // [Sword] Getting Hit
+  if (_state.kidFrame == 177) return {0}; // [Sword] Turning
+  if (_state.kidFrame == 178) return {0}; // [Sword] Turning
+  if (_state.kidFrame == 179) return {0}; // [Sword] Dying
+  if (_state.kidFrame == 180) return {0}; // [Sword] Dying
+  if (_state.kidFrame == 181) return {0}; // [Sword] Dying
+  if (_state.kidFrame == 182) return {0}; // [Sword] Dying
+  if (_state.kidFrame == 183) return {0}; // [Sword] Dying
+  if (_state.kidFrame == 185) return {0}; // [Sword] Dying
+  if (_state.kidFrame == 207) return {0}; // [Sword] Drawing Sword
+  if (_state.kidFrame == 208) return {0}; // [Sword] Drawing Sword
+  if (_state.kidFrame == 209) return {0}; // [Sword] Drawing Sword
+  if (_state.kidFrame == 210) return {0}; // [Sword] Drawing Sword
+  if (_state.kidFrame == 211) return {0}; // [Sword] Turning
+  if (_state.kidFrame == 212) return {0}; // [Sword] Turning
+  if (_state.kidFrame == 213) return {0}; // [Sword] Turning
+  if (_state.kidFrame == 234) return {0}; // [Sword] Sheathing Sword
+  if (_state.kidFrame == 236) return {0}; // [Sword] Sheathing Sword
+  if (_state.kidFrame == 238) return {0}; // [Sword] Sheathing Sword
+  if (_state.kidFrame == 240) return {0}; // [Sword] Sheathing Sword
+
+  // Default, report unrecognized frame
+  EXIT_WITH_ERROR("[Jaffar2] Warning: Frame %d not recognized.\n", _state.kidFrame);
+  return {0};
 }
 
 void blastemInstance::playFrame(const std::string& move)

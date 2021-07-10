@@ -153,9 +153,6 @@ class Train
   // Argument parser
   void parseArgs(int argc, char *argv[]);
 
-  // Function to determine the current possible moves
-  std::vector<uint8_t> getPossibleMoveIds(const Frame &frame);
-
   // Function for the show thread (saves states from time to time to display progress)
   static void *showThreadFunction(void *trainPtr);
   void showSavingLoop();

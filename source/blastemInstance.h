@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 #define _STATE_DATA_SIZE 141607
 typedef void (*start_t)(int, char**, int);
@@ -55,6 +56,7 @@ class blastemInstance
   ~blastemInstance();
   void loadState(const uint8_t* state);
   void saveState(uint8_t* state);
+  std::vector<uint8_t> getPossibleMoveIds();
 
   // blastem Functions
   start_t start;
