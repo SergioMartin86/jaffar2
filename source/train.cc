@@ -1227,7 +1227,7 @@ Train::Train(int argc, char *argv[])
   _maxSteps = program.get<size_t>("--maxSteps");
 
   // The move list contains two moves per byte
-  _moveListStorageSize = (_maxSteps >> 1) + 1;
+  _moveListStorageSize = _maxSteps;
 
   // Calculating DB sizes
   _maxLocalDatabaseSize = floor(((double)frameDBMaxMBytes * 1024.0 * 1024.0) / ((double)Frame::getSerializationSize()));

@@ -1228,58 +1228,71 @@ uint8_t io_data_read(io_port * port, uint32_t current_cycle, m68k_context *conte
 		break;
 	case IO_GAMEPAD3:
 	{
-		input = port->input[th ? GAMEPAD_TH1 : GAMEPAD_TH0];
+		input = 0; // "." Nothing
+
 		if (!th) {
+		 printf("Is TH!\n");
+   //controller output is logically inverted
+   // See: https://plutiedev.com/controllers#6pad-layout
+		 //{ ".", "B", "A", "L", "R", "D", "LA", "LD", "RA", "RD", "BR", "BL", "BU", "BD", "C", "BU", "U", "S" };
+
+   if (strcmp(_nextMove, "S") == 0) input = 32; // Start
+   if (strcmp(_nextMove, "L") == 0) input = 0; // Pad L
+   if (strcmp(_nextMove, "R") == 0) input = 0; // Pad R
+   if (strcmp(_nextMove, "D") == 0) input = 2; // Pad D
+   if (strcmp(_nextMove, "U") == 0) input = 1; // Pad U
+   if (strcmp(_nextMove, "A") == 0) input = 16; // A -- Jump
+   if (strcmp(_nextMove, "B") == 0) input = 0; // B -- Hold / Careful
+   if (strcmp(_nextMove, "C") == 0) input = 0; // C -- Sword Draw/Sheath/Attack
+
+   if (strcmp(_nextMove, "BL") == 0) input = 0; // Button B + Pad L Careful step
+   if (strcmp(_nextMove, "BR") == 0) input = 0; // Button B + Pad R Careful step
+
+   if (strcmp(_nextMove, "BU") == 0) input = 1; // Button B + Pad U Climb up
+   if (strcmp(_nextMove, "BD") == 0) input = 2; // Pad D + Button B Crouch+Drink
+
+   if (strcmp(_nextMove, "LD") == 0) input = 2; // Pad D + Pad L Crouch Direction
+   if (strcmp(_nextMove, "RD") == 0) input = 2; // Pad D + Pad R Crouch Direction
+
+   if (strcmp(_nextMove, "LA") == 0) input = 16; // Button A + Pad L Jump Direction
+   if (strcmp(_nextMove, "RA") == 0) input = 16; // Button A + Pad R Jump Direction
+
 			input |= 0xC;
 		}
+		else
+		{
+
+   if (strcmp(_nextMove, "S") == 0) input = 0; // Start
+   if (strcmp(_nextMove, "L") == 0) input = 4; // Pad L
+   if (strcmp(_nextMove, "R") == 0) input = 8; // Pad R
+   if (strcmp(_nextMove, "D") == 0) input = 2; // Pad D
+   if (strcmp(_nextMove, "U") == 0) input = 1; // Pad U
+   if (strcmp(_nextMove, "A") == 0) input = 0; // A -- Jump
+   if (strcmp(_nextMove, "B") == 0) input = 16; // B -- Hold / Careful
+   if (strcmp(_nextMove, "C") == 0) input = 32; // C -- Sword Draw/Sheath/Attack
+
+
+   if (strcmp(_nextMove, "BL") == 0) input = 20; // Button B + Pad L Careful step
+   if (strcmp(_nextMove, "BR") == 0) input = 24; // Button B + Pad R Careful step
+
+   if (strcmp(_nextMove, "BU") == 0) input = 17; // Button B + Pad U Climb up
+   if (strcmp(_nextMove, "BD") == 0) input = 18; // Pad D + Button B Crouch+Drink
+
+   if (strcmp(_nextMove, "LD") == 0) input = 6; // Pad D + Pad L Crouch Direction
+   if (strcmp(_nextMove, "RD") == 0) input = 10; // Pad D + Pad R Crouch Direction
+
+   if (strcmp(_nextMove, "LA") == 0) input = 4; // Button A + Pad L Jump Direction
+   if (strcmp(_nextMove, "RA") == 0) input = 8; // Button A + Pad R Jump Direction
+
+		 printf("Is Not TH!\n");
+		}
+
 		//controller output is logically inverted
 		input = ~input;
 		device_driven = 0x3F;
 		break;
 	}
-	case IO_GAMEPAD6:
-	{
-		if (current_cycle >= port->device.pad.timeout_cycle) {
-			port->device.pad.th_counter = 0;
-		}
-		if (th) {
-			if (port->device.pad.th_counter == 3) {
-				input = port->input[GAMEPAD_EXTRA];
-			} else {
-				input = port->input[GAMEPAD_TH1];
-			}
-		} else {
-			if (port->device.pad.th_counter == 2) {
-				input = port->input[GAMEPAD_TH0] | 0xF;
-			} else if(port->device.pad.th_counter == 3) {
-				input = port->input[GAMEPAD_TH0]  & 0x30;
-			} else {
-				input = port->input[GAMEPAD_TH0] | 0xC;
-			}
-		}
 
-		//controller output is logically inverted
-		// See: https://plutiedev.com/controllers#6pad-layout
-		if (strcmp(_nextMove, ".") == 0) input = 0; // Nothing
-		if (strcmp(_nextMove, "L") == 0) input = 4; // Pad L
-		if (strcmp(_nextMove, "R") == 0) input = 8; // Pad R
-		if (strcmp(_nextMove, "U") == 0) input = 65; // Button A + U
-		if (strcmp(_nextMove, "D") == 0) input = 2; // Pad D -- Crouch
-		if (strcmp(_nextMove, "C") == 0) input = 32; // C -- Sword Draw/Sheath/Attack
-		if (strcmp(_nextMove, "S") == 0) input = 16; // B -- Hold
-		if (strcmp(_nextMove, "SL") == 0) input = 20; // Button B + Pad L Careful step
-		if (strcmp(_nextMove, "SR") == 0) input = 24; // Button B + Pad R Careful step
-		if (strcmp(_nextMove, "SU") == 0) input = 17; // Button B + Pad U Climb up
-		if (strcmp(_nextMove, "LU") == 0) input = 68; // Button A + Pad L Jump Direction
-		if (strcmp(_nextMove, "LD") == 0) input = 6; // Pad D + Pad L Crouch Direction
-		if (strcmp(_nextMove, "RU") == 0) input = 72; // Button A + Pad R Jump Direction
-		if (strcmp(_nextMove, "RD") == 0) input = 10; // Pad D + Pad R Crouch Direction
-		if (strcmp(_nextMove, "SD") == 0) input = 18; // Pad D + Button B Crouch+Drink
-
-		input = ~input;
-		device_driven = 0x3F;
-		break;
-	}
 	default:
 		input = 0;
 		device_driven = 0;

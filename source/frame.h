@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-const std::vector<std::string> _possibleMoves = {".", "S", "U", "L", "R", "D", "LU", "LD", "RU", "RD", "SR", "SL", "SU", "SD", "C"};
+const std::vector<std::string> _possibleMoves = { ".", "B", "A", "L", "R", "D", "LA", "LD", "RA", "RD", "BR", "BL", "BU", "BD", "C", "BU", "U", "S" };
 
 class Frame
 {
@@ -16,7 +16,7 @@ class Frame
   Frame();
 
   // Stores the entire move history of the frame
-  std::vector<char> moveHistory;
+  std::vector<uint8_t> moveHistory;
 
   // The score calculated for this frame
   float reward;

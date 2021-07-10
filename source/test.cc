@@ -21,10 +21,10 @@ int main(int argc, char *argv[])
  {
   printf("Step %lu\n", step++);
   printf("-------------------------------------\n");
-  blastem.playFrame("L");
+  blastem.playFrame("C");
   blastem.printState();
   getchar();
-  if (step % 20 == 0)
+  if (step % 40 == 0)
   {
    printf("Reloading\n");
    blastem.loadState(testState);
