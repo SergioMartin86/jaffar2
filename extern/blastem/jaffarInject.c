@@ -36,3 +36,9 @@ void reloadState()
  updateFrameInfo();
  _prevFrameId = _curFrameId;
 }
+
+void finalize()
+{
+ system_request_exit(current_system, 1);
+ SDL_Quit();
+}

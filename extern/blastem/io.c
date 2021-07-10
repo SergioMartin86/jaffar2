@@ -1259,6 +1259,7 @@ uint8_t io_data_read(io_port * port, uint32_t current_cycle, m68k_context *conte
 		}
 
 		//controller output is logically inverted
+		// See: https://plutiedev.com/controllers#6pad-layout
 		if (strcmp(_nextMove, ".") == 0) input = 0; // Nothing
 		if (strcmp(_nextMove, "L") == 0) input = 4; // Pad L
 		if (strcmp(_nextMove, "R") == 0) input = 8; // Pad R

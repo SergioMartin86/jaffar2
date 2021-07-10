@@ -7,6 +7,7 @@
 typedef void (*start_t)(int, char**, int);
 typedef void (*resume_t)(void);
 typedef void (*reloadState_t)(void);
+typedef void (*finalize_t)(void);
 #define MAX_MOVE_SIZE 4
 typedef char move_t[MAX_MOVE_SIZE];
 
@@ -49,6 +50,7 @@ class blastemInstance
   public:
   blastemInstance(const char* libraryFile, const bool multipleLibraries);
   void initialize(char* romFile, char* saveFile, const bool headlessMode);
+  void finalize();
   void playFrame(const std::string& move);
   void updateState();
   void printState();
@@ -62,6 +64,7 @@ class blastemInstance
   start_t start;
   resume_t resume;
   reloadState_t reloadState;
+  finalize_t _finalize;
 
   // State
   gameStateStruct _state;
