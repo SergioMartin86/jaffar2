@@ -1333,7 +1333,7 @@ Train::Train(int argc, char *argv[])
   // Creating SDL Pop Instance, one per openMP Thread
   for (int threadId = 0; threadId < _threadCount; threadId++)
   {
-    _blastem[threadId] = new blastemInstance("libblastem.so", false);
+    _blastem[threadId] = new blastemInstance("libblastem.so", true);
     _blastem[threadId]->initialize(romFilePath.c_str(), saveFilePath.c_str(), true);
     _blastem[threadId]->playFrame(".");
     printf("PTR: 0x%lX\n", (size_t)_blastem[threadId]);

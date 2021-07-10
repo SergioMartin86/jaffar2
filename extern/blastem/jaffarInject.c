@@ -34,5 +34,5 @@ void reloadState()
 {
  soft_deserialize(current_system, _stateData, _stateSize);
  updateFrameInfo();
- _prevFrameId = 0;
+ _prevFrameId = _curFrameId;
 }

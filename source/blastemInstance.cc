@@ -115,8 +115,8 @@ void blastemInstance::printState()
  printf("[Jaffar2]  + Current Level: %2d\n", _state.currentLevel);
  printf("[Jaffar2]  + Current Frame: %d\n", _state.currentFrame);
 // printf("[Jaffar]  + IGT: %2lu:%02lu.%03lu\n", getElapsedMins(), getElapsedSecs(), getElapsedMilisecs());
- printf("[Jaffar2]  + [Kid]   Room: %d, Pos.x: %3d, Pos.y: %3d, Frame: %3d, HP: %d/%d\n", int(_state.kidRoom), int(_state.kidPositionX), int(_state.kidPositionY), int(_state.kidFrame), int(_state.kidCurrentHP), int(_state.kidMaxHP));
- printf("[Jaffar2]  + [Guard] Room: %d, Pos.x: %3d, Pos.y: %3d, Frame: %3d, HP: %d/%d\n", int(_state.guardRoom), int(_state.guardPositionX), int(_state.guardPositionY), int(_state.guardFrame), int(_state.guardCurrentHP), int(_state.guardMaxHP));
+ printf("[Jaffar2]  + [Kid]   Room: %d, Pos.x: %3d, Pos.y: %3d, Frame: %3d, Direction: %s, HP: %d/%d\n", _state.kidRoom, _state.kidPositionX, _state.kidPositionY, _state.kidFrame, _state.kidCurrentHP, _state.kidDirection == 255 ? "L" : "R", _state.kidMaxHP);
+ printf("[Jaffar2]  + [Guard] Room: %d, Pos.x: %3d, Pos.y: %3d, Frame: %3d, Direction: %s, HP: %d/%d\n", _state.guardRoom, _state.guardPositionX, _state.guardPositionY, _state.guardFrame, _state.guardCurrentHP, _state.guardDirection == 255 ? "L" : "R", _state.guardMaxHP);
 // printf("[Jaffar]  + Exit Room Timer: %d\n", *exit_room_timer);
 // printf("[Jaffar]  + Exit Door Open: %s\n", isLevelExitDoorOpen() ? "Yes" : "No");
 // printf("[Jaffar]  + Reached Checkpoint: 0x%X\n", _state.checkpointPointer);
