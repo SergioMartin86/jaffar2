@@ -16,8 +16,6 @@ void jaffarInject(m68k_context *context)
  updateFrameInfo();
  if (_curFrameId >= _prevFrameId + _framesPerGameFrame)
  {
-  if (_stateSize > 0) free(_stateData);
-  _stateData = soft_serialize(current_system, &_stateSize);
   _prevFrameId = _curFrameId;
   request_exit(current_system);
  }
@@ -32,7 +30,10 @@ void updateFrameInfo()
 
 void reloadState()
 {
- soft_deserialize(current_system, _stateData, _stateSize);
+ genesis_context *gen = current_system;
+ deserialize_buffer state;
+ init_deserialize(&state, _stateData, _stateSize);
+ genesis_deserialize(&state, gen);
  updateFrameInfo();
  _prevFrameId = _curFrameId;
 }

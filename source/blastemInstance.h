@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-#define _STATE_DATA_SIZE 141607
+#define _STATE_DATA_SIZE 141601
 typedef void (*start_t)(int, char**, int);
 typedef void (*resume_t)(void);
 typedef void (*redraw_t)(void);

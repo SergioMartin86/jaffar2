@@ -50,6 +50,8 @@ blastemInstance::~blastemInstance()
 
 void blastemInstance::updateState()
 {
+ printf("Offset: %lu\n", *_stateWorkRamOffset);
+
  memcpyBigEndian16(&_state.currentFrame,      &(*_stateData)[*_stateWorkRamOffset + 0x19C8]);
  memcpyBigEndian8(&_state.framesPerStep,      &(*_stateData)[*_stateWorkRamOffset + 0x5005]);
  memcpyBigEndian8(&_state.currentLevel,       &(*_stateData)[*_stateWorkRamOffset + 0x4AA5]);
