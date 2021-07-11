@@ -958,7 +958,7 @@ static void init_audio()
    	if (!samples) {
    		samples = 512;
    	}
-    debug_message("config says: %d\n", samples);
+//    debug_message("config says: %d\n", samples);
     desired.samples = samples*2;
 	switch (sync_src)
 	{
@@ -977,13 +977,13 @@ static void init_audio()
 		fatal_error("Unable to open SDL audio: %s\n", SDL_GetError());
 	}
 	sample_rate = actual.freq;
-	debug_message("Initialized audio at frequency %d with a %d sample buffer, ", actual.freq, actual.samples);
+//	debug_message("Initialized audio at frequency %d with a %d sample buffer, ", actual.freq, actual.samples);
 	render_audio_format format = RENDER_AUDIO_UNKNOWN;
 	if (actual.format == AUDIO_S16SYS) {
-		debug_message("signed 16-bit int format\n");
+//		debug_message("signed 16-bit int format\n");
 		format = RENDER_AUDIO_S16;
 	} else if (actual.format == AUDIO_F32SYS) {
-		debug_message("32-bit float format\n");
+//		debug_message("32-bit float format\n");
 		format = RENDER_AUDIO_FLOAT;
 	} else {
 		debug_message("unsupported format %X\n", actual.format);
@@ -1116,7 +1116,7 @@ void window_setup(void)
 				}
 			}
 		} else {
-			warning("OpenGL 2.0 is unavailable, falling back to SDL2 renderer\n");
+//			warning("OpenGL 2.0 is unavailable, falling back to SDL2 renderer\n");
 		}
 	}
 	if (!render_gl) {
@@ -1132,7 +1132,7 @@ void window_setup(void)
 		}
 		SDL_RendererInfo rinfo;
 		SDL_GetRendererInfo(main_renderer, &rinfo);
-		debug_message("SDL2 Render Driver: %s\n", rinfo.name);
+//		debug_message("SDL2 Render Driver: %s\n", rinfo.name);
 		main_clip.x = main_clip.y = 0;
 		main_clip.w = main_width;
 		main_clip.h = main_height;
@@ -1141,7 +1141,7 @@ void window_setup(void)
 #endif
 
 	SDL_GetWindowSize(main_window, &main_width, &main_height);
-	debug_message("Window created with size: %d x %d\n", main_width, main_height);
+//	debug_message("Window created with size: %d x %d\n", main_width, main_height);
 	update_aspect();
 	render_alloc_surfaces();
 	def.ptrval = "off";
@@ -1158,7 +1158,7 @@ void render_init(int width, int height, char * title, uint8_t fullscreen)
 		float aspect = config_aspect() > 0.0f ? config_aspect() : 4.0f/3.0f;
 		height = ((float)width / aspect) + 0.5f;
 	}
-	debug_message("width: %d, height: %d\n", width, height);
+//	debug_message("width: %d, height: %d\n", width, height);
 	windowed_width = width;
 	windowed_height = height;
 	

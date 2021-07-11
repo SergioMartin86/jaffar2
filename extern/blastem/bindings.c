@@ -618,7 +618,6 @@ int parse_binding_target(int device_num, char * target, tern_node * padbuttons, 
 		} else if (!strcmp(target + 3, "compositing_debug")) {
 			*subtype_a = UI_COMPOSITE_DEBUG;
 		} else {
-			warning("Unreconized UI binding type %s\n", target);
 			return 0;
 		}
 		return BIND_UI;

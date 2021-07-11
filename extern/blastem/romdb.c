@@ -781,11 +781,11 @@ rom_info configure_rom(tern_node *rom_db, void *vrom, uint32_t rom_size, void *l
 		product_id[i] = rom[GAME_ID_OFF + i];
 
 	}
-	debug_message("Product ID: %s\n", product_id);
+//	debug_message("Product ID: %s\n", product_id);
 	uint8_t* raw_hash = (uint8_t*) calloc(20, sizeof(uint8_t));
 	uint8_t* hex_hash = (uint8_t*) calloc(41, sizeof(uint8_t));
 	bin_to_hex(hex_hash, raw_hash, 20);
-	debug_message("SHA1: %s\n", hex_hash);
+//	debug_message("SHA1: %s\n", hex_hash);
 	free(raw_hash);
 	free(hex_hash);
 	return configure_rom_heuristics(rom, rom_size, base_map, base_chunks);

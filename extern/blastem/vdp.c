@@ -437,7 +437,7 @@ void vdp_print_sprite_table(vdp_context * context)
 			uint8_t pal = context->vdpmem[address + 4] >> 5 & 0x3;
 			uint8_t pri = context->vdpmem[address + 4] >> 7;
 			uint16_t pattern = ((context->vdpmem[address + 4] << 8 | context->vdpmem[address + 5]) & 0x7FF) << 5;
-			printf("Sprite %d: X=%d(%d), Y=%d(%d), Width=%u, Height=%u, Link=%u, Pal=%u, Pri=%u, Pat=%X\n", current_index, x, x-128, y, y-128, width, height, link, pal, pri, pattern);
+//			printf("Sprite %d: X=%d(%d), Y=%d(%d), Width=%u, Height=%u, Link=%u, Pal=%u, Pri=%u, Pat=%X\n", current_index, x, x-128, y, y-128, width, height, link, pal, pri, pattern);
 			current_index = link;
 			count++;
 		} while (current_index != 0 && count < 80);
@@ -455,7 +455,7 @@ void vdp_print_sprite_table(vdp_context * context)
 			if (context->regs[REG_MODE_2] & BIT_SPRITE_SZ) {
 				tile_address &= ~32;
 			}
-			printf("Sprite %d: X=%d, Y=%d, Pat=%X\n", i, x, y, tile_address);
+//			printf("Sprite %d: X=%d, Y=%d, Pat=%X\n", i, x, y, tile_address);
 		}
 	}
 }
