@@ -19,3 +19,4 @@ extern move_t _nextMove;
 extern void jaffarInject(m68k_context *context);
 extern void updateFrameInfo();
 extern void reloadState();
+extern void redraw();

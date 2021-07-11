@@ -165,7 +165,7 @@ int main(int argc, char *argv[])
   {
     // Loading requested step
     showBlastem.loadState(frameSequence[currentStep - 1]);
-    showBlastem.playFrame(".");
+    showBlastem.redraw();
 
     if (showFrameInfo)
     {

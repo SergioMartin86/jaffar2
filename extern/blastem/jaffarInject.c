@@ -1,4 +1,5 @@
 #include "jaffarInject.h"
+#include "vdp.h"
 
 uint8_t _framesPerGameFrame;
 uint16_t _curFrameId = 0;
@@ -41,4 +42,12 @@ void finalize()
 {
  system_request_exit(current_system, 1);
  SDL_Quit();
+}
+
+void redraw()
+{
+ genesis_context *gen = current_system;
+ vdp_context * v_context = gen->vdp;
+ vdp_run_to_vblank(v_context);
+ vdp_print_sprite_table(v_context);
 }

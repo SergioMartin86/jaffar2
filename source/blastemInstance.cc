@@ -21,6 +21,7 @@ blastemInstance::blastemInstance(const char* libraryFile, const bool multipleLib
   start = (start_t) dlsym(_dllHandle, "start");
   resume = (resume_t) dlsym(_dllHandle, "resume");
   _finalize = (finalize_t) dlsym(_dllHandle, "finalize");
+  _redraw = (redraw_t) dlsym(_dllHandle, "redraw");
   reloadState = (reloadState_t) dlsym(_dllHandle, "reloadState");
   _stateData = (uint8_t**) dlsym(_dllHandle, "_stateData");
   _stateSize = (size_t*) dlsym(_dllHandle, "_stateSize");
@@ -367,6 +368,11 @@ void blastemInstance::loadState(const uint8_t* state)
 void blastemInstance::saveState(uint8_t* state)
 {
  memcpy(state, *_stateData, *_stateSize);
+}
+
+void blastemInstance::redraw()
+{
+ _redraw();
 }
 
 void blastemInstance::finalize()
