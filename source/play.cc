@@ -117,7 +117,6 @@ int main(int argc, char *argv[])
   // Initializing replay generating SDLPop Instance
   blastemInstance genBlastem("libblastem.so", false);
   genBlastem.initialize(romFilePath.c_str(), saveFilePath.c_str(), true);
-  genBlastem.playFrame(".");
 
   // Storage for sequence frames
   std::vector<uint8_t*> frameSequence;
@@ -143,7 +142,6 @@ int main(int argc, char *argv[])
   // Initializing showing SDLPop Instance
   blastemInstance showBlastem("libblastem.so", false);
   showBlastem.initialize(romFilePath.c_str(), saveFilePath.c_str(), false);
-  showBlastem.playFrame(".");
 
   // Variable for current step in view
   int currentStep = 1;
@@ -169,9 +167,13 @@ int main(int argc, char *argv[])
 
     if (showFrameInfo)
     {
-      printw("[Jaffar] ----------------------------------------------------------------\n");
-      printw("[Jaffar] Current Step #: %d / %d\n", currentStep, sequenceLength);
-      printw("[Jaffar]  + Move: %s\n", moveList[currentStep - 1].c_str());
+      printw("[Jaffar2] ----------------------------------------------------------------\n");
+      printw("[Jaffar2] Current Step #: %d / %d\n", currentStep, sequenceLength);
+      printw("[Jaffar2]  + Move: %s\n", moveList[currentStep - 1].c_str());
+      printw("[Jaffar2]  + Current Level: %2d\n", showBlastem._state.currentLevel);
+      printw("[Jaffar2]  + Current Frame: %d\n", showBlastem._state.currentFrame);
+      printw("[Jaffar2]  + [Kid]   Room: %d, Pos.x: %3d, Pos.y: %3d, Frame: %3d, Direction: %s, HP: %d/%d\n", showBlastem._state.kidRoom, showBlastem._state.kidPositionX, showBlastem._state.kidPositionY, showBlastem._state.kidFrame, showBlastem._state.kidDirection == 255 ? "L" : "R", showBlastem._state.kidCurrentHP, showBlastem._state.kidMaxHP);
+      printw("[Jaffar2]  + [Guard] Room: %d, Pos.x: %3d, Pos.y: %3d, Frame: %3d, Direction: %s, HP: %d/%d\n", showBlastem._state.guardRoom, showBlastem._state.guardPositionX, showBlastem._state.guardPositionY, showBlastem._state.guardFrame, showBlastem._state.guardDirection == 255 ? "L" : "R", showBlastem._state.guardCurrentHP, showBlastem._state.guardMaxHP);
     }
 
     // Resetting show frame info flag

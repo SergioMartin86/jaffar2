@@ -122,46 +122,8 @@ void blastemInstance::printState()
 {
  printf("[Jaffar2]  + Current Level: %2d\n", _state.currentLevel);
  printf("[Jaffar2]  + Current Frame: %d\n", _state.currentFrame);
-// printf("[Jaffar]  + IGT: %2lu:%02lu.%03lu\n", getElapsedMins(), getElapsedSecs(), getElapsedMilisecs());
  printf("[Jaffar2]  + [Kid]   Room: %d, Pos.x: %3d, Pos.y: %3d, Frame: %3d, Direction: %s, HP: %d/%d\n", _state.kidRoom, _state.kidPositionX, _state.kidPositionY, _state.kidFrame, _state.kidDirection == 255 ? "L" : "R", _state.kidCurrentHP, _state.kidMaxHP);
  printf("[Jaffar2]  + [Guard] Room: %d, Pos.x: %3d, Pos.y: %3d, Frame: %3d, Direction: %s, HP: %d/%d\n", _state.guardRoom, _state.guardPositionX, _state.guardPositionY, _state.guardFrame, _state.guardDirection == 255 ? "L" : "R", _state.guardCurrentHP, _state.guardMaxHP);
-// printf("[Jaffar]  + Exit Room Timer: %d\n", *exit_room_timer);
-// printf("[Jaffar]  + Exit Door Open: %s\n", isLevelExitDoorOpen() ? "Yes" : "No");
-// printf("[Jaffar]  + Reached Checkpoint: 0x%X\n", _state.checkpointPointer);
-// printf("[Jaffar]  + Feather Fall: %d\n", _state.slowfallFramesLeft);
-// printf("[Jaffar]  + RNG State: 0x%08X (Last Loose Tile Sound Id: %d)\n", *random_seed, *last_loose_sound);
-
-
-// printf("General Info:\n");
-// printf(" + Savestate Size: %lu\n", *_stateSize);
-// printf(" + Hash: 0x%lX\n", computeHash());
-//
-// printf("Game State:\n");
-// printf(" + Current Frame: %d\n", _state.currentFrame);
-// printf(" + Video Frames Per Game Frame: %d\n", _state.framesPerStep);
-// printf(" + Current Level: %d\n", _state.currentLevel);
-// printf(" + Drawn Room: %d\n", _state.drawnRoom);
-// printf(" + Checkpoint Pointer: 0x%X\n", _state.checkpointPointer);
-//// printf(" + Minutes Left: %d\n", _state.minutesLeft - 1);
-//// printf(" + Seconds Left: %d\n", _state.twelthSecondsLeft / 12 );
-// printf(" + Slowfall Frames Left: %d\n", _state.slowfallFramesLeft);
-//
-// printf("Kid State:\n");
-// printf(" + Frame: %d\n", _state.kidFrame);
-// printf(" + HP: %d/%d\n", _state.kidCurrentHP, _state.kidMaxHP);
-// printf(" + Room: %d\n", _state.kidRoom);
-// printf(" + Has Sword: %s\n", _state.kidHasSword == 255 ? "No" : "Yes");
-// printf(" + Direction: %s\n", _state.kidDirection == 255 ? "Left" : "Right");
-// printf(" + Position X: %d\n", _state.kidPositionX);
-// printf(" + Position Y: %d\n", _state.kidPositionY);
-//
-// printf("Guard State:\n");
-// printf(" + Frame: %d\n", _state.guardFrame);
-// printf(" + HP: %d/%d\n", _state.guardCurrentHP, _state.guardMaxHP);
-// printf(" + Room: %d\n", _state.guardRoom);
-// printf(" + Direction: %s\n", _state.guardDirection == 255 ? "Left" : "Right");
-// printf(" + Position X: %d\n", _state.guardPositionX);
-// printf(" + Position Y: %d\n", _state.guardPositionY);
 }
 
 
@@ -369,6 +331,7 @@ void blastemInstance::loadState(const uint8_t* state)
 {
  memcpy(*_stateData, state, *_stateSize);
  reloadState();
+ updateState();
 }
 
 void blastemInstance::saveState(uint8_t* state)

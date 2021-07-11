@@ -1269,7 +1269,6 @@ Train::Train(int argc, char *argv[])
   {
     _blastem[threadId] = new blastemInstance("libblastem.so", true);
     _blastem[threadId]->initialize(romFilePath.c_str(), saveFilePath.c_str(), true);
-    _blastem[threadId]->playFrame(".");
 
    // Adding rules, pointing to the thread-specific blastem instances
    for (size_t scriptId = 0; scriptId < scriptFilesJs.size(); scriptId++)
