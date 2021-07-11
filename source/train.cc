@@ -1270,37 +1270,7 @@ Train::Train(int argc, char *argv[])
     _blastem[threadId] = new blastemInstance("libblastem.so", true);
     _blastem[threadId]->initialize(romFilePath.c_str(), saveFilePath.c_str(), true);
     _blastem[threadId]->playFrame(".");
-    printf("PTR: 0x%lX\n", (size_t)_blastem[threadId]);
-    Frame initialFrame;
-    _blastem[threadId]->printState();
-    _blastem[threadId]->saveState(initialFrame.frameStateData);
-    _blastem[threadId]->loadState(initialFrame.frameStateData);
-    _blastem[threadId]->printState();
-    _blastem[threadId]->playFrame(".");
-    _blastem[threadId]->printState();
-    _blastem[threadId]->playFrame(".");
-    _blastem[threadId]->printState();
-    _blastem[threadId]->playFrame(".");
-    _blastem[threadId]->printState();
-//    _blastem[threadId]->playFrame(".");
-//    _blastem[threadId]->printState();
-//    getchar();
-//    _blastem[threadId]->playFrame(".");
-//    _blastem[threadId]->printState();
-//    getchar();
-//    _blastem[threadId]->playFrame(".");
-//    _blastem[threadId]->printState();
-//    getchar();
-//    _blastem[threadId]->playFrame(".");
-//    _blastem[threadId]->printState();
-//    getchar();
-//    _blastem[threadId]->playFrame(".");
-//    _blastem[threadId]->printState();
-//    getchar();
-//    _blastem[threadId]->playFrame(".");
-//    _blastem[threadId]->printState();
-//    getchar();
-    exit(0);
+
    // Adding rules, pointing to the thread-specific blastem instances
    for (size_t scriptId = 0; scriptId < scriptFilesJs.size(); scriptId++)
     for (size_t ruleId = 0; ruleId < scriptFilesJs[scriptId]["Rules"].size(); ruleId++)

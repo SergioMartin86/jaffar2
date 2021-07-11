@@ -122,7 +122,6 @@ uint8_t *serialize(void *sys, size_t *size_out)
  uint32_t address = read_word(4, (void **)gen->m68k->mem_pointers, &gen->m68k->options->gen, gen->m68k) << 16;
  address |= read_word(6, (void **)gen->m68k->mem_pointers, &gen->m68k->options->gen, gen->m68k);
  genesis_serialize(gen, &state, address, 1);
- printf("STATE_SIZE: %lu\n", state.size);
  if (size_out) {
   *size_out = state.size;
  }
@@ -1440,7 +1439,6 @@ extern size_t _stateSize;
 static void start_genesis(system_header *system, char *statefile)
 {
 	genesis_context *gen = (genesis_context *)system;
-	printf("Starting...\n");
 	if (statefile) {
 		//first try loading as a native format savestate
 		deserialize_buffer state;
@@ -1457,16 +1455,12 @@ static void start_genesis(system_header *system, char *statefile)
 			}
 		}
 		adjust_int_cycle(gen->m68k, gen->vdp);
-		printf("Starting Context\n");
   start_68k_context(gen->m68k, pc);
-  printf("Exit Context\n");
 
   while(1)
   {
    if (_stateData != NULL) free(_stateData);
-   printf("Serializing\n");
    _stateData = serialize(system, &_stateSize);
-   printf("Size: %lu, Data: 0x%lX\n", _stateSize, _stateData);
    co_switch(_jaffarThread);
    resume_genesis(system);
   }
