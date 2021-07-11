@@ -143,6 +143,7 @@ int main(int argc, char *argv[])
   // Initializing showing SDLPop Instance
   blastemInstance showBlastem("libblastem.so", false);
   showBlastem.initialize(romFilePath.c_str(), saveFilePath.c_str(), false);
+  showBlastem.playFrame(".");
 
   // Variable for current step in view
   int currentStep = 1;

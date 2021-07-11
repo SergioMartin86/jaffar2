@@ -1231,7 +1231,6 @@ uint8_t io_data_read(io_port * port, uint32_t current_cycle, m68k_context *conte
 		input = 0; // "." Nothing
 
 		if (!th) {
-		 printf("Is TH!\n");
    //controller output is logically inverted
    // See: https://plutiedev.com/controllers#6pad-layout
 		 //{ ".", "B", "A", "L", "R", "D", "LA", "LD", "RA", "RD", "BR", "BL", "BU", "BD", "C", "BU", "U", "S" };
@@ -1283,8 +1282,6 @@ uint8_t io_data_read(io_port * port, uint32_t current_cycle, m68k_context *conte
 
    if (strcmp(_nextMove, "LA") == 0) input = 4; // Button A + Pad L Jump Direction
    if (strcmp(_nextMove, "RA") == 0) input = 8; // Button A + Pad R Jump Direction
-
-		 printf("Is Not TH!\n");
 		}
 
 		//controller output is logically inverted

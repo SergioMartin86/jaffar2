@@ -211,6 +211,7 @@ std::vector<uint8_t> blastemInstance::getPossibleMoveIds()
   if (_state.kidFrame == 41) return {0}; // Running Jump
   if (_state.kidFrame == 42) return {0}; // Running Jump
   if (_state.kidFrame == 43) return {0}; // Post-Jump
+  if (_state.kidFrame == 44) return {0}; // Post-Jump
   if (_state.kidFrame == 45) return {0}; // Turning
   if (_state.kidFrame == 46) return {0}; // Turning
   if (_state.kidFrame == 47) return {0}; // Turning
@@ -283,6 +284,7 @@ std::vector<uint8_t> blastemInstance::getPossibleMoveIds()
   if (_state.kidFrame == 130) return {0}; // Careful Step
   if (_state.kidFrame == 131) return {0}; // Careful Step
   if (_state.kidFrame == 132) return {0}; // Careful Step
+  if (_state.kidFrame == 133) return {0}; // [Sword] Final Sheathing Sword
   if (_state.kidFrame == 134) return {0}; // [Sword] Final Sheathing Sword
   if (_state.kidFrame == 135) return {0}; // Climbing Up
   if (_state.kidFrame == 136) return {0}; // Climbing Down/Up
@@ -300,6 +302,7 @@ std::vector<uint8_t> blastemInstance::getPossibleMoveIds()
   if (_state.kidFrame == 148) return {0}; // Climbing Down/Up
   if (_state.kidFrame == 149) return {0}; // Climbing Up
   if (_state.kidFrame == 150) return {0, 14}; // [Sword] Parrying 2 - Can Attack
+  if (_state.kidFrame == 151) return {0, 2}; // [Sword] Attack
   if (_state.kidFrame == 152) return {0, 2}; // [Sword] Attack
   if (_state.kidFrame == 153) return {0, 2}; // [Sword] Attack
   if (_state.kidFrame == 154) return {0, 2}; // [Sword] Attack
@@ -334,9 +337,13 @@ std::vector<uint8_t> blastemInstance::getPossibleMoveIds()
   if (_state.kidFrame == 211) return {0}; // [Sword] Turning
   if (_state.kidFrame == 212) return {0}; // [Sword] Turning
   if (_state.kidFrame == 213) return {0}; // [Sword] Turning
+  if (_state.kidFrame == 233) return {0}; // [Sword] Sheathing Sword
   if (_state.kidFrame == 234) return {0}; // [Sword] Sheathing Sword
+  if (_state.kidFrame == 235) return {0}; // [Sword] Sheathing Sword
   if (_state.kidFrame == 236) return {0}; // [Sword] Sheathing Sword
+  if (_state.kidFrame == 237) return {0}; // [Sword] Sheathing Sword
   if (_state.kidFrame == 238) return {0}; // [Sword] Sheathing Sword
+  if (_state.kidFrame == 239) return {0}; // [Sword] Sheathing Sword
   if (_state.kidFrame == 240) return {0}; // [Sword] Sheathing Sword
 
   // Default, report unrecognized frame

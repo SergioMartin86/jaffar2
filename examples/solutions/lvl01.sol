@@ -1,1 +1,1 @@
-S S S . . . . . . . C C C C C C C C C C C C C C C C C C C C
+A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A 

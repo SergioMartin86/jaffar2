@@ -1880,7 +1880,7 @@ static void vdp_advance_line(vdp_context *context)
 	}
 }
 
-static void vdp_update_per_frame_debug(vdp_context *context)
+void vdp_update_per_frame_debug(vdp_context *context)
 {
 	if (context->enabled_debuggers & (1 << VDP_DEBUG_PLANE)) {
 		uint32_t pitch;
