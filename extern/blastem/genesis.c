@@ -1461,15 +1461,23 @@ static void start_genesis(system_header *system, char *statefile)
 			}
 		}
 		adjust_int_cycle(gen->m68k, gen->vdp);
-		start_68k_context(gen->m68k, pc);
+  start_68k_context(gen->m68k, pc);
+
+  while(1)
+  {
+   co_switch(_jaffarThread);
+   resume_genesis(system);
+  }
+
+  exit(0);
 	} else {
 		m68k_reset(gen->m68k);
 	}
-	handle_reset_requests(gen);
+	//handle_reset_requests(gen);
 	return;
 }
 
-static void resume_genesis(system_header *system)
+void resume_genesis(system_header *system)
 {
 	genesis_context *gen = (genesis_context *)system;
 	if (gen->header.force_release || render_should_release_on_exit()) {
@@ -1481,7 +1489,7 @@ static void resume_genesis(system_header *system)
 		render_resume_source(gen->psg->audio);
 	}
 	resume_68k(gen->m68k);
-	handle_reset_requests(gen);
+	//handle_reset_requests(gen);
 }
 
 static void inc_debug_mode(system_header *system)
@@ -1490,7 +1498,7 @@ static void inc_debug_mode(system_header *system)
 	vdp_inc_debug_mode(gen->vdp);
 }
 
-static void request_exit(system_header *system)
+void request_exit(system_header *system)
 {
 	genesis_context *gen = (genesis_context *)system;
 	gen->m68k->target_cycle = gen->m68k->current_cycle;

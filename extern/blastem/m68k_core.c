@@ -1172,9 +1172,7 @@ void start_68k_context(m68k_context * context, uint32_t address)
 {
 	code_ptr addr = get_native_address_trans(context, address);
 	m68k_options * options = context->options;
-	printf("I'm Here 1A\n");
 	options->start_context(addr, context);
-	printf("I'm Here 1B\n");
 }
 
 void resume_68k(m68k_context *context)
