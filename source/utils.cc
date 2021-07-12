@@ -85,6 +85,20 @@ bool saveBinToFile(const uint8_t* src, size_t size, const char *fileName)
   return false;
 }
 
+// load bin from file
+bool loadBinFromFile(uint8_t* dst, size_t size, const char *fileName)
+{
+  FILE *fid = fopen(fileName, "r");
+  if (fid != NULL)
+  {
+    size_t readCount = fread(dst, 1, size, fid);
+    fclose(fid);
+    if (readCount != size) return false;
+    return true;
+  }
+  return false;
+}
+
 // Taken from https://stackoverflow.com/questions/116038/how-do-i-read-an-entire-file-into-a-stdstring-in-c/116220#116220
 std::string slurp(std::ifstream &in)
 {

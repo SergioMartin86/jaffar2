@@ -131,6 +131,9 @@ void Train::run()
 
     // Advancing step
     _currentStep++;
+
+    printf("Press Enter...\n");
+    getchar();
   }
 
   // Print winning frame if found

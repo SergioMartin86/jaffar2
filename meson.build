@@ -141,3 +141,14 @@ executable('jaffar2-play',
   link_args: [ '-ldl', '-lncurses' ],
   cpp_args: [ '-Wfatal-errors', '-fpermissive' ]
   )
+
+executable('jaffar2-show',
+  'source/show.cc',
+  jaffar2Files,
+  dependencies: deps,
+  include_directories: inc,
+  link_with: [ ],
+  link_args: [ '-ldl', '-lncurses' ],
+  cpp_args: [ '-Wfatal-errors', '-fpermissive' ]
+  )
+  

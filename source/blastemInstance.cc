@@ -129,14 +129,14 @@ void blastemInstance::printState()
 
 std::vector<uint8_t> blastemInstance::getPossibleMoveIds()
 {
-  // Move Ids =         0    1    2    3    4    5     6     7     8    9     10    11    12    13   14    15   16   17
-  //_possibleMoves = { ".", "B", "A", "L", "R", "D", "LA", "LD", "RA", "RD", "BR", "BL", "BU", "BD", "C", "BU", "U", "S" };
+  // Move Ids =         0    1    2    3    4    5     6     7     8    9     10    11    12    13   14    15
+  //_possibleMoves = { ".", "B", "A", "L", "R", "D", "LA", "LD", "RA", "RD", "BR", "BL", "BU", "BD", "C",  "U" };
   // A = Jump
   // B = Hold / Careful Step
   // C = Attack
   // S = Start
-  //return {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
-
+  //return {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+  return { 0, 3, 4, 5 };
   if (_state.kidFrame == 1) return {0, 3, 4, 5}; // Running
   if (_state.kidFrame == 2) return {0, 3, 4, 5}; // Running
   if (_state.kidFrame == 3) return {0, 3, 4, 5}; // Running
@@ -277,20 +277,20 @@ std::vector<uint8_t> blastemInstance::getPossibleMoveIds()
   if (_state.kidFrame == 154) return {0, 2}; // [Sword] Attack
   if (_state.kidFrame == 155) return {0, 2}; // [Sword] Attack
   if (_state.kidFrame == 156) return {0, 2}; // [Sword] After Attack / Recovering from Hit
-  if (_state.kidFrame == 157) return {0, 3, 4, 5, 14, 16}; // [Sword] After Attack / Recovering from Hit
-  if (_state.kidFrame == 158) return {0, 3, 4, 5, 14, 16}; // [Sword] En Guarde
+  if (_state.kidFrame == 157) return {0, 3, 4, 5, 14, 15}; // [Sword] After Attack / Recovering from Hit
+  if (_state.kidFrame == 158) return {0, 3, 4, 5, 14, 15}; // [Sword] En Guarde
   if (_state.kidFrame == 160) return {0}; // [Sword] Walk Backward 2
-  if (_state.kidFrame == 161) return {0, 14, 16}; // [Sword] Attack While parrying
+  if (_state.kidFrame == 161) return {0, 14, 15}; // [Sword] Attack While parrying
   if (_state.kidFrame == 162) return {0}; // [Sword] Attack While parrying
   if (_state.kidFrame == 163) return {0}; // [Sword] Walk Forward
   if (_state.kidFrame == 164) return {0}; // [Sword] Walk Forward
-  if (_state.kidFrame == 165) return {0, 3, 4, 5, 14, 16}; // [Sword] Walk Forward
+  if (_state.kidFrame == 165) return {0, 3, 4, 5, 14, 15}; // [Sword] Walk Forward
   if (_state.kidFrame == 169) return {0}; // [Sword] Parrying 1
-  if (_state.kidFrame == 170) return {0, 3, 4, 5, 14, 16}; // [Sword] En Guarde
-  if (_state.kidFrame == 171) return {0, 3, 4, 5, 14, 16}; // [Sword] En Guarde
+  if (_state.kidFrame == 170) return {0, 3, 4, 5, 14, 15}; // [Sword] En Guarde
+  if (_state.kidFrame == 171) return {0, 3, 4, 5, 14, 15}; // [Sword] En Guarde
   if (_state.kidFrame == 172) return {0}; // [Sword] Getting Hit
   if (_state.kidFrame == 173) return {0}; // [Sword] Getting Hit
-  if (_state.kidFrame == 174) return {0, 3, 4, 5, 14, 16}; // [Sword] Getting Hit
+  if (_state.kidFrame == 174) return {0, 3, 4, 5, 14, 15}; // [Sword] Getting Hit
   if (_state.kidFrame == 177) return {0}; // [Sword] Turning
   if (_state.kidFrame == 178) return {0}; // [Sword] Turning
   if (_state.kidFrame == 179) return {0}; // [Sword] Dying
