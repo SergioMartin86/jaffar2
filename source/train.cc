@@ -132,8 +132,8 @@ void Train::run()
     // Advancing step
     _currentStep++;
 
-    printf("Press Enter...\n");
-    getchar();
+//    printf("Press Enter...\n");
+//    getchar();
   }
 
   // Print winning frame if found
@@ -474,8 +474,8 @@ void Train::computeFrames()
       const auto& baseFrame = _currentFrameDB[baseFrameIdx];
 
       // Getting possible moves for the current frame
-      _blastem[threadId]->loadState(baseFrame->frameStateData);
-      std::vector<uint8_t> possibleMoveIds = _blastem[threadId]->getPossibleMoveIds();
+      auto gameState = _blastem[threadId]->getGameState(baseFrame->frameStateData);
+      std::vector<uint8_t> possibleMoveIds = _blastem[threadId]->getPossibleMoveIds(gameState);
 
       // If the restart flag is activated, then also try hitting Ctrl+A
       if (baseFrame->isRestart == true)
@@ -1272,7 +1272,39 @@ Train::Train(int argc, char *argv[])
   {
     _blastem[threadId] = new blastemInstance("libblastem.so", true);
     _blastem[threadId]->initialize(romFilePath.c_str(), saveFilePath.c_str(), true);
-
+//    _blastem[threadId]->playFrame(".");
+//    _blastem[threadId]->printState();
+//    printf("Press Enter...\n");
+//    getchar();
+//    _blastem[threadId]->playFrame(".");
+//    _blastem[threadId]->printState();
+//    printf("Press Enter...\n");
+//    getchar();
+//    _blastem[threadId]->playFrame(".");
+//    _blastem[threadId]->printState();
+//    printf("Press Enter...\n");
+//    getchar();
+//    _blastem[threadId]->playFrame(".");
+//    _blastem[threadId]->printState();
+//    printf("Press Enter...\n");
+//    getchar();
+//    _blastem[threadId]->playFrame(".");
+//    _blastem[threadId]->printState();
+//    printf("Press Enter...\n");
+//    getchar();
+//    _blastem[threadId]->playFrame(".");
+//    _blastem[threadId]->printState();
+//    printf("Press Enter...\n");
+//    getchar();
+//    _blastem[threadId]->playFrame(".");
+//    _blastem[threadId]->printState();
+//    printf("Press Enter...\n");
+//    getchar();
+//    _blastem[threadId]->playFrame(".");
+//    _blastem[threadId]->printState();
+//    printf("Press Enter...\n");
+//    getchar();
+//exit(0);
    // Adding rules, pointing to the thread-specific blastem instances
    for (size_t scriptId = 0; scriptId < scriptFilesJs.size(); scriptId++)
     for (size_t ruleId = 0; ruleId < scriptFilesJs[scriptId]["Rules"].size(); ruleId++)

@@ -8,8 +8,6 @@
 #include <string>
 #include <vector>
 
-const std::vector<std::string> _possibleMoves = { ".", "B", "A", "L", "R", "D", "LA", "LD", "RA", "RD", "BR", "BL", "BU", "BD", "C", "BU", "U", "S" };
-
 class Frame
 {
   public:

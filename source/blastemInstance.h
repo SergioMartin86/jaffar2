@@ -12,6 +12,7 @@ typedef void (*finalize_t)(void);
 #define MAX_MOVE_SIZE 4
 typedef char move_t[MAX_MOVE_SIZE];
 
+extern const std::vector<std::string> _possibleMoves;
 
 struct gameStateStruct
 {
@@ -54,14 +55,14 @@ class blastemInstance
   void initialize(char* romFile, char* saveFile, const bool headlessMode);
   void finalize();
   void playFrame(const std::string& move);
-  void updateState();
+  gameStateStruct getGameState(const uint8_t* state);
   void printState();
   void redraw();
   uint64_t computeHash();
   ~blastemInstance();
   void loadState(const uint8_t* state);
   void saveState(uint8_t* state);
-  std::vector<uint8_t> getPossibleMoveIds();
+  std::vector<uint8_t> getPossibleMoveIds(const gameStateStruct& gameState);
 
   // blastem Functions
   start_t start;
