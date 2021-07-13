@@ -52,54 +52,54 @@ void genesis_serialize(genesis_context *gen, serialize_buffer *buf, uint32_t m68
 		start_section(buf, SECTION_68000);
 		m68k_serialize(gen->m68k, m68k_pc, buf);
 		end_section(buf);
-		
+
 		start_section(buf, SECTION_Z80);
 		z80_serialize(gen->z80, buf);
 		end_section(buf);
 	}
-	
+
 	start_section(buf, SECTION_VDP);
 	vdp_serialize(gen->vdp, buf);
 	end_section(buf);
-	
+
 	start_section(buf, SECTION_YM2612);
 	ym_serialize(gen->ym, buf);
 	end_section(buf);
-	
+
 	start_section(buf, SECTION_PSG);
 	psg_serialize(gen->psg, buf);
 	end_section(buf);
-	
+
 	if (all) {
 		start_section(buf, SECTION_GEN_BUS_ARBITER);
 		save_int8(buf, gen->z80->reset);
 		save_int8(buf, gen->z80->busreq);
 		save_int16(buf, gen->z80_bank_reg);
 		end_section(buf);
-		
+
 		start_section(buf, SECTION_SEGA_IO_1);
 		io_serialize(gen->io.ports, buf);
 		end_section(buf);
-		
+
 		start_section(buf, SECTION_SEGA_IO_2);
 		io_serialize(gen->io.ports + 1, buf);
 		end_section(buf);
-		
+
 		start_section(buf, SECTION_SEGA_IO_EXT);
 		io_serialize(gen->io.ports + 2, buf);
 		end_section(buf);
-		
+
 		start_section(buf, SECTION_MAIN_RAM);
 		save_int8(buf, RAM_WORDS * 2 / 1024);
   _stateWorkRamOffset = buf->size;
 		save_buffer16(buf, gen->work_ram, RAM_WORDS);
 		end_section(buf);
-		
+
 		start_section(buf, SECTION_SOUND_RAM);
 		save_int8(buf, Z80_RAM_BYTES / 1024);
 		save_buffer8(buf, gen->zram, Z80_RAM_BYTES);
 		end_section(buf);
-		
+
 		if (gen->version_reg & 0xF) {
 			//only save TMSS info if it's present
 			//that will allow a state saved on a model lacking TMSS
@@ -109,7 +109,7 @@ void genesis_serialize(genesis_context *gen, serialize_buffer *buf, uint32_t m68
 			save_buffer16(buf, gen->tmss_lock, 2);
 			end_section(buf);
 		}
-		
+
 		cart_serialize(&gen->header, buf);
 	}
 }
