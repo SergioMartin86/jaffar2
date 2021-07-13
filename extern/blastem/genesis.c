@@ -541,6 +541,7 @@ m68k_context * sync_components(m68k_context * context, uint32_t address)
   sync_z80(z_context, mclks);
   sync_sound(gen, mclks);
  }
+
 	vdp_run_context(v_context, mclks);
 	io_run(gen->io.ports, mclks);
 	io_run(gen->io.ports + 1, mclks);

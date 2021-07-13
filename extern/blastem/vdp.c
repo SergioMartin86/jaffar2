@@ -921,7 +921,7 @@ static void external_slot(vdp_context * context)
 		cur->cycle = context->cycles;
 		cur->address = context->address;
 		cur->partial = 1;
-		vdp_advance_dma(context);
+		if (!headless) vdp_advance_dma(context);
 	}
 	fifo_entry * start = context->fifo + context->fifo_read;
 	if (context->fifo_read >= 0 && start->cycle <= context->cycles) {
@@ -929,13 +929,13 @@ static void external_slot(vdp_context * context)
 		{
 		case VRAM_WRITE:
 			if ((context->regs[REG_MODE_2] & (BIT_128K_VRAM|BIT_MODE_5)) == (BIT_128K_VRAM|BIT_MODE_5)) {
-				vdp_check_update_sat(context, start->address, start->value);
-				write_vram_word(context, start->address, start->value);
+			if (!headless)	vdp_check_update_sat(context, start->address, start->value);
+			if (!headless)	write_vram_word(context, start->address, start->value);
 			} else {
 				uint8_t byte = start->partial == 1 ? start->value >> 8 : start->value;
 				uint32_t address = start->address ^ 1;
-				vdp_check_update_sat_byte(context, address, byte);
-				write_vram_byte(context, address, byte);
+				if (!headless) vdp_check_update_sat_byte(context, address, byte);
+				if (!headless) write_vram_byte(context, address, byte);
 				if (!start->partial) {
 					start->address = address;
 					start->partial = 1;
@@ -957,10 +957,11 @@ static void external_slot(vdp_context * context)
 			} else {
 				val = start->partial ? context->fifo[context->fifo_write].value : start->value;
 			}
-			write_cram(context, start->address, val);
+			if (!headless) write_cram(context, start->address, val);
 			break;
 		}
 		case VSRAM_WRITE:
+		 if (!headless)
 			if (((start->address/2) & 63) < context->vsram_size) {
 				//printf("VSRAM Write: %X to %X @ frame: %d, vcounter: %d, hslot: %d, cycle: %d\n", start->value, start->address, context->frame, context->vcounter, context->hslot, context->cycles);
 				if (start->partial == 3) {
@@ -987,10 +988,10 @@ static void external_slot(vdp_context * context)
 		}
 	} else if ((context->flags & FLAG_DMA_RUN) && (context->regs[REG_DMASRC_H] & DMA_TYPE_MASK) == DMA_COPY) {
 		if (context->flags & FLAG_READ_FETCHED) {
-			write_vram_byte(context, context->address ^ 1, context->prefetch);
+		 if (!headless) write_vram_byte(context, context->address ^ 1, context->prefetch);
 			
 			//Update DMA state
-			vdp_advance_dma(context);
+		 if (!headless) vdp_advance_dma(context);
 			
 			context->flags &= ~FLAG_READ_FETCHED;
 		} else {
@@ -2775,15 +2776,17 @@ static void vdp_h40(vdp_context * context, uint32_t target_cycles)
 		//happen when doing border busting
 		context->output = dummy_buffer;
 	}
+
 	switch(context->hslot)
 	{
 	for (;;)
 	{
 	case 165:
 		//only consider doing a line at a time if the FIFO is empty, there are no pending reads and there is no DMA running
+	 if (!headless)
 		if (context->fifo_read == -1 && !(context->flags & FLAG_DMA_RUN) && ((context->cd & 1) || (context->flags & FLAG_READ_FETCHED))) {
 			while (target_cycles - context->cycles >= MCLKS_LINE && context->state != PREPARING && context->vcounter != context->inactive_start) {
-				vdp_h40_line(context);
+				 vdp_h40_line(context);
 			}
 			CHECK_ONLY
 		}
@@ -2817,6 +2820,7 @@ static void vdp_h40(vdp_context * context, uint32_t target_cycles)
 		CHECK_LIMIT
 	//sprite attribute table scan starts
 	case 167:
+
 		OUTPUT_PIXEL(167)
 		context->sprite_index = 0x80;
 		context->slot_counter = 0;
@@ -2829,25 +2833,26 @@ static void vdp_h40(vdp_context * context, uint32_t target_cycles)
 		render_sprite_cells(context);
 		scan_sprite_table(context->vcounter, context);
 		CHECK_LIMIT
-	SPRITE_RENDER_H40(168)
-	SPRITE_RENDER_H40(169)
-	SPRITE_RENDER_H40(170)
-	SPRITE_RENDER_H40(171)
-	SPRITE_RENDER_H40(172)
-	SPRITE_RENDER_H40(173)
-	SPRITE_RENDER_H40(174)
-	SPRITE_RENDER_H40(175)
-	SPRITE_RENDER_H40(176)
-	SPRITE_RENDER_H40(177)//End of border?
-	SPRITE_RENDER_H40(178)
-	SPRITE_RENDER_H40(179)
-	SPRITE_RENDER_H40(180)
-	SPRITE_RENDER_H40(181)
-	SPRITE_RENDER_H40(182)
-	SPRITE_RENDER_H40(229)
-	//!HSYNC asserted
-	SPRITE_RENDER_H40(230)
-	SPRITE_RENDER_H40(231)
+  SPRITE_RENDER_H40(168)
+  SPRITE_RENDER_H40(169)
+  SPRITE_RENDER_H40(170)
+  SPRITE_RENDER_H40(171)
+  SPRITE_RENDER_H40(172)
+  SPRITE_RENDER_H40(173)
+  SPRITE_RENDER_H40(174)
+  SPRITE_RENDER_H40(175)
+  SPRITE_RENDER_H40(176)
+  SPRITE_RENDER_H40(177)//End of border?
+  SPRITE_RENDER_H40(178)
+  SPRITE_RENDER_H40(179)
+  SPRITE_RENDER_H40(180)
+  SPRITE_RENDER_H40(181)
+  SPRITE_RENDER_H40(182)
+  SPRITE_RENDER_H40(229)
+  //!HSYNC asserted
+  SPRITE_RENDER_H40(230)
+  SPRITE_RENDER_H40(231)
+
 	case 232:
 		external_slot(context);
 		CHECK_LIMIT_HSYNC(232)
@@ -2953,7 +2958,7 @@ static void vdp_h40(vdp_context * context, uint32_t target_cycles)
 	case 163:
 		OUTPUT_PIXEL(163)
 		context->cur_slot = MAX_SPRITES_LINE-1;
-		memset(context->linebuf, 0, LINEBUF_SIZE);
+		if (!headless) memset(context->linebuf, 0, LINEBUF_SIZE);
 		render_border_garbage(
 			context,
 			context->sprite_draw_list[context->cur_slot].address,
@@ -3171,7 +3176,7 @@ static void vdp_h32(vdp_context * context, uint32_t target_cycles)
 	case 131:
 		OUTPUT_PIXEL(131)
 		context->cur_slot = MAX_SPRITES_LINE_H32-1;
-		memset(context->linebuf, 0, LINEBUF_SIZE);
+		if (!headless) memset(context->linebuf, 0, LINEBUF_SIZE);
 		render_border_garbage(
 			context,
 			context->sprite_draw_list[context->cur_slot].address,
