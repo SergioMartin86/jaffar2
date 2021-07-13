@@ -1596,6 +1596,8 @@ static void render_testreg_highlight(vdp_context *context, int32_t col, uint8_t 
 
 static void render_map_output(uint32_t line, int32_t col, vdp_context * context)
 {
+ if (headless) return;
+
 	uint8_t *dst;
 	uint8_t *debug_dst;
 	uint8_t output_disabled = (context->test_port & TEST_BIT_DISABLE) != 0;

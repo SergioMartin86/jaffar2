@@ -495,15 +495,15 @@ static void sync_z80(z80_context * z_context, uint32_t mclks)
 static void sync_sound(genesis_context * gen, uint32_t target)
 {
 	//printf("YM | Cycle: %d, bpos: %d, PSG | Cycle: %d, bpos: %d\n", gen->ym->current_cycle, gen->ym->buffer_pos, gen->psg->cycles, gen->psg->buffer_pos * 2);
-	while (target > gen->psg->cycles && target - gen->psg->cycles > MAX_SOUND_CYCLES) {
-		uint32_t cur_target = gen->psg->cycles + MAX_SOUND_CYCLES;
-		//printf("Running PSG to cycle %d\n", cur_target);
-		psg_run(gen->psg, cur_target);
-		//printf("Running YM-2612 to cycle %d\n", cur_target);
-		ym_run(gen->ym, cur_target);
-	}
-	psg_run(gen->psg, target);
-	ym_run(gen->ym, target);
+//	while (target > gen->psg->cycles && target - gen->psg->cycles > MAX_SOUND_CYCLES) {
+//		uint32_t cur_target = gen->psg->cycles + MAX_SOUND_CYCLES;
+//		//printf("Running PSG to cycle %d\n", cur_target);
+//		psg_run(gen->psg, cur_target);
+//		//printf("Running YM-2612 to cycle %d\n", cur_target);
+//		ym_run(gen->ym, cur_target);
+//	}
+//	psg_run(gen->psg, target);
+//	ym_run(gen->ym, target);
 
 	//printf("Target: %d, YM bufferpos: %d, PSG bufferpos: %d\n", target, gen->ym->buffer_pos, gen->psg->buffer_pos * 2);
 }
@@ -536,8 +536,11 @@ m68k_context * sync_components(m68k_context * context, uint32_t address)
 #endif
 
 	uint32_t mclks = context->current_cycle;
-	sync_z80(z_context, mclks);
-	sync_sound(gen, mclks);
+ if (!headless)
+ {
+  sync_z80(z_context, mclks);
+  sync_sound(gen, mclks);
+ }
 	vdp_run_context(v_context, mclks);
 	io_run(gen->io.ports, mclks);
 	io_run(gen->io.ports + 1, mclks);
