@@ -1081,8 +1081,6 @@ static void run_dma_src(vdp_context * context, int32_t slot)
 
 static void read_map_scroll(uint16_t column, uint16_t vsram_off, uint32_t line, uint16_t address, uint16_t hscroll_val, vdp_context * context)
 {
- if (headless) return;
-
 	uint16_t window_line_shift, v_offset_mask, vscroll_shift;
 	if (context->double_res) {
 		line *= 2;
