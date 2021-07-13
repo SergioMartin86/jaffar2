@@ -1081,6 +1081,7 @@ static void run_dma_src(vdp_context * context, int32_t slot)
 
 static void read_map_scroll(uint16_t column, uint16_t vsram_off, uint32_t line, uint16_t address, uint16_t hscroll_val, vdp_context * context)
 {
+ if (headless) return;
 	uint16_t window_line_shift, v_offset_mask, vscroll_shift;
 	if (context->double_res) {
 		line *= 2;
@@ -1302,6 +1303,8 @@ static void fetch_map_mode4(uint16_t col, uint32_t line, vdp_context *context)
 
 static uint8_t composite_normal(vdp_context *context, uint8_t *debug_dst, uint8_t sprite, uint8_t plane_a, uint8_t plane_b, uint8_t bg_index)
 {
+ if (headless) return 0;
+
 	uint8_t pixel = bg_index;
 	uint8_t src = DBG_SRC_BG;
 	if (plane_b & 0xF) {
@@ -1325,6 +1328,8 @@ typedef struct {
 
 static sh_pixel composite_highlight(vdp_context *context, uint8_t *debug_dst, uint8_t sprite, uint8_t plane_a, uint8_t plane_b, uint8_t bg_index)
 {
+ if (headless) return (sh_pixel){.index = 0, .intensity = 0};
+
 	uint8_t pixel = bg_index;
 	uint8_t src = DBG_SRC_BG;
 	uint8_t intensity = 0;
@@ -1359,6 +1364,7 @@ static sh_pixel composite_highlight(vdp_context *context, uint8_t *debug_dst, ui
 
 static void render_normal(vdp_context *context, int32_t col, uint8_t *dst, uint8_t *debug_dst, int plane_a_off, int plane_b_off)
 {
+ if (headless) return;
 	uint8_t *sprite_buf = context->linebuf + col * 8;
 	if (!col && (context->regs[REG_MODE_1] & BIT_COL0_MASK)) {
 		memset(dst, 0, 8);
@@ -1390,6 +1396,7 @@ static void render_normal(vdp_context *context, int32_t col, uint8_t *dst, uint8
 
 static void render_highlight(vdp_context *context, int32_t col, uint8_t *dst, uint8_t *debug_dst, int plane_a_off, int plane_b_off)
 {
+ if (headless) return;
 	int start = 0;
 	if (!col && (context->regs[REG_MODE_1] & BIT_COL0_MASK)) {
 		memset(dst, SHADOW_OFFSET + (context->regs[REG_BG_COLOR] & 0x3F), 8);
@@ -1421,6 +1428,7 @@ static void render_highlight(vdp_context *context, int32_t col, uint8_t *dst, ui
 
 static void render_testreg(vdp_context *context, int32_t col, uint8_t *dst, uint8_t *debug_dst, int plane_a_off, int plane_b_off, uint8_t output_disabled, uint8_t test_layer)
 {
+ if (headless) return;
 	if (output_disabled) {
 		switch (test_layer)
 		{
@@ -3492,7 +3500,7 @@ static void vdp_inactive(vdp_context *context, uint32_t target_cycles, uint8_t i
 				context->cur_slot = context->sprite_index = MAX_DRAWS_H32_MODE4-1;
 				context->sprite_draws = MAX_DRAWS_H32_MODE4;
 			}
-			memset(context->linebuf, 0, LINEBUF_SIZE);
+			if (!headless) memset(context->linebuf, 0, LINEBUF_SIZE);
 		} else if (context->hslot == index_reset_slot) {
 			context->sprite_index = index_reset_value;
 			context->slot_counter = mode_5 ? 0 : max_sprites;
@@ -3531,7 +3539,7 @@ static void vdp_inactive(vdp_context *context, uint32_t target_cycles, uint8_t i
 				*(dst++) = context->colors[pixel];
 				if ((dst - context->output) == (context->done_composite - context->compositebuf)) {
 					context->done_composite = NULL;
-					memset(context->compositebuf, 0, sizeof(context->compositebuf));
+					if (!headless) memset(context->compositebuf, 0, sizeof(context->compositebuf));
 				}
 			} else {
 				*(dst++) = bg_color;
@@ -3545,7 +3553,7 @@ static void vdp_inactive(vdp_context *context, uint32_t target_cycles, uint8_t i
 				*(dst++) = context->colors[pixel];
 				if ((dst - context->output) == (context->done_composite - context->compositebuf)) {
 					context->done_composite = NULL;
-					memset(context->compositebuf, 0, sizeof(context->compositebuf));
+					if (!headless) memset(context->compositebuf, 0, sizeof(context->compositebuf));
 				}
 			} else {
 				*(dst++) = bg_color;
@@ -3561,7 +3569,7 @@ static void vdp_inactive(vdp_context *context, uint32_t target_cycles, uint8_t i
 					*(dst++) = context->colors[pixel];
 					if ((dst - context->output) == (context->done_composite - context->compositebuf)) {
 						context->done_composite = NULL;
-						memset(context->compositebuf, 0, sizeof(context->compositebuf));
+						if (!headless) memset(context->compositebuf, 0, sizeof(context->compositebuf));
 					}
 				} else {
 					*(dst++) = bg_color;
