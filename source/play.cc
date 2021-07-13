@@ -126,13 +126,13 @@ int main(int argc, char *argv[])
   genBlastem.saveState(frameSequence[0]);
 
   // Iterating move list in the sequence
-  for (int i = 0; i < sequenceLength; i++)
+  for (int i = 1; i < sequenceLength; i++)
   {
     genBlastem.playFrame(moveList[i]);
 
     // Storing new frame
     frameSequence.push_back((uint8_t*) malloc(sizeof(uint8_t) * _STATE_DATA_SIZE));
-    genBlastem.saveState(frameSequence[i+1]);
+    genBlastem.saveState(frameSequence[i]);
   }
 
   genBlastem.finalize();
