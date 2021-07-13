@@ -287,6 +287,7 @@ static void increment_address(vdp_context *context)
 
 static void render_sprite_cells(vdp_context * context)
 {
+ if (fast_vdp) return;
 	if (context->cur_slot > MAX_SPRITES_LINE) {
 		context->cur_slot--;
 		return;
@@ -373,6 +374,7 @@ static void render_sprite_cells(vdp_context * context)
 
 static void fetch_sprite_cells_mode4(vdp_context * context)
 {
+ if (fast_vdp) return;
 	if (context->sprite_index >= context->sprite_draws) {
 		sprite_draw * d = context->sprite_draw_list + context->sprite_index;
 		uint32_t address = mode4_address_map[d->address & 0x3FFF];
@@ -383,6 +385,7 @@ static void fetch_sprite_cells_mode4(vdp_context * context)
 
 static void render_sprite_cells_mode4(vdp_context * context)
 {
+ if (fast_vdp) return;
 	if (context->sprite_index >= context->sprite_draws) {
 		sprite_draw * d = context->sprite_draw_list + context->sprite_index;
 		uint32_t pixels = planar_to_chunky[context->fetch_tmp[0]] << 1;
@@ -422,6 +425,7 @@ static uint32_t mode5_sat_address(vdp_context *context)
 
 void vdp_print_sprite_table(vdp_context * context)
 {
+ if (fast_vdp) return;
 	if (context->regs[REG_MODE_2] & BIT_MODE_5) {
 		uint16_t sat_address = mode5_sat_address(context);
 		uint16_t current_index = 0;
@@ -609,6 +613,7 @@ static uint8_t is_active(vdp_context *context)
 
 static void scan_sprite_table(uint32_t line, vdp_context * context)
 {
+ if (fast_vdp) return;
 	if (context->sprite_index && ((uint8_t)context->slot_counter) < context->max_sprites_line) {
 		line += 1;
 		uint16_t ymask, ymin;
@@ -668,6 +673,7 @@ static void scan_sprite_table(uint32_t line, vdp_context * context)
 
 static void scan_sprite_table_mode4(vdp_context * context)
 {
+ if (fast_vdp) return;
 	if (context->sprite_index < MAX_SPRITES_FRAME_H32) {
 		uint32_t line = context->vcounter;
 		line &= 0xFF;
@@ -718,6 +724,7 @@ static void scan_sprite_table_mode4(vdp_context * context)
 
 static void read_sprite_x(uint32_t line, vdp_context * context)
 {
+ if (fast_vdp) return;
 	if (context->cur_slot == context->max_sprites_line) {
 		context->cur_slot = 0;
 	}
@@ -776,6 +783,7 @@ static void read_sprite_x(uint32_t line, vdp_context * context)
 
 static void read_sprite_x_mode4(vdp_context * context)
 {
+ if (fast_vdp) return;
 	if (context->cur_slot >= context->slot_counter) {
 		uint32_t address = (context->regs[REG_SAT] << 7 & 0x3F00) + 0x80 + context->sprite_info_list[context->cur_slot].index * 2;
 		address = mode4_address_map[address];
@@ -808,12 +816,14 @@ static void update_color_map(vdp_context *context, uint16_t index, uint16_t valu
 
 void write_cram_internal(vdp_context * context, uint16_t addr, uint16_t value)
 {
+ if (fast_vdp) return;
 	context->cram[addr] = value;
 	update_color_map(context, addr, value);
 }
 
 static void write_cram(vdp_context * context, uint16_t address, uint16_t value)
 {
+ if (fast_vdp) return;
 	uint16_t addr;
 	if (context->regs[REG_MODE_2] & BIT_MODE_5) {
 		addr = (address/2) & (CRAM_SIZE-1);
@@ -882,6 +892,7 @@ void vdp_check_update_sat_byte(vdp_context *context, uint32_t address, uint8_t v
 
 static void write_vram_word(vdp_context *context, uint32_t address, uint16_t value)
 {
+ if (fast_vdp) return;
 	address = (address & 0x3FC) | (address >> 1 & 0xFC01) | (address >> 9 & 0x2);
 	address ^= 1;
 	//TODO: Support an option to actually have 128KB of VRAM
@@ -890,6 +901,7 @@ static void write_vram_word(vdp_context *context, uint32_t address, uint16_t val
 
 static void write_vram_byte(vdp_context *context, uint32_t address, uint8_t value)
 {
+ if (fast_vdp) return;
 	if (context->regs[REG_MODE_2] & BIT_MODE_5) {
 		address &= 0xFFFF;
 	} else {
@@ -1069,6 +1081,7 @@ static void run_dma_src(vdp_context * context, int32_t slot)
 
 static void read_map_scroll(uint16_t column, uint16_t vsram_off, uint32_t line, uint16_t address, uint16_t hscroll_val, vdp_context * context)
 {
+ if (fast_vdp) return;
 	uint16_t window_line_shift, v_offset_mask, vscroll_shift;
 	if (context->double_res) {
 		line *= 2;
@@ -1190,6 +1203,7 @@ static void read_map_scroll_b(uint16_t column, uint32_t line, vdp_context * cont
 
 static void read_map_mode4(uint16_t column, uint32_t line, vdp_context * context)
 {
+ if (fast_vdp) return;
 	uint32_t address = (context->regs[REG_SCROLL_A] & 0xE) << 10;
 	//add row
 	uint32_t vscroll = line;
@@ -1209,6 +1223,7 @@ static void read_map_mode4(uint16_t column, uint32_t line, vdp_context * context
 
 static void render_map(uint16_t col, uint8_t * tmp_buf, uint8_t offset, vdp_context * context)
 {
+ if (fast_vdp) return;
 	uint16_t address;
 	uint16_t vflip_base;
 	if (context->double_res) {
@@ -1265,6 +1280,7 @@ static void render_map_3(vdp_context * context)
 
 static void fetch_map_mode4(uint16_t col, uint32_t line, vdp_context *context)
 {
+ if (fast_vdp) return;
 	//calculate pixel row to fetch
 	uint32_t vscroll = line;
 	if (col < 24 || !(context->regs[REG_MODE_1] & BIT_VSCRL_LOCK)) {
@@ -1285,6 +1301,7 @@ static void fetch_map_mode4(uint16_t col, uint32_t line, vdp_context *context)
 
 static uint8_t composite_normal(vdp_context *context, uint8_t *debug_dst, uint8_t sprite, uint8_t plane_a, uint8_t plane_b, uint8_t bg_index)
 {
+ if (headless) return 0.0;
 	uint8_t pixel = bg_index;
 	uint8_t src = DBG_SRC_BG;
 	if (plane_b & 0xF) {
@@ -1342,6 +1359,7 @@ static sh_pixel composite_highlight(vdp_context *context, uint8_t *debug_dst, ui
 
 static void render_normal(vdp_context *context, int32_t col, uint8_t *dst, uint8_t *debug_dst, int plane_a_off, int plane_b_off)
 {
+ if (headless) return;
 	uint8_t *sprite_buf = context->linebuf + col * 8;
 	if (!col && (context->regs[REG_MODE_1] & BIT_COL0_MASK)) {
 		memset(dst, 0, 8);
@@ -1373,6 +1391,7 @@ static void render_normal(vdp_context *context, int32_t col, uint8_t *dst, uint8
 
 static void render_highlight(vdp_context *context, int32_t col, uint8_t *dst, uint8_t *debug_dst, int plane_a_off, int plane_b_off)
 {
+ if (fast_vdp) return;
 	int start = 0;
 	if (!col && (context->regs[REG_MODE_1] & BIT_COL0_MASK)) {
 		memset(dst, SHADOW_OFFSET + (context->regs[REG_BG_COLOR] & 0x3F), 8);
@@ -1404,6 +1423,7 @@ static void render_highlight(vdp_context *context, int32_t col, uint8_t *dst, ui
 
 static void render_testreg(vdp_context *context, int32_t col, uint8_t *dst, uint8_t *debug_dst, int plane_a_off, int plane_b_off, uint8_t output_disabled, uint8_t test_layer)
 {
+ if (fast_vdp) return;
 	if (output_disabled) {
 		switch (test_layer)
 		{
@@ -1513,6 +1533,7 @@ static void render_testreg(vdp_context *context, int32_t col, uint8_t *dst, uint
 
 static void render_testreg_highlight(vdp_context *context, int32_t col, uint8_t *dst, uint8_t *debug_dst, int plane_a_off, int plane_b_off, uint8_t output_disabled, uint8_t test_layer)
 {
+ if (fast_vdp) return;
 	int start = 0;
 	uint8_t *sprite_buf = context->linebuf + col * 8;
 	if (!col && (context->regs[REG_MODE_1] & BIT_COL0_MASK)) {
@@ -1596,6 +1617,7 @@ static void render_testreg_highlight(vdp_context *context, int32_t col, uint8_t 
 
 static void render_map_output(uint32_t line, int32_t col, vdp_context * context)
 {
+ if (fast_vdp) return;
 	uint8_t *dst;
 	uint8_t *debug_dst;
 	uint8_t output_disabled = (context->test_port & TEST_BIT_DISABLE) != 0;
@@ -1701,6 +1723,7 @@ static void render_map_output(uint32_t line, int32_t col, vdp_context * context)
 
 static void render_map_mode4(uint32_t line, int32_t col, vdp_context * context)
 {
+ if (fast_vdp) return;
 	uint32_t vscroll = line;
 	if (col < 24 || !(context->regs[REG_MODE_1] & BIT_VSCRL_LOCK)) {
 		vscroll += context->regs[REG_Y_SCROLL];
@@ -2179,6 +2202,7 @@ void vdp_reacquire_framebuffer(vdp_context *context)
 
 static void render_border_garbage(vdp_context *context, uint32_t address, uint8_t *buf, uint8_t buf_off, uint16_t col)
 {
+ if (fast_vdp) return;
 	uint8_t base = col >> 9 & 0x30;
 	for (int i = 0; i < 4; i++, address++)
 	{
@@ -2190,6 +2214,7 @@ static void render_border_garbage(vdp_context *context, uint32_t address, uint8_
 
 static void draw_right_border(vdp_context *context)
 {
+ if (fast_vdp) return;
 	uint8_t *dst = context->compositebuf + BORDER_LEFT + ((context->regs[REG_MODE_4] & BIT_H40) ? 320 : 256);
 	uint8_t test_layer = context->test_port >> 7 & 3;
 	if (test_layer) {

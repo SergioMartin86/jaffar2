@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 
  blastemInstance blastem("libblastem.so", false);
  printf("Blastem created.\n");
- blastem.initialize(argv[1], argv[3], false);
+ blastem.initialize(argv[1], argv[3], false, false);
  printf("Blastem initialized.\n");
 
  blastem.playFrame("L");

@@ -3758,7 +3758,7 @@ void z80_assert_nmi(z80_context *context, uint32_t cycle)
 void z80_adjust_cycles(z80_context * context, uint32_t deduction)
 {
 	if (context->current_cycle < deduction) {
-		fprintf(stderr, "WARNING: Deduction of %u cycles when Z80 cycle counter is only %u\n", deduction, context->current_cycle);
+		//fprintf(stderr, "WARNING: Deduction of %u cycles when Z80 cycle counter is only %u\n", deduction, context->current_cycle);
 		context->current_cycle = 0;
 	} else {
 		context->current_cycle -= deduction;

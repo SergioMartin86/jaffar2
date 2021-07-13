@@ -41,6 +41,7 @@ cothread_t _jaffarThread;
 cothread_t _blastemThread;
 
 int headless = 0;
+int fast_vdp = 0;
 int exit_after = 0;
 int z80_enabled = 1;
 int frame_limit = 0;
@@ -599,9 +600,10 @@ void blastemWrapper()
   fatal_error("Should not reach this point!\n");
 }
 
-void start(int argc, char** argv, int isHeadlessMode)
+void start(int argc, char** argv, int isHeadlessMode, int isFastVdp)
 {
  headless = isHeadlessMode;
+ fast_vdp = isFastVdp;
  __argc = argc;
  __argv = (char**) malloc (sizeof(char*) * argc);
  for (size_t i = 0; i < argc; i++)

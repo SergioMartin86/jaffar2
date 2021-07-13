@@ -116,7 +116,7 @@ int main(int argc, char *argv[])
 
   // Initializing replay generating SDLPop Instance
   blastemInstance genBlastem("libblastem.so", false);
-  genBlastem.initialize(romFilePath.c_str(), saveFilePath.c_str(), true);
+  genBlastem.initialize(romFilePath.c_str(), saveFilePath.c_str(), true, false);
 
   // Storage for sequence frames
   std::vector<uint8_t*> frameSequence;
@@ -141,7 +141,7 @@ int main(int argc, char *argv[])
 
   // Initializing showing SDLPop Instance
   blastemInstance showBlastem("libblastem.so", false);
-  showBlastem.initialize(romFilePath.c_str(), saveFilePath.c_str(), false);
+  showBlastem.initialize(romFilePath.c_str(), saveFilePath.c_str(), false, false);
 
   // Variable for current step in view
   int currentStep = 1;

@@ -18,7 +18,7 @@ blastemInstance::blastemInstance(const char* libraryFile, const bool multipleLib
     EXIT_WITH_ERROR("Could not load %s. Check that this library's path is included in the LD_LIBRARY_PATH environment variable. Try also reducing the number of openMP threads.\n", libraryFile);
 
   // Variables
-  start = (start_t) dlsym(_dllHandle, "start");
+  _start = (start_t) dlsym(_dllHandle, "start");
   resume = (resume_t) dlsym(_dllHandle, "resume");
   _finalize = (finalize_t) dlsym(_dllHandle, "finalize");
   _redraw = (redraw_t) dlsym(_dllHandle, "redraw");
@@ -29,7 +29,7 @@ blastemInstance::blastemInstance(const char* libraryFile, const bool multipleLib
   _nextMove = (move_t*) dlsym(_dllHandle, "_nextMove");
 }
 
-void blastemInstance::initialize(char* romFile, char* saveFile, const bool headlessMode)
+void blastemInstance::initialize(char* romFile, char* saveFile, const bool headlessMode, const bool fastVdp)
 {
  int argc = 4;
  char* argv[4];
@@ -40,7 +40,7 @@ void blastemInstance::initialize(char* romFile, char* saveFile, const bool headl
  argv[1] = romFile;
  argv[2] = flag;
  argv[3] = saveFile;
- start(argc, argv, headlessMode);
+ _start(argc, argv, headlessMode, fastVdp);
 }
 
 blastemInstance::~blastemInstance()

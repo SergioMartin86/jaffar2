@@ -477,6 +477,8 @@ static void z80_next_int_pulse(z80_context * z_context)
 
 static void sync_z80(z80_context * z_context, uint32_t mclks)
 {
+ if (headless) return;
+
 #ifndef NO_Z80
 	if (z80_enabled) {
 #ifdef NEW_CORE
@@ -494,6 +496,8 @@ static void sync_z80(z80_context * z_context, uint32_t mclks)
 
 static void sync_sound(genesis_context * gen, uint32_t target)
 {
+ if (headless) return;
+
 	//printf("YM | Cycle: %d, bpos: %d, PSG | Cycle: %d, bpos: %d\n", gen->ym->current_cycle, gen->ym->buffer_pos, gen->psg->cycles, gen->psg->buffer_pos * 2);
 	while (target > gen->psg->cycles && target - gen->psg->cycles > MAX_SOUND_CYCLES) {
 		uint32_t cur_target = gen->psg->cycles + MAX_SOUND_CYCLES;
@@ -536,8 +540,8 @@ m68k_context * sync_components(m68k_context * context, uint32_t address)
 #endif
 
 	uint32_t mclks = context->current_cycle;
-	sync_z80(z_context, mclks);
-	sync_sound(gen, mclks);
+	if (!headless) sync_z80(z_context, mclks);
+	if (!headless) sync_sound(gen, mclks);
 	vdp_run_context(v_context, mclks);
 	io_run(gen->io.ports, mclks);
 	io_run(gen->io.ports + 1, mclks);

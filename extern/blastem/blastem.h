@@ -6,6 +6,7 @@
 #include "libco.h"
 
 extern int headless;
+extern int fast_vdp;
 extern int exit_after;
 extern int z80_enabled;
 extern int frame_limit;
@@ -24,7 +25,7 @@ void lockon_media(char *lock_on_path);
 void init_system_with_media(const char *path, system_type force_stype);
 void apply_updated_config(void);
 const system_media *current_media(void);
-void start(int argc, char** argv, int isHeadlessMode);
+void start(int argc, char** argv, int isHeadlessMode, int isFastVdp);
 void resume();
 
 

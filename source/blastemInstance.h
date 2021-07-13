@@ -4,7 +4,7 @@
 #include <vector>
 
 #define _STATE_DATA_SIZE 141601
-typedef void (*start_t)(int, char**, int);
+typedef void (*start_t)(int, char**, int, int);
 typedef void (*resume_t)(void);
 typedef void (*redraw_t)(void);
 typedef void (*reloadState_t)(void);
@@ -52,7 +52,7 @@ class blastemInstance
 {
   public:
   blastemInstance(const char* libraryFile, const bool multipleLibraries);
-  void initialize(char* romFile, char* saveFile, const bool headlessMode);
+  void initialize(char* romFile, char* saveFile, const bool headlessMode, const bool fastVdp);
   void finalize();
   void playFrame(const std::string& move);
   gameStateStruct getGameState(const uint8_t* state);
@@ -65,7 +65,7 @@ class blastemInstance
   std::vector<uint8_t> getPossibleMoveIds(const gameStateStruct& gameState);
 
   // blastem Functions
-  start_t start;
+  start_t _start;
   resume_t resume;
   reloadState_t reloadState;
   finalize_t _finalize;
