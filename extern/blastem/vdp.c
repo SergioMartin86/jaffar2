@@ -1192,11 +1192,13 @@ static void read_map_scroll(uint16_t column, uint16_t vsram_off, uint32_t line, 
 
 static void read_map_scroll_a(uint16_t column, uint32_t line, vdp_context * context)
 {
+ if (headless) return;
 	read_map_scroll(column, 0, line, (context->regs[REG_SCROLL_A] & 0x38) << 10, context->hscroll_a, context);
 }
 
 static void read_map_scroll_b(uint16_t column, uint32_t line, vdp_context * context)
 {
+ if (headless) return;
 	read_map_scroll(column, 1, line, (context->regs[REG_SCROLL_B] & 0x7) << 13, context->hscroll_b, context);
 }
 
@@ -2196,6 +2198,8 @@ void vdp_reacquire_framebuffer(vdp_context *context)
 
 static void render_border_garbage(vdp_context *context, uint32_t address, uint8_t *buf, uint8_t buf_off, uint16_t col)
 {
+ if (headless) return;
+
 	uint8_t base = col >> 9 & 0x30;
 	for (int i = 0; i < 4; i++, address++)
 	{
@@ -2207,6 +2211,8 @@ static void render_border_garbage(vdp_context *context, uint32_t address, uint8_
 
 static void draw_right_border(vdp_context *context)
 {
+ if (headless) return;
+
 	uint8_t *dst = context->compositebuf + BORDER_LEFT + ((context->regs[REG_MODE_4] & BIT_H40) ? 320 : 256);
 	uint8_t test_layer = context->test_port >> 7 & 3;
 	if (test_layer) {
