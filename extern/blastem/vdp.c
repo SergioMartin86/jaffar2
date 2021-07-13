@@ -287,6 +287,8 @@ static void increment_address(vdp_context *context)
 
 static void render_sprite_cells(vdp_context * context)
 {
+ if (headless) return;
+
 	if (context->cur_slot > MAX_SPRITES_LINE) {
 		context->cur_slot--;
 		return;
@@ -609,6 +611,8 @@ static uint8_t is_active(vdp_context *context)
 
 static void scan_sprite_table(uint32_t line, vdp_context * context)
 {
+ if (headless) return;
+
 	if (context->sprite_index && ((uint8_t)context->slot_counter) < context->max_sprites_line) {
 		line += 1;
 		uint16_t ymask, ymin;
@@ -668,6 +672,8 @@ static void scan_sprite_table(uint32_t line, vdp_context * context)
 
 static void scan_sprite_table_mode4(vdp_context * context)
 {
+ if (headless) return;
+
 	if (context->sprite_index < MAX_SPRITES_FRAME_H32) {
 		uint32_t line = context->vcounter;
 		line &= 0xFF;
@@ -718,6 +724,8 @@ static void scan_sprite_table_mode4(vdp_context * context)
 
 static void read_sprite_x(uint32_t line, vdp_context * context)
 {
+ if (headless) return;
+
 	if (context->cur_slot == context->max_sprites_line) {
 		context->cur_slot = 0;
 	}
@@ -776,6 +784,8 @@ static void read_sprite_x(uint32_t line, vdp_context * context)
 
 static void read_sprite_x_mode4(vdp_context * context)
 {
+ if (headless) return;
+
 	if (context->cur_slot >= context->slot_counter) {
 		uint32_t address = (context->regs[REG_SAT] << 7 & 0x3F00) + 0x80 + context->sprite_info_list[context->cur_slot].index * 2;
 		address = mode4_address_map[address];
@@ -800,6 +810,8 @@ static void read_sprite_x_mode4(vdp_context * context)
 
 static void update_color_map(vdp_context *context, uint16_t index, uint16_t value)
 {
+ if (headless) return;
+
 	context->colors[index] = color_map[value & CRAM_BITS];
 	context->colors[index + SHADOW_OFFSET] = color_map[(value & CRAM_BITS) | FBUF_SHADOW];
 	context->colors[index + HIGHLIGHT_OFFSET] = color_map[(value & CRAM_BITS) | FBUF_HILIGHT];
@@ -1069,6 +1081,8 @@ static void run_dma_src(vdp_context * context, int32_t slot)
 
 static void read_map_scroll(uint16_t column, uint16_t vsram_off, uint32_t line, uint16_t address, uint16_t hscroll_val, vdp_context * context)
 {
+ if (headless) return;
+
 	uint16_t window_line_shift, v_offset_mask, vscroll_shift;
 	if (context->double_res) {
 		line *= 2;
@@ -1190,6 +1204,7 @@ static void read_map_scroll_b(uint16_t column, uint32_t line, vdp_context * cont
 
 static void read_map_mode4(uint16_t column, uint32_t line, vdp_context * context)
 {
+ if (headless) return;
 	uint32_t address = (context->regs[REG_SCROLL_A] & 0xE) << 10;
 	//add row
 	uint32_t vscroll = line;
@@ -1209,6 +1224,8 @@ static void read_map_mode4(uint16_t column, uint32_t line, vdp_context * context
 
 static void render_map(uint16_t col, uint8_t * tmp_buf, uint8_t offset, vdp_context * context)
 {
+ if (headless) return;
+
 	uint16_t address;
 	uint16_t vflip_base;
 	if (context->double_res) {
