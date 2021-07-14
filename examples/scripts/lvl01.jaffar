@@ -227,7 +227,7 @@
     "Description": "If we reach next level, win.",
     "Conditions":
     [
-     { "Property": "Current Level", "Op": ">", "Value":  1 }
+     { "Property": "Current Level", "Op": "==", "Value":  2 }
     ],
     
     "Dependencies": [ ],
