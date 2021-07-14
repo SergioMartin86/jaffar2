@@ -4,7 +4,6 @@
 #include "romdb.h"
 #include "util.h"
 #include "genesis.h"
-#include "menu.h"
 #include "nor.h"
 #include "sega_mapper.h"
 #include "blastem.h"
