@@ -80,13 +80,11 @@ uint8_t render_should_release_on_exit(void)
 
 void render_buffer_consumed(audio_source *src)
 {
- if (fast_vdp) return;
 	SDL_CondSignal(src->opaque);
 }
 
 static void audio_callback(void * userdata, uint8_t *byte_stream, int len)
 {
- if (fast_vdp) return;
 	SDL_LockMutex(audio_mutex);
 		uint8_t all_ready;
 		do {
@@ -111,7 +109,6 @@ static int32_t cur_min_buffered;
 static uint32_t min_remaining_buffer;
 static void audio_callback_drc(void *userData, uint8_t *byte_stream, int len)
 {
- if (fast_vdp) return ;
 	if (cur_min_buffered < 0) {
 		//underflow last frame, but main thread hasn't gotten a chance to call SDL_PauseAudio yet
 		return;
@@ -121,7 +118,6 @@ static void audio_callback_drc(void *userData, uint8_t *byte_stream, int len)
 
 static void audio_callback_run_on_audio(void *user_data, uint8_t *byte_stream, int len)
 {
- if (fast_vdp) return ;
 	if (current_system) {
 		current_system->resume_context(current_system);
 	}
@@ -130,7 +126,6 @@ static void audio_callback_run_on_audio(void *user_data, uint8_t *byte_stream, i
 
 void render_lock_audio()
 {
- if (fast_vdp) return ;
 	if (sync_src == SYNC_AUDIO) {
 		SDL_LockMutex(audio_mutex);
 	} else {
@@ -140,7 +135,6 @@ void render_lock_audio()
 
 void render_unlock_audio()
 {
- if (fast_vdp) return ;
 	if (sync_src == SYNC_AUDIO) {
 		SDL_UnlockMutex(audio_mutex);
 	} else {
@@ -150,7 +144,6 @@ void render_unlock_audio()
 
 static void render_close_audio()
 {
- if (fast_vdp) return ;
 	SDL_LockMutex(audio_mutex);
 		quitting = 1;
 		SDL_CondSignal(audio_ready);
@@ -167,19 +160,16 @@ static void render_close_audio()
 
 void *render_new_audio_opaque(void)
 {
- if (fast_vdp) return NULL;
 	return SDL_CreateCond();
 }
 
 void render_free_audio_opaque(void *opaque)
 {
- if (fast_vdp) return ;
 	SDL_DestroyCond(opaque);
 }
 
 void render_audio_created(audio_source *source)
 {
- if (fast_vdp) return ;
 	if (sync_src == SYNC_AUDIO) {
 		//SDL_PauseAudio acquires the audio device lock, which is held while the callback runs
 		//since our callback can itself be stuck waiting on the audio_ready condition variable
@@ -196,7 +186,6 @@ void render_audio_created(audio_source *source)
 
 void render_source_paused(audio_source *src, uint8_t remaining_sources)
 {
- if (fast_vdp) return ;
 	if (sync_src == SYNC_AUDIO) {
 		SDL_CondSignal(audio_ready);
 	}
@@ -210,7 +199,6 @@ void render_source_paused(audio_source *src, uint8_t remaining_sources)
 
 void render_source_resumed(audio_source *src)
 {
- if (fast_vdp) return ;
 	if (sync_src == SYNC_AUDIO) {
 		//SDL_PauseAudio acquires the audio device lock, which is held while the callback runs
 		//since our callback can itself be stuck waiting on the audio_ready condition variable
@@ -227,7 +215,6 @@ void render_source_resumed(audio_source *src)
 
 void render_do_audio_ready(audio_source *src)
 {
- if (fast_vdp) return ;
 	if (sync_src == SYNC_AUDIO_THREAD) {
 		int16_t *tmp = src->front;
 		src->front = src->back;
@@ -283,7 +270,6 @@ int render_fullscreen()
 
 uint32_t render_map_color(uint8_t r, uint8_t g, uint8_t b)
 {
- if (fast_vdp) return 0;
 #ifdef USE_GLES
 	return 255 << 24 | b << 16 | g << 8 | r;
 #else
@@ -294,7 +280,6 @@ uint32_t render_map_color(uint8_t r, uint8_t g, uint8_t b)
 static uint8_t external_sync;
 void render_set_external_sync(uint8_t ext_sync_on)
 {
- if (fast_vdp) return ;
 	if (ext_sync_on != external_sync) {
 		external_sync = ext_sync_on;
 		if (windowed_width) {
@@ -331,7 +316,6 @@ static const GLchar shader_prefix[] =
 
 static GLuint load_shader(char * fname, GLenum shader_type)
 {
- if (fast_vdp) return 0 ;
 	char * shader_path;
 	FILE *f;
 	GLchar *text;
@@ -409,7 +393,6 @@ static uint32_t texture_buf[512 * 513];
 #endif
 static void gl_setup()
 {
- if (fast_vdp) return ;
 	tern_val def = {.ptrval = "linear"};
 	char *scaling = tern_find_path_default(config, "video\0scaling\0", def, TVAL_PTR).ptrval;
 	GLint filter = strcmp(scaling, "linear") ? GL_NEAREST : GL_LINEAR;
@@ -467,7 +450,6 @@ static void gl_setup()
 
 static void gl_teardown()
 {
- if (fast_vdp) return ;
 	glDeleteProgram(program);
 	glDeleteShader(vshader);
 	glDeleteShader(fshader);
@@ -479,7 +461,6 @@ static void gl_teardown()
 static uint8_t texture_init;
 static void render_alloc_surfaces()
 {
- if (fast_vdp) return ;
 	if (texture_init) {
 		return;
 	}
@@ -503,7 +484,6 @@ static void render_alloc_surfaces()
 
 static void free_surfaces(void)
 {
- if (fast_vdp) return ;
 	for (int i = 0; i < num_textures; i++)
 	{
 		if (sdl_textures[i]) {
@@ -520,7 +500,6 @@ static char * fps_caption = NULL;
 
 static void render_quit()
 {
- if (fast_vdp) return ;
 	render_close_audio();
 	free_surfaces();
 #ifndef DISABLE_OPENGL
@@ -533,7 +512,6 @@ static void render_quit()
 
 static float config_aspect()
 {
- if (fast_vdp) return 4.0f/3.0f;
 	static float aspect = 0.0f;
 	if (aspect == 0.0f) {
 		char *config_aspect = tern_find_path_default(config, "video\0aspect\0", (tern_val){.ptrval = "4:3"}, TVAL_PTR).ptrval;
@@ -556,7 +534,6 @@ static float config_aspect()
 
 static void update_aspect()
 {
- if (fast_vdp) return;
 	//reset default values
 #ifndef DISABLE_OPENGL
 	memcpy(vertex_data, vertex_data_default, sizeof(vertex_data));
@@ -595,7 +572,6 @@ static void update_aspect()
 static ui_render_fun on_context_destroyed, on_context_created, on_ui_fb_resized;
 void render_set_gl_context_handlers(ui_render_fun destroy, ui_render_fun create)
 {
- if (fast_vdp) return;
 	on_context_destroyed = destroy;
 	on_context_created = create;
 }
@@ -712,20 +688,17 @@ static uint8_t scancode_map[SDL_NUM_SCANCODES] = {
 static drop_handler drag_drop_handler;
 void render_set_drag_drop_handler(drop_handler handler)
 {
- if (fast_vdp) return;
 	drag_drop_handler = handler;
 }
 
 static event_handler custom_event_handler;
 void render_set_event_handler(event_handler handler)
 {
- if (fast_vdp) return;
 	custom_event_handler = handler;
 }
 
 static int find_joystick_index(SDL_JoystickID instanceID)
 {
- if (fast_vdp) return -1;
 	for (int i = 0; i < MAX_JOYSTICKS; i++) {
 		if (joysticks[i] && SDL_JoystickInstanceID(joysticks[i]) == instanceID) {
 			return i;
@@ -736,7 +709,6 @@ static int find_joystick_index(SDL_JoystickID instanceID)
 
 static int lowest_unused_joystick_index()
 {
- if (fast_vdp) return -1;
 	for (int i = 0; i < MAX_JOYSTICKS; i++) {
 		if (!joysticks[i]) {
 			return i;
@@ -747,7 +719,6 @@ static int lowest_unused_joystick_index()
 
 static int lowest_unlocked_joystick_index(void)
 {
- if (fast_vdp) return -1;
 	for (int i = 0; i < MAX_JOYSTICKS; i++) {
 		if (!joystick_index_locked[i]) {
 			return i;
@@ -758,7 +729,6 @@ static int lowest_unlocked_joystick_index(void)
 
 SDL_Joystick *render_get_joystick(int index)
 {
- if (fast_vdp) return NULL;
 	if (index >= MAX_JOYSTICKS) {
 		return NULL;
 	}
@@ -767,7 +737,6 @@ SDL_Joystick *render_get_joystick(int index)
 
 char* render_joystick_type_id(int index)
 {
- if (fast_vdp) return NULL;
 	SDL_Joystick *stick = render_get_joystick(index);
 	if (!stick) {
 		return NULL;
@@ -779,7 +748,6 @@ char* render_joystick_type_id(int index)
 
 SDL_GameController *render_get_controller(int index)
 {
- if (fast_vdp) return NULL;
 	if (index >= MAX_JOYSTICKS || !joysticks[index]) {
 		return NULL;
 	}
@@ -790,7 +758,6 @@ static uint8_t gc_events_enabled;
 static SDL_GameController *controllers[MAX_JOYSTICKS];
 void render_enable_gamepad_events(uint8_t enabled)
 {
- if (fast_vdp) return;
 	if (enabled != gc_events_enabled) {
 		gc_events_enabled = enabled;
 		for (int i = 0; i < MAX_JOYSTICKS; i++) {
@@ -813,7 +780,6 @@ static uint8_t need_ui_fb_resize;
 
 int lock_joystick_index(int joystick, int desired_index)
 {
- if (fast_vdp) return 0;
 	if (desired_index < 0) {
 		desired_index = lowest_unlocked_joystick_index();
 		if (desired_index < 0 || desired_index >= joystick) {
@@ -838,7 +804,6 @@ int lock_joystick_index(int joystick, int desired_index)
 
 static int32_t handle_event(SDL_Event *event)
 {
- if (fast_vdp) return 0;
 	if (custom_event_handler) {
 		custom_event_handler(event);
 	}
@@ -961,7 +926,6 @@ static int32_t handle_event(SDL_Event *event)
 
 static void drain_events()
 {
- if (fast_vdp) return;
 	SDL_Event event;
 	while(SDL_PollEvent(&event))
 	{
@@ -979,7 +943,6 @@ static int frame_repeat[60];
 static uint32_t sample_rate;
 static void init_audio()
 {
- if (fast_vdp) return;
 	SDL_AudioSpec desired, actual;
     char * rate_str = tern_find_path(config, "audio\0rate\0", TVAL_PTR).ptrval;
    	int rate = rate_str ? atoi(rate_str) : 0;
@@ -1031,7 +994,6 @@ static void init_audio()
 
 void window_setup(void)
 {
- if (fast_vdp) return;
 	uint32_t flags = SDL_WINDOW_RESIZABLE;
 	if (is_fullscreen) {
 		flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
@@ -1188,7 +1150,6 @@ void window_setup(void)
 
 void render_init(int width, int height, char * title, uint8_t fullscreen)
 {
- if (fast_vdp) return;
  if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER) < 0) {
 		fatal_error("Unable to init SDL: %s\n", SDL_GetError());
 	}
@@ -1244,7 +1205,6 @@ void render_init(int width, int height, char * title, uint8_t fullscreen)
 
 void render_reset_mappings(void)
 {
- if (fast_vdp) return ;
 	SDL_QuitSubSystem(SDL_INIT_GAMECONTROLLER);
 	SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER);
 	uint32_t db_size;
@@ -1259,7 +1219,6 @@ static int in_toggle;
 
 void render_config_updated(void)
 {
- if (fast_vdp) return ;
 	free_surfaces();
 #ifndef DISABLE_OPENGL
 	if (render_gl) {
@@ -1330,20 +1289,17 @@ void render_config_updated(void)
 
 SDL_Window *render_get_window(void)
 {
- if (fast_vdp) return NULL;
 	return main_window;
 }
 
 uint32_t render_audio_syncs_per_sec(void)
 {
- if (fast_vdp) return 0;
 	//sync samples with audio thread approximately every 8 lines when doing sync to video
 	return render_is_audio_sync() ? 0 : source_hz * (video_standard == VID_PAL ? 313 : 262) / 8;
 }
 
 void render_set_video_standard(vid_std std)
 {
- if (fast_vdp) return;
 	video_standard = std;
 	if (render_is_audio_sync()) {
 		return;
@@ -1383,7 +1339,6 @@ void render_set_video_standard(vid_std std)
 
 void render_update_caption(char *title)
 {
- if (fast_vdp) return;
  caption = title;
 	free(fps_caption);
 	fps_caption = NULL;
@@ -1392,7 +1347,6 @@ void render_update_caption(char *title)
 static char *screenshot_path;
 void render_save_screenshot(char *path)
 {
- if (fast_vdp) return;
  if (screenshot_path) {
 		free(screenshot_path);
 	}
@@ -1401,7 +1355,6 @@ void render_save_screenshot(char *path)
 
 uint8_t render_create_window(char *caption, uint32_t width, uint32_t height, window_close_handler close_handler)
 {
- if (fast_vdp) return 0xFF;
  uint8_t win_idx = 0xFF;
 	for (int i = 0; i < num_textures - FRAMEBUFFER_USER_START; i++)
 	{
@@ -1446,7 +1399,6 @@ fail_window:
 
 void render_destroy_window(uint8_t which)
 {
- if (fast_vdp) return;
 	uint8_t win_idx = which - FRAMEBUFFER_USER_START;
 	//Destroying the renderers also frees the textures
 	SDL_DestroyRenderer(extra_renderers[win_idx]);
@@ -1461,7 +1413,6 @@ uint32_t *locked_pixels;
 uint32_t locked_pitch;
 uint32_t *render_get_framebuffer(uint8_t which, int *pitch)
 {
- if (fast_vdp) return fixed_pixels;
  if (sync_src == SYNC_AUDIO_THREAD || sync_src == SYNC_EXTERNAL) {
 		*pitch = LINEBUF_SIZE * sizeof(uint32_t);
 		uint32_t *buffer;
@@ -1513,7 +1464,6 @@ uint32_t *render_get_framebuffer(uint8_t which, int *pitch)
 
 static void release_buffer(uint32_t *buffer)
 {
- if (fast_vdp) return;
  SDL_LockMutex(free_buffer_mutex);
 		if (num_buffers == buffer_storage) {
 			buffer_storage *= 2;
@@ -1534,7 +1484,6 @@ static uint32_t last_width, last_height;
 static uint8_t interlaced;
 static void process_framebuffer(uint32_t *buffer, uint8_t which, int width)
 {
- if (fast_vdp) return;
 	static uint8_t last;
 	if (sync_src == SYNC_VIDEO && which <= FRAMEBUFFER_EVEN && source_frame_count < 0) {
 		source_frame++;
@@ -1736,7 +1685,6 @@ int frame_queue_len, frame_queue_read, frame_queue_write;
 
 void render_framebuffer_updated(uint8_t which, int width)
 {
- if (fast_vdp) return;
 	if (sync_src == SYNC_AUDIO_THREAD || sync_src == SYNC_EXTERNAL) {
 		SDL_LockMutex(frame_mutex);
 			while (frame_queue_len == 4) {
@@ -1812,7 +1760,6 @@ void render_set_ui_render_fun(ui_render_fun fun)
 
 void render_update_display()
 {
- if (fast_vdp) return;
  #ifndef DISABLE_OPENGL
 	if (render_gl) {
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -1896,7 +1843,6 @@ uint32_t render_overscan_bot()
 
 void render_wait_quit(void)
 {
- if (fast_vdp) return;
  SDL_Event event;
 	while(SDL_WaitEvent(&event)) {
 		switch (event.type) {
@@ -1908,7 +1854,6 @@ void render_wait_quit(void)
 
 int render_lookup_button(char *name)
 {
- if (fast_vdp) return 0;
  static tern_node *button_lookup;
 	if (!button_lookup) {
 		for (int i = SDL_CONTROLLER_BUTTON_A; i < SDL_CONTROLLER_BUTTON_MAX; i++)
@@ -1933,7 +1878,6 @@ int render_lookup_button(char *name)
 
 int render_lookup_axis(char *name)
 {
- if (fast_vdp) return 0;
  static tern_node *axis_lookup;
 	if (!axis_lookup) {
 		for (int i = SDL_CONTROLLER_AXIS_LEFTX; i < SDL_CONTROLLER_AXIS_MAX; i++)
@@ -1949,7 +1893,6 @@ int render_lookup_axis(char *name)
 
 int32_t render_translate_input_name(int32_t controller, char *name, uint8_t is_axis)
 {
- if (fast_vdp) return 0;
  if (controller > MAX_JOYSTICKS || !joysticks[controller]) {
 		return RENDER_NOT_PLUGGED_IN;
 	}
@@ -2089,7 +2032,6 @@ uint32_t render_elapsed_ms(void)
 
 void render_sleep_ms(uint32_t delay)
 {
- if (fast_vdp) return;
  return SDL_Delay(delay);
 }
 
@@ -2100,7 +2042,6 @@ uint8_t render_has_gl(void)
 
 uint8_t render_get_active_framebuffer(void)
 {
- if (fast_vdp) return 0xFF;
  if (SDL_GetWindowFlags(main_window) & SDL_WINDOW_INPUT_FOCUS) {
 		return FRAMEBUFFER_ODD;
 	}
@@ -2115,7 +2056,6 @@ uint8_t render_get_active_framebuffer(void)
 
 uint8_t render_create_thread(render_thread *thread, const char *name, render_thread_fun fun, void *data)
 {
- if (fast_vdp) return 0;
 	*thread = SDL_CreateThread(fun, name, data);
 	return *thread != 0;
 }

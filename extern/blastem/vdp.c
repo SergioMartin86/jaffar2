@@ -287,7 +287,6 @@ static void increment_address(vdp_context *context)
 
 static void render_sprite_cells(vdp_context * context)
 {
- if (fast_vdp) return;
 	if (context->cur_slot > MAX_SPRITES_LINE) {
 		context->cur_slot--;
 		return;
@@ -1210,7 +1209,6 @@ static void read_map_mode4(uint16_t column, uint32_t line, vdp_context * context
 
 static void render_map(uint16_t col, uint8_t * tmp_buf, uint8_t offset, vdp_context * context)
 {
- if (fast_vdp) return;
 	uint16_t address;
 	uint16_t vflip_base;
 	if (context->double_res) {
@@ -1344,7 +1342,6 @@ static sh_pixel composite_highlight(vdp_context *context, uint8_t *debug_dst, ui
 
 static void render_normal(vdp_context *context, int32_t col, uint8_t *dst, uint8_t *debug_dst, int plane_a_off, int plane_b_off)
 {
- if (fast_vdp) return;
 	uint8_t *sprite_buf = context->linebuf + col * 8;
 	if (!col && (context->regs[REG_MODE_1] & BIT_COL0_MASK)) {
 		memset(dst, 0, 8);
@@ -1376,7 +1373,6 @@ static void render_normal(vdp_context *context, int32_t col, uint8_t *dst, uint8
 
 static void render_highlight(vdp_context *context, int32_t col, uint8_t *dst, uint8_t *debug_dst, int plane_a_off, int plane_b_off)
 {
- if (fast_vdp) return;
 	int start = 0;
 	if (!col && (context->regs[REG_MODE_1] & BIT_COL0_MASK)) {
 		memset(dst, SHADOW_OFFSET + (context->regs[REG_BG_COLOR] & 0x3F), 8);
@@ -1408,7 +1404,6 @@ static void render_highlight(vdp_context *context, int32_t col, uint8_t *dst, ui
 
 static void render_testreg(vdp_context *context, int32_t col, uint8_t *dst, uint8_t *debug_dst, int plane_a_off, int plane_b_off, uint8_t output_disabled, uint8_t test_layer)
 {
- if (fast_vdp) return;
 	if (output_disabled) {
 		switch (test_layer)
 		{
@@ -1601,7 +1596,6 @@ static void render_testreg_highlight(vdp_context *context, int32_t col, uint8_t 
 
 static void render_map_output(uint32_t line, int32_t col, vdp_context * context)
 {
- if (fast_vdp) return;
 	uint8_t *dst;
 	uint8_t *debug_dst;
 	uint8_t output_disabled = (context->test_port & TEST_BIT_DISABLE) != 0;

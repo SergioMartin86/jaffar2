@@ -279,3 +279,19 @@ uint8_t load_from_file(deserialize_buffer *buf, char *path)
 	fclose(f);
 	return 1;
 }
+
+int loadBinFromFile(uint8_t* dst, size_t size, const char *fileName)
+{
+ FILE *f = fopen(fileName, "rb+");
+ if (f)
+ {
+     fseek(f, 0L, SEEK_END);
+     long filesize = ftell(f); // get file size
+     fseek(f, 0L ,SEEK_SET); //go back to the beginning
+     printf("file size: %ld\n", filesize);
+     fread(dst, 1, filesize, f);
+     fclose(f);
+     return 1;
+ }
+ return 0;
+}

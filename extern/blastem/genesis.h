@@ -88,6 +88,5 @@ void request_exit(system_header *system);
 void resume_genesis(system_header *system);
 uint8_t *soft_serialize(system_header *sys, size_t *size_out);
 void soft_deserialize(system_header *sys, uint8_t *data, size_t size);
-
 #endif //GENESIS_H_
 

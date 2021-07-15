@@ -477,8 +477,6 @@ static void z80_next_int_pulse(z80_context * z_context)
 
 static void sync_z80(z80_context * z_context, uint32_t mclks)
 {
- if (headless) return;
-
 #ifndef NO_Z80
 	if (z80_enabled) {
 #ifdef NEW_CORE
@@ -497,7 +495,6 @@ static void sync_z80(z80_context * z_context, uint32_t mclks)
 static void sync_sound(genesis_context * gen, uint32_t target)
 {
  if (headless) return;
-
 	//printf("YM | Cycle: %d, bpos: %d, PSG | Cycle: %d, bpos: %d\n", gen->ym->current_cycle, gen->ym->buffer_pos, gen->psg->cycles, gen->psg->buffer_pos * 2);
 	while (target > gen->psg->cycles && target - gen->psg->cycles > MAX_SOUND_CYCLES) {
 		uint32_t cur_target = gen->psg->cycles + MAX_SOUND_CYCLES;
@@ -540,8 +537,8 @@ m68k_context * sync_components(m68k_context * context, uint32_t address)
 #endif
 
 	uint32_t mclks = context->current_cycle;
-	if (!headless) sync_z80(z_context, mclks);
-	if (!headless) sync_sound(gen, mclks);
+	sync_z80(z_context, mclks);
+	sync_sound(gen, mclks);
 	vdp_run_context(v_context, mclks);
 	io_run(gen->io.ports, mclks);
 	io_run(gen->io.ports + 1, mclks);
@@ -1442,40 +1439,20 @@ extern size_t _stateSize;
 
 static void start_genesis(system_header *system, char *statefile)
 {
-	genesis_context *gen = (genesis_context *)system;
-	if (statefile) {
-		//first try loading as a native format savestate
-		deserialize_buffer state;
-		uint32_t pc;
-		if (load_from_file(&state, statefile)) {
-			genesis_deserialize(&state, gen);
-			free(state.data);
-			//HACK
-			pc = gen->m68k->last_prefetch_address;
-		} else {
-			pc = load_gst(gen, statefile);
-			if (!pc) {
-				fatal_error("Failed to load save state %s\n", statefile);
-			}
-		}
-		adjust_int_cycle(gen->m68k, gen->vdp);
-  start_68k_context(gen->m68k, pc);
+ genesis_context *gen = (genesis_context *)system;
+ m68k_reset(gen->m68k);
 
-  while(1)
-  {
-   if (_stateData != NULL) free(_stateData);
-   _stateData = serialize(system, &_stateSize);
-   co_switch(_jaffarThread);
-   resume_genesis(system);
-  }
+ while(1)
+ {
+  if (_stateData != NULL) free(_stateData);
+  _stateData = serialize(system, &_stateSize);
+  co_switch(_jaffarThread);
+  resume_genesis(system);
+ }
 
-  exit(0);
-	} else {
-		m68k_reset(gen->m68k);
-	}
-	//handle_reset_requests(gen);
-	return;
+ return;
 }
+
 
 void resume_genesis(system_header *system)
 {

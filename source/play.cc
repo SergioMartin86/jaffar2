@@ -172,6 +172,7 @@ int main(int argc, char *argv[])
       printw("[Jaffar2]  + Move: %s\n", moveList[currentStep - 1].c_str());
       printw("[Jaffar2]  + Current Level: %2d\n", showBlastem._state.currentLevel);
       printw("[Jaffar2]  + Current Frame: %d\n", showBlastem._state.currentFrame);
+      printw("[Jaffar2]  + Screen Transition: %d:%d\n", showBlastem._state.screenTransitionByte1, showBlastem._state.screenTransitionByte2);
       printw("[Jaffar2]  + [Kid]   Room: %d, Pos.x: %3d, Pos.y: %3d, Frame: %3d, Direction: %s, HP: %d/%d\n", showBlastem._state.kidRoom, showBlastem._state.kidPositionX, showBlastem._state.kidPositionY, showBlastem._state.kidFrame, showBlastem._state.kidDirection == 255 ? "L" : "R", showBlastem._state.kidCurrentHP, showBlastem._state.kidMaxHP);
       printw("[Jaffar2]  + [Guard] Room: %d, Pos.x: %3d, Pos.y: %3d, Frame: %3d, Direction: %s, HP: %d/%d\n", showBlastem._state.guardRoom, showBlastem._state.guardPositionX, showBlastem._state.guardPositionY, showBlastem._state.guardFrame, showBlastem._state.guardDirection == 255 ? "L" : "R", showBlastem._state.guardCurrentHP, showBlastem._state.guardMaxHP);
     }
@@ -206,7 +207,7 @@ int main(int argc, char *argv[])
     if (command == 's')
     {
       // Storing replay file
-      std::string saveFileName = "jaffar.sav";
+      std::string saveFileName = "jaffar.state";
 
       // Saving frame info to file
       bool status = saveBinToFile(frameSequence[currentStep - 1], sizeof(uint8_t) * _STATE_DATA_SIZE, saveFileName.c_str());

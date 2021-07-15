@@ -16,6 +16,9 @@ extern const std::vector<std::string> _possibleMoves;
 
 struct gameStateStruct
 {
+ uint8_t screenTransitionByte1;
+ uint8_t screenTransitionByte2;
+
  uint16_t currentFrame;
  uint8_t framesPerStep;
  uint8_t currentLevel;
