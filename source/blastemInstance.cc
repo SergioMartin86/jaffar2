@@ -44,6 +44,7 @@ void blastemInstance::initialize(char* romFile, char* saveFile, const bool headl
 
  loadBinFromFile(*_stateData, sizeof(uint8_t) * _STATE_DATA_SIZE, saveFile);
  loadState(*_stateData);
+ playFrame(".");
 }
 
 blastemInstance::~blastemInstance()
