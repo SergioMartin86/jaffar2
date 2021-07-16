@@ -151,7 +151,7 @@ int main(int argc, char *argv[])
   {
    printw("[Jaffar] Available commands:\n");
    printw("[Jaffar]  n: -1 m: +1 | h: -10 | j: +10 | y: -100 | u: +100 \n");
-   printw("[Jaffar]  s: quicksave | q: quit  \n");
+   printw("[Jaffar]  s: quicksave | g: set RNG state | q: quit  \n");
   }
 
   // Flag to display frame information
@@ -171,8 +171,8 @@ int main(int argc, char *argv[])
       printw("[Jaffar2] Current Step #: %d / %d\n", currentStep, sequenceLength);
       printw("[Jaffar2]  + Move: %s\n", moveList[currentStep - 1].c_str());
       printw("[Jaffar2]  + Current Level: %2d\n", showBlastem._state.currentLevel);
+      printw("[Jaffar2]  + Current RNG Value: 0x%X\n", showBlastem._state.rngValue);
       printw("[Jaffar2]  + Current Frame: %d\n", showBlastem._state.currentFrame);
-      printw("[Jaffar2]  + Screen Transition: %d:%d\n", showBlastem._state.screenTransitionByte1, showBlastem._state.screenTransitionByte2);
       printw("[Jaffar2]  + [Kid]   Room: %d, Pos.x: %3d, Pos.y: %3d, Frame: %3d, Direction: %s, HP: %d/%d\n", showBlastem._state.kidRoom, showBlastem._state.kidPositionX, showBlastem._state.kidPositionY, showBlastem._state.kidFrame, showBlastem._state.kidDirection == 255 ? "L" : "R", showBlastem._state.kidCurrentHP, showBlastem._state.kidMaxHP);
       printw("[Jaffar2]  + [Guard] Room: %d, Pos.x: %3d, Pos.y: %3d, Frame: %3d, Direction: %s, HP: %d/%d\n", showBlastem._state.guardRoom, showBlastem._state.guardPositionX, showBlastem._state.guardPositionY, showBlastem._state.guardFrame, showBlastem._state.guardDirection == 255 ? "L" : "R", showBlastem._state.guardCurrentHP, showBlastem._state.guardMaxHP);
     }
@@ -216,6 +216,21 @@ int main(int argc, char *argv[])
 
       // Do no show frame info again after this action
       showFrameInfo = false;
+    }
+
+    // RNG setting command
+    if (command == 'g')
+    {
+      // Obtaining RNG state
+      printw("Enter new RNG state: ");
+
+      // Setting input as new rng
+      char str[80];
+      getstr(str);
+      showBlastem.setRNGValue(std::stol(str));
+
+      // Replacing current sequence
+      showBlastem.saveState(frameSequence[currentStep-1]);
     }
 
   } while (command != 'q');

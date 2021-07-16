@@ -16,9 +16,7 @@ extern const std::vector<std::string> _possibleMoves;
 
 struct gameStateStruct
 {
- uint8_t screenTransitionByte1;
- uint8_t screenTransitionByte2;
-
+ uint32_t rngValue;
  uint16_t currentFrame;
  uint8_t framesPerStep;
  uint8_t currentLevel;
@@ -33,6 +31,8 @@ struct gameStateStruct
  // A system needs to be established to keep track of these changes to know what checkpoint it refers to
  uint32_t checkpointPointer;
 
+ uint8_t kidCurrentSequence;
+ uint8_t kidLastSequence;
  uint8_t kidFrame;
  uint8_t kidCurrentHP;
  uint8_t kidMaxHP;
@@ -66,6 +66,7 @@ class blastemInstance
   void loadState(const uint8_t* state);
   void saveState(uint8_t* state);
   std::vector<uint8_t> getPossibleMoveIds(const gameStateStruct& gameState);
+  void setRNGValue(const uint32_t& rngValue);
 
   // blastem Functions
   start_t _start;

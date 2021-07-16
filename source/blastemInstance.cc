@@ -52,13 +52,19 @@ blastemInstance::~blastemInstance()
   dlclose(_dllHandle);
 }
 
+void blastemInstance::setRNGValue(const uint32_t& rngValue)
+{
+ _state.rngValue = rngValue;
+ memcpyBigEndian32((uint32_t*)&(*_stateData)[*_stateWorkRamOffset + 0x19C4], (uint8_t*)&_state.rngValue);
+ reloadState();
+ _state = getGameState(*_stateData);
+}
+
 gameStateStruct blastemInstance::getGameState(const uint8_t* state)
 {
  gameStateStruct gameState;
 
- memcpyBigEndian8(&gameState.screenTransitionByte1,      &state[*_stateWorkRamOffset + 0x66F2]);
- memcpyBigEndian8(&gameState.screenTransitionByte2,      &state[*_stateWorkRamOffset + 0x6712]);
-
+ memcpyBigEndian32(&gameState.rngValue,          &state[*_stateWorkRamOffset + 0x19C4]);
  memcpyBigEndian16(&gameState.currentFrame,      &state[*_stateWorkRamOffset + 0x19C8]);
  memcpyBigEndian8(&gameState.framesPerStep,      &state[*_stateWorkRamOffset + 0x5005]);
  memcpyBigEndian8(&gameState.currentLevel,       &state[*_stateWorkRamOffset + 0x4AA5]);
@@ -68,6 +74,8 @@ gameStateStruct blastemInstance::getGameState(const uint8_t* state)
  memcpyBigEndian32(&gameState.checkpointPointer, &state[*_stateWorkRamOffset + 0x4FF0]);
  memcpyBigEndian8(&gameState.slowfallFramesLeft, &state[*_stateWorkRamOffset + 0x4AA1]);
 
+ memcpyBigEndian8(&gameState.kidCurrentSequence, &state[*_stateWorkRamOffset + 0x4C55]);
+ memcpyBigEndian8(&gameState.kidLastSequence,    &state[*_stateWorkRamOffset + 0x4C57]);
  memcpyBigEndian8(&gameState.kidFrame,           &state[*_stateWorkRamOffset + 0x4C45]);
  memcpyBigEndian8(&gameState.kidCurrentHP,       &state[*_stateWorkRamOffset + 0x4C4F]);
  memcpyBigEndian8(&gameState.kidMaxHP,           &state[*_stateWorkRamOffset + 0x4C50]);
@@ -92,24 +100,17 @@ uint64_t blastemInstance::computeHash()
 {
   MetroHash64 hash;
 
-//  uint64_t* initialPtr = (uint64_t*)&(*_stateData)[*_stateWorkRamOffset + 0x4A00];
-//  uint64_t* endPtr = (uint64_t*)&(*_stateData)[*_stateWorkRamOffset + 0x5100];
-//
-//  for (uint64_t* curPtr = initialPtr; curPtr <= endPtr; curPtr++)
-//    hash.Update(curPtr, sizeof(uint64_t));
-
-  hash.Update(&_state.screenTransitionByte1, sizeof(uint8_t));
-  hash.Update(&_state.screenTransitionByte2, sizeof(uint8_t));
-
 //  hash.Update(&_state.currentFrame, sizeof(uint16_t));
-//  hash.Update(&_state.framesPerStep, sizeof(uint8_t));
+  hash.Update(&_state.framesPerStep, sizeof(uint8_t));
   hash.Update(&_state.currentLevel, sizeof(uint8_t));
   hash.Update(&_state.drawnRoom, sizeof(uint8_t));
 //  hash.Update(&_state.minutesLeft, sizeof(uint16_t));
 //  hash.Update(&_state.twelthSecondsLeft, sizeof(uint16_t));
-  hash.Update(&_state.checkpointPointer, sizeof(uint32_t));
+//  hash.Update(&_state.checkpointPointer, sizeof(uint32_t));
 //  hash.Update(&_state.slowfallFramesLeft, sizeof(uint8_t));
 
+  hash.Update(&_state.kidCurrentSequence, sizeof(uint8_t));
+  hash.Update(&_state.kidLastSequence, sizeof(uint8_t));
   hash.Update(&_state.kidFrame, sizeof(uint8_t));
   hash.Update(&_state.kidCurrentHP, sizeof(uint8_t));
   hash.Update(&_state.kidMaxHP, sizeof(uint8_t));
@@ -119,25 +120,26 @@ uint64_t blastemInstance::computeHash()
   hash.Update(&_state.kidPositionX, sizeof(uint16_t));
   hash.Update(&_state.kidPositionY, sizeof(uint16_t));
 
-//  hash.Update(&_state.guardFrame, sizeof(uint8_t));
-//  hash.Update(&_state.guardCurrentHP, sizeof(uint8_t));
-//  hash.Update(&_state.guardMaxHP, sizeof(uint8_t));
-//  hash.Update(&_state.guardRoom, sizeof(uint8_t));
-//  hash.Update(&_state.guardDirection, sizeof(uint8_t));
-//  hash.Update(&_state.guardPositionX, sizeof(uint16_t));
-//  hash.Update(&_state.guardPositionY, sizeof(uint16_t));
+  hash.Update(&_state.guardFrame, sizeof(uint8_t));
+  hash.Update(&_state.guardCurrentHP, sizeof(uint8_t));
+  hash.Update(&_state.guardMaxHP, sizeof(uint8_t));
+  hash.Update(&_state.guardRoom, sizeof(uint8_t));
+  hash.Update(&_state.guardDirection, sizeof(uint8_t));
+  hash.Update(&_state.guardPositionX, sizeof(uint16_t));
+  hash.Update(&_state.guardPositionY, sizeof(uint16_t));
 
   uint64_t result;
   hash.Finalize(reinterpret_cast<uint8_t *>(&result));
+  printf("Hash: 0x%lX\n", result);
   return result;
 }
 
 void blastemInstance::printState()
 {
  printf("[Jaffar2]  + Current Level: %2d\n", _state.currentLevel);
+ printf("[Jaffar2]  + Current RNG Value: 0x%X\n", _state.rngValue);
  printf("[Jaffar2]  + Current Frame: %d\n", _state.currentFrame);
- printf("[Jaffar2]  + Screen Transition: %d:%d\n", _state.screenTransitionByte1, _state.screenTransitionByte2);
- printf("[Jaffar2]  + [Kid]   Room: %d, Pos.x: %3d, Pos.y: %3d, Frame: %3d, Direction: %s, HP: %d/%d\n", _state.kidRoom, _state.kidPositionX, _state.kidPositionY, _state.kidFrame, _state.kidDirection == 255 ? "L" : "R", _state.kidCurrentHP, _state.kidMaxHP);
+ printf("[Jaffar2]  + [Kid]   Room: %d, Pos.x: %3d, Pos.y: %3d, Frame: %3d, Direction: %s, HP: %d/%d, Seq: %d/%d\n", _state.kidRoom, _state.kidPositionX, _state.kidPositionY, _state.kidFrame, _state.kidDirection == 255 ? "L" : "R", _state.kidCurrentHP, _state.kidMaxHP, _state.kidCurrentSequence, _state.kidLastSequence);
  printf("[Jaffar2]  + [Guard] Room: %d, Pos.x: %3d, Pos.y: %3d, Frame: %3d, Direction: %s, HP: %d/%d\n", _state.guardRoom, _state.guardPositionX, _state.guardPositionY, _state.guardFrame, _state.guardDirection == 255 ? "L" : "R", _state.guardCurrentHP, _state.guardMaxHP);
 }
 
@@ -233,12 +235,27 @@ std::vector<uint8_t> blastemInstance::getPossibleMoveIds(const gameStateStruct& 
   if (gameState.kidFrame == 78) return {0}; // Upwards Jump / Climbing
   if (gameState.kidFrame == 79) return {0, 1, 12}; // Upwards Jump / Climbing (Can Grab)
   if (gameState.kidFrame == 80) return {0, 1, 12}; // Upwards Jump / Climbing (Can Grab)
-  if (gameState.kidFrame == 81) return {0}; // Let go after grab
+  if (gameState.kidFrame == 81) return {0}; // Let go after grab / After Upwards Jump
+  if (gameState.kidFrame == 82) return {0}; // Let go after grab / After Upwards Jump
+  if (gameState.kidFrame == 83) return {0}; // Let go after grab / After Upwards Jump
+  if (gameState.kidFrame == 84) return {0}; // Let go after grab / After Upwards Jump
+  if (gameState.kidFrame == 85) return {0}; // Let go after grab / After Upwards Jump
   if (gameState.kidFrame == 86) return {0}; // Hesitant Careful Step (before a ledge)
+  if (gameState.kidFrame == 87) return {0, 1, 12}; // Hanging from ledge
+  if (gameState.kidFrame == 88) return {0, 1, 12}; // Hanging from ledge
+  if (gameState.kidFrame == 89) return {0, 1, 12}; // Hanging from ledge
+  if (gameState.kidFrame == 90) return {0, 1, 12}; // Hanging from ledge
   if (gameState.kidFrame == 91) return {0, 1, 12}; // Grabbing ledge, can go up
   if (gameState.kidFrame == 92) return {0, 1, 12}; // Grabbing ledge, can go up
   if (gameState.kidFrame == 93) return {0, 1, 12}; // Grabbing ledge, can go up
   if (gameState.kidFrame == 94) return {0, 1, 12}; // Grabbing ledge, can go up
+  if (gameState.kidFrame == 95) return {0, 1, 12}; // Hanging from ledge
+  if (gameState.kidFrame == 96) return {0, 1, 12}; // Hanging from ledge
+  if (gameState.kidFrame == 97) return {0, 1, 12}; // Hanging from ledge
+  if (gameState.kidFrame == 98) return {0, 1, 12}; // Hanging from ledge
+  if (gameState.kidFrame == 99) return {0, 1, 12}; // Hanging from ledge
+  if (gameState.kidFrame == 100) return {0, 1, 12}; // Hanging from ledge
+  if (gameState.kidFrame == 101) return {0, 1, 12}; // Turning
   if (gameState.kidFrame == 102) return {0, 1}; // Falling
   if (gameState.kidFrame == 103) return {0, 1}; // Falling
   if (gameState.kidFrame == 104) return {0, 1}; // Falling
@@ -316,6 +333,10 @@ std::vector<uint8_t> blastemInstance::getPossibleMoveIds(const gameStateStruct& 
   if (gameState.kidFrame == 182) return {0}; // [Sword] Dying
   if (gameState.kidFrame == 183) return {0}; // [Sword] Dying
   if (gameState.kidFrame == 185) return {0}; // [Sword] Dying
+  if (gameState.kidFrame == 186) return {0}; // [Sword] Gruesome Death
+  if (gameState.kidFrame == 187) return {0}; // [Sword] Gruesome Death
+  if (gameState.kidFrame == 188) return {0}; // [Sword] Gruesome Death
+  if (gameState.kidFrame == 189) return {0}; // [Sword] Gruesome Death
   if (gameState.kidFrame == 207) return {0}; // [Sword] Drawing Sword
   if (gameState.kidFrame == 208) return {0}; // [Sword] Drawing Sword
   if (gameState.kidFrame == 209) return {0}; // [Sword] Drawing Sword

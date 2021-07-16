@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
  {
   printf("Step %lu\n", step++);
   printf("-------------------------------------\n");
-  blastem.playFrame("C");
+  blastem.playFrame("L");
   blastem.printState();
   getchar();
   if (step % 40 == 0)
