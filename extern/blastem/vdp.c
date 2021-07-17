@@ -287,6 +287,7 @@ static void increment_address(vdp_context *context)
 
 static void render_sprite_cells(vdp_context * context)
 {
+ if (fast_vdp) return;
 	if (context->cur_slot > MAX_SPRITES_LINE) {
 		context->cur_slot--;
 		return;
@@ -373,6 +374,7 @@ static void render_sprite_cells(vdp_context * context)
 
 static void fetch_sprite_cells_mode4(vdp_context * context)
 {
+ if (fast_vdp) return;
 	if (context->sprite_index >= context->sprite_draws) {
 		sprite_draw * d = context->sprite_draw_list + context->sprite_index;
 		uint32_t address = mode4_address_map[d->address & 0x3FFF];
@@ -383,6 +385,7 @@ static void fetch_sprite_cells_mode4(vdp_context * context)
 
 static void render_sprite_cells_mode4(vdp_context * context)
 {
+ if (fast_vdp) return;
 	if (context->sprite_index >= context->sprite_draws) {
 		sprite_draw * d = context->sprite_draw_list + context->sprite_index;
 		uint32_t pixels = planar_to_chunky[context->fetch_tmp[0]] << 1;
@@ -422,6 +425,7 @@ static uint32_t mode5_sat_address(vdp_context *context)
 
 void vdp_print_sprite_table(vdp_context * context)
 {
+ if (fast_vdp) return;
 	if (context->regs[REG_MODE_2] & BIT_MODE_5) {
 		uint16_t sat_address = mode5_sat_address(context);
 		uint16_t current_index = 0;
@@ -609,6 +613,7 @@ static uint8_t is_active(vdp_context *context)
 
 static void scan_sprite_table(uint32_t line, vdp_context * context)
 {
+ if (fast_vdp) return;
 	if (context->sprite_index && ((uint8_t)context->slot_counter) < context->max_sprites_line) {
 		line += 1;
 		uint16_t ymask, ymin;
@@ -668,6 +673,7 @@ static void scan_sprite_table(uint32_t line, vdp_context * context)
 
 static void scan_sprite_table_mode4(vdp_context * context)
 {
+ if (fast_vdp) return;
 	if (context->sprite_index < MAX_SPRITES_FRAME_H32) {
 		uint32_t line = context->vcounter;
 		line &= 0xFF;
@@ -718,6 +724,7 @@ static void scan_sprite_table_mode4(vdp_context * context)
 
 static void read_sprite_x(uint32_t line, vdp_context * context)
 {
+ if (fast_vdp) return;
 	if (context->cur_slot == context->max_sprites_line) {
 		context->cur_slot = 0;
 	}
@@ -776,6 +783,7 @@ static void read_sprite_x(uint32_t line, vdp_context * context)
 
 static void read_sprite_x_mode4(vdp_context * context)
 {
+ if (fast_vdp) return;
 	if (context->cur_slot >= context->slot_counter) {
 		uint32_t address = (context->regs[REG_SAT] << 7 & 0x3F00) + 0x80 + context->sprite_info_list[context->cur_slot].index * 2;
 		address = mode4_address_map[address];
@@ -814,6 +822,7 @@ void write_cram_internal(vdp_context * context, uint16_t addr, uint16_t value)
 
 static void write_cram(vdp_context * context, uint16_t address, uint16_t value)
 {
+ if (fast_vdp) return;
 	uint16_t addr;
 	if (context->regs[REG_MODE_2] & BIT_MODE_5) {
 		addr = (address/2) & (CRAM_SIZE-1);
@@ -882,6 +891,7 @@ void vdp_check_update_sat_byte(vdp_context *context, uint32_t address, uint8_t v
 
 static void write_vram_word(vdp_context *context, uint32_t address, uint16_t value)
 {
+ if (fast_vdp) return;
 	address = (address & 0x3FC) | (address >> 1 & 0xFC01) | (address >> 9 & 0x2);
 	address ^= 1;
 	//TODO: Support an option to actually have 128KB of VRAM
@@ -890,6 +900,7 @@ static void write_vram_word(vdp_context *context, uint32_t address, uint16_t val
 
 static void write_vram_byte(vdp_context *context, uint32_t address, uint8_t value)
 {
+ if (fast_vdp) return;
 	if (context->regs[REG_MODE_2] & BIT_MODE_5) {
 		address &= 0xFFFF;
 	} else {
@@ -1069,6 +1080,7 @@ static void run_dma_src(vdp_context * context, int32_t slot)
 
 static void read_map_scroll(uint16_t column, uint16_t vsram_off, uint32_t line, uint16_t address, uint16_t hscroll_val, vdp_context * context)
 {
+ if (fast_vdp) return;
 	uint16_t window_line_shift, v_offset_mask, vscroll_shift;
 	if (context->double_res) {
 		line *= 2;
@@ -1190,6 +1202,7 @@ static void read_map_scroll_b(uint16_t column, uint32_t line, vdp_context * cont
 
 static void read_map_mode4(uint16_t column, uint32_t line, vdp_context * context)
 {
+ if (fast_vdp) return;
 	uint32_t address = (context->regs[REG_SCROLL_A] & 0xE) << 10;
 	//add row
 	uint32_t vscroll = line;
@@ -1209,6 +1222,7 @@ static void read_map_mode4(uint16_t column, uint32_t line, vdp_context * context
 
 static void render_map(uint16_t col, uint8_t * tmp_buf, uint8_t offset, vdp_context * context)
 {
+ if (fast_vdp) return;
  if (fast_vdp) return;
 	uint16_t address;
 	uint16_t vflip_base;
@@ -1286,6 +1300,7 @@ static void fetch_map_mode4(uint16_t col, uint32_t line, vdp_context *context)
 
 static uint8_t composite_normal(vdp_context *context, uint8_t *debug_dst, uint8_t sprite, uint8_t plane_a, uint8_t plane_b, uint8_t bg_index)
 {
+ if (fast_vdp) return bg_index;
 	uint8_t pixel = bg_index;
 	uint8_t src = DBG_SRC_BG;
 	if (plane_b & 0xF) {
@@ -1309,6 +1324,7 @@ typedef struct {
 
 static sh_pixel composite_highlight(vdp_context *context, uint8_t *debug_dst, uint8_t sprite, uint8_t plane_a, uint8_t plane_b, uint8_t bg_index)
 {
+ if (fast_vdp) return  (sh_pixel){.index = 0, .intensity = 0};
 	uint8_t pixel = bg_index;
 	uint8_t src = DBG_SRC_BG;
 	uint8_t intensity = 0;

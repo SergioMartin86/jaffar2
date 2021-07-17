@@ -35,6 +35,12 @@ void updateFrameInfo()
 void reloadState()
 {
  genesis_context *gen = current_system;
+
+ z80_assert_reset(gen->z80, gen->m68k->current_cycle);
+ z80_clear_busreq(gen->z80, gen->m68k->current_cycle);
+ ym_reset(gen->ym);
+// m68k_reset(gen->m68k);
+
  deserialize_buffer state;
  init_deserialize(&state, _stateData, _stateSize);
  genesis_deserialize(&state, gen);
