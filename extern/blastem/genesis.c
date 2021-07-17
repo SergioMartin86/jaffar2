@@ -827,7 +827,8 @@ static uint8_t z80_vdp_port_read(uint32_t vdp_port, void * vcontext)
    //Is there any sort of VDP reset?
     m68k_reset(gen->m68k);
 	  printf("machine freeze due to read from Z80 address %X\n", 0x7F00 | vdp_port);
-	  co_switch(_jaffarThread); return 0xFFFF;
+	  jaffarLoop(context->system);
+	  return 0xFFFF;
 	 }
 		fatal_error("machine freeze due to read from Z80 address %X\n", 0x7F00 | vdp_port);
 	}
@@ -1455,11 +1456,8 @@ static void handle_reset_requests(genesis_context *gen)
 extern uint8_t* _stateData;
 extern size_t _stateSize;
 
-static void start_genesis(system_header *system, char *statefile)
+void jaffarLoop(system_header *system)
 {
- genesis_context *gen = (genesis_context *)system;
- m68k_reset(gen->m68k);
-
  while(1)
  {
   if (_stateData != NULL) free(_stateData);
@@ -1467,6 +1465,14 @@ static void start_genesis(system_header *system, char *statefile)
   co_switch(_jaffarThread);
   resume_genesis(system);
  }
+}
+
+static void start_genesis(system_header *system, char *statefile)
+{
+ genesis_context *gen = (genesis_context *)system;
+ m68k_reset(gen->m68k);
+
+ jaffarLoop(system);
 
  return;
 }
