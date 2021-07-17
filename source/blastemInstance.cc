@@ -65,7 +65,8 @@ gameStateStruct blastemInstance::getGameState(const uint8_t* state)
  gameStateStruct gameState;
 
  memcpyBigEndian32(&gameState.rngValue,          &state[*_stateWorkRamOffset + 0x19C4]);
- memcpyBigEndian16(&gameState.currentFrame,      &state[*_stateWorkRamOffset + 0x19C8]);
+ memcpyBigEndian16(&gameState.gameFrame,         &state[*_stateWorkRamOffset + 0x5002]);
+ memcpyBigEndian16(&gameState.videoFrame,      &state[*_stateWorkRamOffset + 0x19C8]);
  memcpyBigEndian8(&gameState.framesPerStep,      &state[*_stateWorkRamOffset + 0x5005]);
  memcpyBigEndian8(&gameState.currentLevel,       &state[*_stateWorkRamOffset + 0x4AA5]);
  memcpyBigEndian8(&gameState.drawnRoom,          &state[*_stateWorkRamOffset + 0x4A36]);
@@ -100,7 +101,7 @@ uint64_t blastemInstance::computeHash()
 {
   MetroHash64 hash;
 
-//  hash.Update(&_state.currentFrame, sizeof(uint16_t));
+//  hash.Update(&_state.videoFrame, sizeof(uint16_t));
   hash.Update(&_state.framesPerStep, sizeof(uint8_t));
   hash.Update(&_state.currentLevel, sizeof(uint8_t));
   hash.Update(&_state.drawnRoom, sizeof(uint8_t));
@@ -109,8 +110,8 @@ uint64_t blastemInstance::computeHash()
 //  hash.Update(&_state.checkpointPointer, sizeof(uint32_t));
 //  hash.Update(&_state.slowfallFramesLeft, sizeof(uint8_t));
 
-  hash.Update(&_state.kidCurrentSequence, sizeof(uint8_t));
-  hash.Update(&_state.kidLastSequence, sizeof(uint8_t));
+//  hash.Update(&_state.kidCurrentSequence, sizeof(uint8_t));
+//  hash.Update(&_state.kidLastSequence, sizeof(uint8_t));
   hash.Update(&_state.kidFrame, sizeof(uint8_t));
   hash.Update(&_state.kidCurrentHP, sizeof(uint8_t));
   hash.Update(&_state.kidMaxHP, sizeof(uint8_t));
@@ -130,7 +131,6 @@ uint64_t blastemInstance::computeHash()
 
   uint64_t result;
   hash.Finalize(reinterpret_cast<uint8_t *>(&result));
-  printf("Hash: 0x%lX\n", result);
   return result;
 }
 
@@ -138,7 +138,7 @@ void blastemInstance::printState()
 {
  printf("[Jaffar2]  + Current Level: %2d\n", _state.currentLevel);
  printf("[Jaffar2]  + Current RNG Value: 0x%X\n", _state.rngValue);
- printf("[Jaffar2]  + Current Frame: %d\n", _state.currentFrame);
+ printf("[Jaffar2]  + Game / Video Frame: %d / %d\n", _state.gameFrame, _state.videoFrame);
  printf("[Jaffar2]  + [Kid]   Room: %d, Pos.x: %3d, Pos.y: %3d, Frame: %3d, Direction: %s, HP: %d/%d, Seq: %d/%d\n", _state.kidRoom, _state.kidPositionX, _state.kidPositionY, _state.kidFrame, _state.kidDirection == 255 ? "L" : "R", _state.kidCurrentHP, _state.kidMaxHP, _state.kidCurrentSequence, _state.kidLastSequence);
  printf("[Jaffar2]  + [Guard] Room: %d, Pos.x: %3d, Pos.y: %3d, Frame: %3d, Direction: %s, HP: %d/%d\n", _state.guardRoom, _state.guardPositionX, _state.guardPositionY, _state.guardFrame, _state.guardDirection == 255 ? "L" : "R", _state.guardCurrentHP, _state.guardMaxHP);
 }

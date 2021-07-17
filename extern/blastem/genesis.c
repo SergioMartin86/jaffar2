@@ -746,11 +746,15 @@ static void * z80_vdp_port_write(uint32_t vdp_port, void * vcontext, uint8_t val
 
 static uint16_t vdp_port_read(uint32_t vdp_port, m68k_context * context)
 {
+ genesis_context *gen = context->system;
+
 	if (vdp_port & 0x2700E0) {
+	 if (fast_vdp) { return get_open_bus_value(&gen->header); }
 		fatal_error("machine freeze due to read from address %X\n", 0xC00000 | vdp_port);
 	}
-	genesis_context *gen = context->system;
+
 	if (!gen->vdp_unlocked) {
+  if (fast_vdp) { return get_open_bus_value(&gen->header); }
 		fatal_error("machine freeze due to VDP read from %X without TMSS unlock\n", 0xC00000 | vdp_port);
 	}
 	vdp_port &= 0x1F;
@@ -775,6 +779,7 @@ static uint16_t vdp_port_read(uint32_t vdp_port, m68k_context * context)
 			//printf("HV Counter: %X at cycle %d\n", value, v_context->cycles);
 		}
 	} else if (vdp_port < 0x18){
+  if (fast_vdp) { return get_open_bus_value(&gen->header); }
 		fatal_error("Illegal read from PSG  port %X\n", vdp_port);
 	} else {
 		value = get_open_bus_value(&gen->header);
@@ -813,6 +818,7 @@ static uint8_t z80_vdp_port_read(uint32_t vdp_port, void * vcontext)
 {
 	z80_context * context = vcontext;
 	if (vdp_port & 0xE0) {
+	 if (fast_vdp) { printf("machine freeze due to read from Z80 address %X\n", 0x7F00 | vdp_port); return 0xFFFF; }
 		fatal_error("machine freeze due to read from Z80 address %X\n", 0x7F00 | vdp_port);
 	}
 	genesis_context * gen = context->system;
@@ -1227,6 +1233,8 @@ static void *z80_write_bank_reg(uint32_t location, void * vcontext, uint8_t valu
 
 static uint16_t unused_read(uint32_t location, void *vcontext)
 {
+ if (fast_vdp) { return 0xFFFF; }
+
 	m68k_context *context = vcontext;
 	genesis_context *gen = context->system;
 	if (location < 0x800000 || (location >= 0xA13000 && location < 0xA13100) || (location >= 0xA12000 && location < 0xA12100)) {

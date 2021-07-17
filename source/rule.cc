@@ -257,7 +257,7 @@ size_t Rule::getPropertyType(const std::string &property)
  if (property == "Guard Direction") return 8;
  if (property == "Guard Room") return 8;
 
- if (property == "Current Frame") return 16;
+ if (property == "Video Frame") return 16;
  if (property == "Frames Per Step") return 8;
  if (property == "Current Level") return 8;
  if (property == "Drawn Room") return 8;
@@ -288,7 +288,7 @@ void *Rule::getPropertyPointer(const std::string &property, blastemInstance *bla
   if (property == "Guard Direction") return &blastem->_state.guardDirection;
   if (property == "Guard Room") return &blastem->_state.guardRoom;
 
-  if (property == "Current Frame") return &blastem->_state.currentFrame;
+  if (property == "Video Frame") return &blastem->_state.videoFrame;
   if (property == "Frames Per Step") return &blastem->_state.framesPerStep;
   if (property == "Current Level") return &blastem->_state.currentLevel;
   if (property == "Drawn Room") return &blastem->_state.drawnRoom;

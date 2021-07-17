@@ -126,7 +126,7 @@ int main(int argc, char *argv[])
   genBlastem.saveState(frameSequence[0]);
 
   // Iterating move list in the sequence
-  for (int i = 1; i < sequenceLength; i++)
+  for (int i = 0; i < sequenceLength; i++)
   {
     genBlastem.playFrame(moveList[i]);
 
@@ -172,7 +172,7 @@ int main(int argc, char *argv[])
       printw("[Jaffar2]  + Move: %s\n", moveList[currentStep - 1].c_str());
       printw("[Jaffar2]  + Current Level: %2d\n", showBlastem._state.currentLevel);
       printw("[Jaffar2]  + Current RNG Value: 0x%X\n", showBlastem._state.rngValue);
-      printw("[Jaffar2]  + Current Frame: %d\n", showBlastem._state.currentFrame);
+      printw("[Jaffar2]  + Game / Video Frame: %d / %d\n", showBlastem._state.gameFrame, showBlastem._state.videoFrame);
       printw("[Jaffar2]  + [Kid]   Room: %d, Pos.x: %3d, Pos.y: %3d, Frame: %3d, Direction: %s, HP: %d/%d\n", showBlastem._state.kidRoom, showBlastem._state.kidPositionX, showBlastem._state.kidPositionY, showBlastem._state.kidFrame, showBlastem._state.kidDirection == 255 ? "L" : "R", showBlastem._state.kidCurrentHP, showBlastem._state.kidMaxHP);
       printw("[Jaffar2]  + [Guard] Room: %d, Pos.x: %3d, Pos.y: %3d, Frame: %3d, Direction: %s, HP: %d/%d\n", showBlastem._state.guardRoom, showBlastem._state.guardPositionX, showBlastem._state.guardPositionY, showBlastem._state.guardFrame, showBlastem._state.guardDirection == 255 ? "L" : "R", showBlastem._state.guardCurrentHP, showBlastem._state.guardMaxHP);
     }
