@@ -818,7 +818,17 @@ static uint8_t z80_vdp_port_read(uint32_t vdp_port, void * vcontext)
 {
 	z80_context * context = vcontext;
 	if (vdp_port & 0xE0) {
-	 if (fast_vdp) { printf("machine freeze due to read from Z80 address %X\n", 0x7F00 | vdp_port); return 0xFFFF; }
+	 if (fast_vdp)
+	 {
+	  genesis_context * gen = context->system;
+    z80_assert_reset(gen->z80, gen->m68k->current_cycle);
+    z80_clear_busreq(gen->z80, gen->m68k->current_cycle);
+    ym_reset(gen->ym);
+   //Is there any sort of VDP reset?
+    m68k_reset(gen->m68k);
+	  printf("machine freeze due to read from Z80 address %X\n", 0x7F00 | vdp_port);
+	  co_switch(_jaffarThread); return 0xFFFF;
+	 }
 		fatal_error("machine freeze due to read from Z80 address %X\n", 0x7F00 | vdp_port);
 	}
 	genesis_context * gen = context->system;
