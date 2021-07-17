@@ -1002,6 +1002,7 @@ static void init_audio()
 
 void window_setup(void)
 {
+ if (fast_vdp) return;
 	uint32_t flags = SDL_WINDOW_RESIZABLE;
 	if (is_fullscreen) {
 		flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
