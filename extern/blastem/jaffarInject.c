@@ -36,9 +36,12 @@ void reloadState()
 {
  genesis_context *gen = current_system;
 
+ gen->reset_requested = 0;
+ gen->m68k->should_return = 0;
  z80_assert_reset(gen->z80, gen->m68k->current_cycle);
  z80_clear_busreq(gen->z80, gen->m68k->current_cycle);
  ym_reset(gen->ym);
+ //Is there any sort of VDP reset?
 // m68k_reset(gen->m68k);
 
  deserialize_buffer state;
@@ -46,6 +49,9 @@ void reloadState()
  genesis_deserialize(&state, gen);
  updateFrameInfo();
  lastExitFrame = _curFrameId;
+
+// gen->header.delayed_load_slot = 0;
+// resume_68k(gen->m68k);
 }
 
 void finalize()

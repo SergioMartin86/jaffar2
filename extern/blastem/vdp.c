@@ -2214,6 +2214,7 @@ static void render_border_garbage(vdp_context *context, uint32_t address, uint8_
 
 static void draw_right_border(vdp_context *context)
 {
+ if (fast_vdp) return;
 	uint8_t *dst = context->compositebuf + BORDER_LEFT + ((context->regs[REG_MODE_4] & BIT_H40) ? 320 : 256);
 	uint8_t test_layer = context->test_port >> 7 & 3;
 	if (test_layer) {
