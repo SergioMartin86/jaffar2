@@ -85,7 +85,8 @@ void render_buffer_consumed(audio_source *src)
 
 static void audio_callback(void * userdata, uint8_t *byte_stream, int len)
 {
-	SDL_LockMutex(audio_mutex);
+ if (fast_vdp) return;
+ SDL_LockMutex(audio_mutex);
 		uint8_t all_ready;
 		do {
 			all_ready = all_sources_ready();
@@ -144,7 +145,8 @@ void render_unlock_audio()
 
 static void render_close_audio()
 {
-	SDL_LockMutex(audio_mutex);
+ if (fast_vdp) return;
+ SDL_LockMutex(audio_mutex);
 		quitting = 1;
 		SDL_CondSignal(audio_ready);
 	SDL_UnlockMutex(audio_mutex);
@@ -170,7 +172,8 @@ void render_free_audio_opaque(void *opaque)
 
 void render_audio_created(audio_source *source)
 {
-	if (sync_src == SYNC_AUDIO) {
+ if (fast_vdp) return;
+ if (sync_src == SYNC_AUDIO) {
 		//SDL_PauseAudio acquires the audio device lock, which is held while the callback runs
 		//since our callback can itself be stuck waiting on the audio_ready condition variable
 		//calling SDL_PauseAudio(0) again for audio sources after the first can deadlock
@@ -186,7 +189,8 @@ void render_audio_created(audio_source *source)
 
 void render_source_paused(audio_source *src, uint8_t remaining_sources)
 {
-	if (sync_src == SYNC_AUDIO) {
+ if (fast_vdp) return;
+ if (sync_src == SYNC_AUDIO) {
 		SDL_CondSignal(audio_ready);
 	}
 	if (!remaining_sources && render_is_audio_sync()) {
@@ -199,7 +203,8 @@ void render_source_paused(audio_source *src, uint8_t remaining_sources)
 
 void render_source_resumed(audio_source *src)
 {
-	if (sync_src == SYNC_AUDIO) {
+ if (fast_vdp) return;
+ if (sync_src == SYNC_AUDIO) {
 		//SDL_PauseAudio acquires the audio device lock, which is held while the callback runs
 		//since our callback can itself be stuck waiting on the audio_ready condition variable
 		//calling SDL_PauseAudio(0) again for audio sources after the first can deadlock
@@ -215,7 +220,8 @@ void render_source_resumed(audio_source *src)
 
 void render_do_audio_ready(audio_source *src)
 {
-	if (sync_src == SYNC_AUDIO_THREAD) {
+ if (fast_vdp) return;
+ if (sync_src == SYNC_AUDIO_THREAD) {
 		int16_t *tmp = src->front;
 		src->front = src->back;
 		src->back = tmp;
@@ -943,6 +949,8 @@ static int frame_repeat[60];
 static uint32_t sample_rate;
 static void init_audio()
 {
+ if (fast_vdp) return;
+
 	SDL_AudioSpec desired, actual;
     char * rate_str = tern_find_path(config, "audio\0rate\0", TVAL_PTR).ptrval;
    	int rate = rate_str ? atoi(rate_str) : 0;
@@ -1150,6 +1158,8 @@ void window_setup(void)
 
 void render_init(int width, int height, char * title, uint8_t fullscreen)
 {
+ if (fast_vdp) return;
+
  if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER) < 0) {
 		fatal_error("Unable to init SDL: %s\n", SDL_GetError());
 	}
@@ -1484,7 +1494,9 @@ static uint32_t last_width, last_height;
 static uint8_t interlaced;
 static void process_framebuffer(uint32_t *buffer, uint8_t which, int width)
 {
-	static uint8_t last;
+ if (fast_vdp) return;
+
+ static uint8_t last;
 	if (sync_src == SYNC_VIDEO && which <= FRAMEBUFFER_EVEN && source_frame_count < 0) {
 		source_frame++;
 		if (source_frame >= source_hz) {
@@ -1685,6 +1697,8 @@ int frame_queue_len, frame_queue_read, frame_queue_write;
 
 void render_framebuffer_updated(uint8_t which, int width)
 {
+ if (fast_vdp) return;
+
 	if (sync_src == SYNC_AUDIO_THREAD || sync_src == SYNC_EXTERNAL) {
 		SDL_LockMutex(frame_mutex);
 			while (frame_queue_len == 4) {
@@ -1723,7 +1737,9 @@ void render_framebuffer_updated(uint8_t which, int width)
 
 void render_video_loop(void)
 {
-	if (sync_src != SYNC_AUDIO_THREAD && sync_src != SYNC_EXTERNAL) {
+ if (fast_vdp) return;
+
+ if (sync_src != SYNC_AUDIO_THREAD && sync_src != SYNC_EXTERNAL) {
 		return;
 	}
 	SDL_PauseAudio(0);
@@ -1760,6 +1776,9 @@ void render_set_ui_render_fun(ui_render_fun fun)
 
 void render_update_display()
 {
+
+ if (fast_vdp) return;
+
  #ifndef DISABLE_OPENGL
 	if (render_gl) {
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -1843,6 +1862,8 @@ uint32_t render_overscan_bot()
 
 void render_wait_quit(void)
 {
+ if (fast_vdp) return;
+
  SDL_Event event;
 	while(SDL_WaitEvent(&event)) {
 		switch (event.type) {
@@ -1854,6 +1875,8 @@ void render_wait_quit(void)
 
 int render_lookup_button(char *name)
 {
+ if (fast_vdp) return 0;
+
  static tern_node *button_lookup;
 	if (!button_lookup) {
 		for (int i = SDL_CONTROLLER_BUTTON_A; i < SDL_CONTROLLER_BUTTON_MAX; i++)
@@ -1878,6 +1901,7 @@ int render_lookup_button(char *name)
 
 int render_lookup_axis(char *name)
 {
+ if (fast_vdp) return 0;
  static tern_node *axis_lookup;
 	if (!axis_lookup) {
 		for (int i = SDL_CONTROLLER_AXIS_LEFTX; i < SDL_CONTROLLER_AXIS_MAX; i++)
@@ -1970,7 +1994,8 @@ void process_events()
 #define TOGGLE_MIN_DELAY 250
 void render_toggle_fullscreen()
 {
-	//protect against event processing causing us to attempt to toggle while still toggling
+ if (fast_vdp) return;
+ //protect against event processing causing us to attempt to toggle while still toggling
 	if (in_toggle) {
 		return;
 	}
@@ -2032,6 +2057,7 @@ uint32_t render_elapsed_ms(void)
 
 void render_sleep_ms(uint32_t delay)
 {
+ if (fast_vdp) return;
  return SDL_Delay(delay);
 }
 
