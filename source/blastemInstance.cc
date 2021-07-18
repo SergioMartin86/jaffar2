@@ -139,6 +139,7 @@ void blastemInstance::printState()
  printf("[Jaffar2]  + Current Level: %2d\n", _state.currentLevel);
  printf("[Jaffar2]  + Current RNG Value: 0x%X\n", _state.rngValue);
  printf("[Jaffar2]  + Game / Video Frame: %d / %d\n", _state.gameFrame, _state.videoFrame);
+ printf("[Jaffar2]  + Checkpoint Pointer: 0x%X\n", _state.checkpointPointer);
  printf("[Jaffar2]  + [Kid]   Room: %d, Pos.x: %3d, Pos.y: %3d, Frame: %3d, Direction: %s, HP: %d/%d, Seq: %d/%d\n", _state.kidRoom, _state.kidPositionX, _state.kidPositionY, _state.kidFrame, _state.kidDirection == 255 ? "L" : "R", _state.kidCurrentHP, _state.kidMaxHP, _state.kidCurrentSequence, _state.kidLastSequence);
  printf("[Jaffar2]  + [Guard] Room: %d, Pos.x: %3d, Pos.y: %3d, Frame: %3d, Direction: %s, HP: %d/%d\n", _state.guardRoom, _state.guardPositionX, _state.guardPositionY, _state.guardFrame, _state.guardDirection == 255 ? "L" : "R", _state.guardCurrentHP, _state.guardMaxHP);
 }

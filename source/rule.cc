@@ -261,7 +261,7 @@ size_t Rule::getPropertyType(const std::string &property)
  if (property == "Frames Per Step") return 8;
  if (property == "Current Level") return 8;
  if (property == "Drawn Room") return 8;
- if (property == "Checkpoint Reached") return 32;
+ if (property == "Checkpoint Pointer") return 32;
  if (property == "Is Feather Fall") return 8;
 
  EXIT_WITH_ERROR("[Error] Rule %lu, unrecognized property: %s\n", _label, property.c_str());
@@ -292,7 +292,7 @@ void *Rule::getPropertyPointer(const std::string &property, blastemInstance *bla
   if (property == "Frames Per Step") return &blastem->_state.framesPerStep;
   if (property == "Current Level") return &blastem->_state.currentLevel;
   if (property == "Drawn Room") return &blastem->_state.drawnRoom;
-  if (property == "Checkpoint Reached") return &blastem->_state.checkpointPointer;
+  if (property == "Checkpoint Pointer") return &blastem->_state.checkpointPointer;
   if (property == "Is Feather Fall") return &blastem->_state.slowfallFramesLeft;
 
   EXIT_WITH_ERROR("[Error] Rule %lu, unrecognized property: %s\n", _label, property.c_str());
