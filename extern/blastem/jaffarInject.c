@@ -67,3 +67,12 @@ void redraw()
  vdp_run_to_vblank(v_context);
  vdp_print_sprite_table(v_context);
 }
+
+void restartGenesis()
+{
+ genesis_context *gen = current_system;
+ gen->reset_requested = 0;
+ gen->header.force_release = 1;
+ handle_reset_requests(gen);
+ resume_68k(gen->m68k);
+}

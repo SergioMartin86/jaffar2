@@ -46,6 +46,13 @@ uint32_t MCLKS_PER_68K;
 #define Z80_OPTS options
 #endif
 
+void handleError(m68k_context * context, const char* errorMessage)
+{
+ printf("Error detected: %s\n", errorMessage);
+ fflush(stdout);
+ co_switch(_jaffarThread);
+}
+
 void genesis_serialize(genesis_context *gen, serialize_buffer *buf, uint32_t m68k_pc, uint8_t all)
 {
 	if (all) {
@@ -605,26 +612,15 @@ m68k_context * sync_components(m68k_context * context, uint32_t address)
 static m68k_context * vdp_port_write(uint32_t vdp_port, m68k_context * context, uint16_t value)
 {
  genesis_context * gen = context->system;
+
 	if (vdp_port & 0x2700E0)
 	{
-   z80_assert_reset(gen->z80, gen->m68k->current_cycle);
-   z80_clear_busreq(gen->z80, gen->m68k->current_cycle);
-   ym_reset(gen->ym);
-  //Is there any sort of VDP reset?
-   m68k_reset(gen->m68k);
-  printf("Warning vdp_port_write 1\n");
-  jaffarLoop(context->system);
+	 handleError(context, "Warning  1\n");
 		fatal_error("machine freeze due to write to address %X\n", 0xC00000 | vdp_port);
 	}
 
 	if (!gen->vdp_unlocked) {
-   z80_assert_reset(gen->z80, gen->m68k->current_cycle);
-   z80_clear_busreq(gen->z80, gen->m68k->current_cycle);
-   ym_reset(gen->ym);
-  //Is there any sort of VDP reset?
-   m68k_reset(gen->m68k);
-  printf("Warning vdp_port_write 2\n");
-  jaffarLoop(context->system);
+	 handleError(context, "Warning  2\n");
 		fatal_error("machine freeze due to VDP write to %X without TMSS unlock\n", 0xC00000 | vdp_port);
 	}
 	vdp_port &= 0x1F;
@@ -692,13 +688,7 @@ static m68k_context * vdp_port_write(uint32_t vdp_port, m68k_context * context, 
 				adjust_int_cycle(context, v_context);
 			}
 		} else {
-	   z80_assert_reset(gen->z80, gen->m68k->current_cycle);
-	   z80_clear_busreq(gen->z80, gen->m68k->current_cycle);
-	   ym_reset(gen->ym);
-	  //Is there any sort of VDP reset?
-	   m68k_reset(gen->m68k);
-	  printf("Warning vdp_port_write 3\n");
-	  jaffarLoop(context->system);
+		 handleError(context, "Warning  3\n");
 			fatal_error("Illegal write to HV Counter port %X\n", vdp_port);
 		}
 		if (v_context->cycles != before_cycle) {
@@ -745,13 +735,7 @@ static void * z80_vdp_port_write(uint32_t vdp_port, void * vcontext, uint8_t val
 	genesis_context * gen = context->system;
 	vdp_port &= 0xFF;
 	if (vdp_port & 0xE0) {
-   z80_assert_reset(gen->z80, gen->m68k->current_cycle);
-   z80_clear_busreq(gen->z80, gen->m68k->current_cycle);
-   ym_reset(gen->ym);
-  //Is there any sort of VDP reset?
-   m68k_reset(gen->m68k);
-  printf("Warning z80_vdp_port_write 1\n");
-  jaffarLoop(context->system);
+	 handleError(context, "Warning  4\n");
 		fatal_error("machine freeze due to write to Z80 address %X\n", 0x7F00 | vdp_port);
 	}
 	if (vdp_port < 0x10) {
@@ -763,13 +747,7 @@ static void * z80_vdp_port_write(uint32_t vdp_port, void * vcontext, uint8_t val
 			vdp_run_context_full(gen->vdp, context->Z80_CYCLE);
 			vdp_control_port_write(gen->vdp, value << 8 | value);
 		} else {
-   z80_assert_reset(gen->z80, gen->m68k->current_cycle);
-   z80_clear_busreq(gen->z80, gen->m68k->current_cycle);
-   ym_reset(gen->ym);
-  //Is there any sort of VDP reset?
-   m68k_reset(gen->m68k);
-  printf("Warning z80_vdp_port_write 2\n");
-  jaffarLoop(context->system);
+		 handleError(context, "Warning A0");
 			fatal_error("Illegal write to HV Counter port %X\n", vdp_port);
 		}
 	} else if (vdp_port < 0x18) {
@@ -786,24 +764,12 @@ static uint16_t vdp_port_read(uint32_t vdp_port, m68k_context * context)
  genesis_context *gen = context->system;
 
 	if (vdp_port & 0x2700E0) {
-   z80_assert_reset(gen->z80, gen->m68k->current_cycle);
-   z80_clear_busreq(gen->z80, gen->m68k->current_cycle);
-   ym_reset(gen->ym);
-  //Is there any sort of VDP reset?
-   m68k_reset(gen->m68k);
-  printf("Warning vdp_port_read 1\n");
-  jaffarLoop(context->system);
+	 handleError(context, "Warning  5\n");
 		fatal_error("machine freeze due to read from address %X\n", 0xC00000 | vdp_port);
 	}
 
 	if (!gen->vdp_unlocked) {
-   z80_assert_reset(gen->z80, gen->m68k->current_cycle);
-   z80_clear_busreq(gen->z80, gen->m68k->current_cycle);
-   ym_reset(gen->ym);
-  //Is there any sort of VDP reset?
-   m68k_reset(gen->m68k);
-  printf("Warning vdp_port_read 2\n");
-  jaffarLoop(context->system);
+	 handleError(context, "Warning A1");
 		fatal_error("machine freeze due to VDP read from %X without TMSS unlock\n", 0xC00000 | vdp_port);
 	}
 	vdp_port &= 0x1F;
@@ -828,13 +794,7 @@ static uint16_t vdp_port_read(uint32_t vdp_port, m68k_context * context)
 			//printf("HV Counter: %X at cycle %d\n", value, v_context->cycles);
 		}
 	} else if (vdp_port < 0x18){
-  z80_assert_reset(gen->z80, gen->m68k->current_cycle);
-  z80_clear_busreq(gen->z80, gen->m68k->current_cycle);
-  ym_reset(gen->ym);
- //Is there any sort of VDP reset?
-  m68k_reset(gen->m68k);
- printf("Warning vdp_port_read 3\n");
- jaffarLoop(context->system);
+	 handleError(context, "Warning A2");
 		fatal_error("Illegal read from PSG  port %X\n", vdp_port);
 	} else {
 		value = get_open_bus_value(&gen->header);
@@ -873,18 +833,7 @@ static uint8_t z80_vdp_port_read(uint32_t vdp_port, void * vcontext)
 {
 	z80_context * context = vcontext;
 	if (vdp_port & 0xE0) {
-	 if (fast_vdp)
-	 {
-	  genesis_context * gen = context->system;
-    z80_assert_reset(gen->z80, gen->m68k->current_cycle);
-    z80_clear_busreq(gen->z80, gen->m68k->current_cycle);
-    ym_reset(gen->ym);
-   //Is there any sort of VDP reset?
-    m68k_reset(gen->m68k);
-	  printf("machine freeze due to read from Z80 address %X\n", 0x7F00 | vdp_port);
-	  jaffarLoop(context->system);
-	  return 0xFFFF;
-	 }
+	  handleError(context, "Warning 6\n");
 		fatal_error("machine freeze due to read from Z80 address %X\n", 0x7F00 | vdp_port);
 	}
 	genesis_context * gen = context->system;
@@ -956,13 +905,7 @@ static m68k_context * io_write(uint32_t location, m68k_context * context, uint8_
 					gen->z80->mem_pointers[1] = NULL;
 				}
 			} else {
-	   z80_assert_reset(gen->z80, gen->m68k->current_cycle);
-	   z80_clear_busreq(gen->z80, gen->m68k->current_cycle);
-	   ym_reset(gen->ym);
-	  //Is there any sort of VDP reset?
-	   m68k_reset(gen->m68k);
-	  printf("Warning io_write 1\n");
-	  jaffarLoop(context->system);
+		  handleError(context, "Warning  7\n");
 				fatal_error("68K write to unhandled Z80 address %X\n", location);
 			}
 		}
@@ -1057,13 +1000,7 @@ static m68k_context * io_write(uint32_t location, m68k_context * context, uint8_
 					ym_reset(gen->ym);
 				}
 			} else if (masked != 0x11300 && masked != 0x11000) {
-    z80_assert_reset(gen->z80, gen->m68k->current_cycle);
-    z80_clear_busreq(gen->z80, gen->m68k->current_cycle);
-    ym_reset(gen->ym);
-   //Is there any sort of VDP reset?
-    m68k_reset(gen->m68k);
-   printf("Warning io_write 2\n");
-   jaffarLoop(context->system);
+		  handleError(context, "Warning 8\n");
 				fatal_error("Machine freeze due to unmapped write to address %X\n", location | 0xA00000);
 			}
 		}
@@ -1116,13 +1053,7 @@ static uint8_t io_read(uint32_t location, m68k_context * context)
 			} else if (location < 0x7F00) {
 				value = 0xFF;
 			} else {
-    z80_assert_reset(gen->z80, gen->m68k->current_cycle);
-    z80_clear_busreq(gen->z80, gen->m68k->current_cycle);
-    ym_reset(gen->ym);
-   //Is there any sort of VDP reset?
-    m68k_reset(gen->m68k);
-   printf("Warning io_read 1\n");
-   jaffarLoop(context->system);
+		  handleError(context, "Warning  9\n");
 				fatal_error("Machine freeze due to read of Z80 VDP memory window by 68K: %X\n", location | 0xA00000);
 				value = 0xFF;
 			}
@@ -1199,13 +1130,7 @@ static uint8_t io_read(uint32_t location, m68k_context * context)
 				//A11000 is the memory control register which I am assuming is write only
 				value = get_open_bus_value(&gen->header) >> 8;
 			} else {
-    z80_assert_reset(gen->z80, gen->m68k->current_cycle);
-    z80_clear_busreq(gen->z80, gen->m68k->current_cycle);
-    ym_reset(gen->ym);
-   //Is there any sort of VDP reset?
-    m68k_reset(gen->m68k);
-   printf("Warning io_read 1\n");
-   jaffarLoop(context->system);
+		  handleError(context, "Warning  9\n");
 				location |= 0xA00000;
 				fatal_error("Machine freeze due to read of unmapped IO location %X\n", location);
 				value = 0xFF;
@@ -1338,6 +1263,7 @@ static uint16_t unused_read(uint32_t location, void *vcontext)
 		if (gen->version_reg & 0xF) {
 			return gen->tmss_lock[location >> 1 & 1];
 		} else {
+	  handleError(context, "Warning  10\n");
 			fatal_error("Machine freeze due to read from TMSS lock when TMSS is not present %X\n", location);
 			return 0xFFFF;
 		}
@@ -1345,10 +1271,12 @@ static uint16_t unused_read(uint32_t location, void *vcontext)
 		if (gen->version_reg & 0xF) {
 			return get_open_bus_value(&gen->header);
 		} else {
+	  handleError(context, "Warning 11\n");
 			fatal_error("Machine freeze due to read from TMSS control when TMSS is not present %X\n", location);
 			return 0xFFFF;
 		}
 	} else {
+  handleError(context, "Warning 12\n");
 		fatal_error("Machine freeze due to unmapped read from %X\n", location);
 		return 0xFFFF;
 	}
@@ -1398,6 +1326,7 @@ static void *unused_write(uint32_t location, void *vcontext, uint16_t value)
 	} else if (location < 0x800000 || (location >= 0xA13000 && location < 0xA13100) || (location >= 0xA12000 && location < 0xA12100)) {
 		//these writes are ignored when no relevant hardware is present
 	} else {
+  handleError(context, "Warning 13\n");
 		fatal_error("Machine freeze due to unmapped write to %X\n", location);
 	}
 	return vcontext;
@@ -1429,6 +1358,7 @@ static void *unused_write_b(uint32_t location, void *vcontext, uint8_t value)
 	} else if (location < 0x800000 || (location >= 0xA13000 && location < 0xA13100) || (location >= 0xA12000 && location < 0xA12100)) {
 		//these writes are ignored when no relevant hardware is present
 	} else {
+  handleError(context, "Warning 14\n");
 		fatal_error("Machine freeze due to unmapped byte write to %X\n", location);
 	}
 	return vcontext;
@@ -1509,7 +1439,7 @@ done:
 	return ret;
 }
 
-static void handle_reset_requests(genesis_context *gen)
+void handle_reset_requests(genesis_context *gen)
 {
 	while (gen->reset_requested || gen->header.delayed_load_slot)
 	{
@@ -1539,23 +1469,18 @@ static void handle_reset_requests(genesis_context *gen)
 extern uint8_t* _stateData;
 extern size_t _stateSize;
 
-void jaffarLoop(system_header *system)
-{
- while(1)
- {
-  if (_stateData != NULL) free(_stateData);
-  _stateData = serialize(system, &_stateSize);
-  co_switch(_jaffarThread);
-  resume_genesis(system);
- }
-}
-
 static void start_genesis(system_header *system, char *statefile)
 {
  genesis_context *gen = (genesis_context *)system;
  m68k_reset(gen->m68k);
 
- jaffarLoop(system);
+ while(1)
+ {
+  _stateData = serialize(system, &_stateSize);
+  co_switch(_jaffarThread);
+  free(_stateData);
+  resume_genesis(system);
+ }
 
  return;
 }
@@ -1639,11 +1564,9 @@ static void soft_reset(system_header *system)
 	}
 }
 
-static void free_genesis(system_header *system)
+void free_genesis(system_header *system)
 {
 	genesis_context *gen = (genesis_context *)system;
-	vdp_free(gen->vdp);
-	memmap_chunk *map = (memmap_chunk *)gen->m68k->options->gen.memmap;
 	m68k_options_free(gen->m68k->options);
 	free(gen->cart);
 	free(gen->m68k);

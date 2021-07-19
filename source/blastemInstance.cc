@@ -27,6 +27,7 @@ blastemInstance::blastemInstance(const char* libraryFile, const bool multipleLib
   _stateSize = (size_t*) dlsym(_dllHandle, "_stateSize");
   _stateWorkRamOffset = (size_t*) dlsym(_dllHandle, "_stateWorkRamOffset");
   _nextMove = (move_t*) dlsym(_dllHandle, "_nextMove");
+  _restartGenesis = (restartGenesis_t) dlsym(_dllHandle, "restartGenesis");
 }
 
 void blastemInstance::initialize(char* romFile, char* saveFile, const bool headlessMode, const bool fastVdp)
@@ -41,10 +42,17 @@ void blastemInstance::initialize(char* romFile, char* saveFile, const bool headl
  argv[2] = flag;
  argv[3] = saveFile;
  _start(argc, argv, headlessMode, fastVdp);
+ _saveFile = std::string(saveFile);
 
- loadBinFromFile(*_stateData, sizeof(uint8_t) * _STATE_DATA_SIZE, saveFile);
- loadState(*_stateData);
- playFrame(".");
+ _startStateData = (uint8_t*) malloc(sizeof(uint8_t) * _STATE_DATA_SIZE);
+ loadBinFromFile(_startStateData, sizeof(uint8_t) * _STATE_DATA_SIZE, _saveFile.c_str());
+ reset();
+}
+
+void blastemInstance::reset()
+{
+ _restartGenesis();
+ loadState(_startStateData);
 }
 
 blastemInstance::~blastemInstance()

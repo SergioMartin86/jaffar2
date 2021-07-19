@@ -9,6 +9,8 @@ typedef void (*resume_t)(void);
 typedef void (*redraw_t)(void);
 typedef void (*reloadState_t)(void);
 typedef void (*finalize_t)(void);
+typedef void (*restartGenesis_t)(void);
+
 #define MAX_MOVE_SIZE 4
 typedef char move_t[MAX_MOVE_SIZE];
 
@@ -68,6 +70,7 @@ class blastemInstance
   void saveState(uint8_t* state);
   std::vector<uint8_t> getPossibleMoveIds(const gameStateStruct& gameState);
   void setRNGValue(const uint32_t& rngValue);
+  void reset();
 
   // blastem Functions
   start_t _start;
@@ -75,13 +78,16 @@ class blastemInstance
   reloadState_t reloadState;
   finalize_t _finalize;
   redraw_t _redraw;
+  restartGenesis_t _restartGenesis;
 
   // State
   gameStateStruct _state;
   uint8_t** _stateData;
+  uint8_t* _startStateData;
   size_t* _stateSize;
   size_t* _stateWorkRamOffset;
   move_t* _nextMove;
+  std::string _saveFile;
 
   private:
 

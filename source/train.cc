@@ -466,6 +466,9 @@ void Train::computeFrames()
     // Creating thread-local storage for new frames
     std::vector<std::unique_ptr<Frame>> newThreadFrames;
 
+    // Reset blastem
+    _blastem[threadId]->reset();
+
     // Computing always the last frame while resizing the database to reduce memory footprint
     #pragma omp for schedule(guided)
     for (size_t baseFrameIdx = 0; baseFrameIdx < _currentFrameDB.size(); baseFrameIdx++)
