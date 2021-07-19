@@ -10,16 +10,24 @@ size_t _stateWorkRamOffset = 0;
 move_t _nextMove;
 m68k_context* _context;
 uint16_t lastExitFrame = 9999;
+size_t injectCalls = 0;
+
+#define MAX_INJECTS 100
 
 void jaffarInject(m68k_context *context)
 {
  _context = context;
  updateFrameInfo();
+ injectCalls++;
+
+ if (injectCalls > MAX_INJECTS) printf("Warning: too many inject calls: %lu\n", injectCalls);
+
  if (lastExitFrame != _curFrameId)
- if ((_curFrameId == _gameFrameId + 3) || _gameFrameId == 0)
+ if ((_curFrameId == _gameFrameId + 3) || _gameFrameId == 0 || injectCalls > MAX_INJECTS)
  {
   lastExitFrame = _curFrameId;
   request_exit(current_system);
+  injectCalls = 0;
  }
 }
 
