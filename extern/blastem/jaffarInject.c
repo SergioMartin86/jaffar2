@@ -79,8 +79,11 @@ void redraw()
 void restartGenesis()
 {
  genesis_context *gen = current_system;
- gen->reset_requested = 0;
- gen->header.force_release = 1;
- handle_reset_requests(gen);
+ if (fast_vdp)
+ {
+  gen->reset_requested = 0;
+  gen->header.force_release = 1;
+  handle_reset_requests(gen);
+ }
  resume_68k(gen->m68k);
 }

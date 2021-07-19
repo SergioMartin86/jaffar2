@@ -1472,9 +1472,12 @@ extern size_t _stateSize;
 void start_genesis(system_header *system, char *statefile)
 {
  genesis_context *gen = (genesis_context *)system;
- gen->reset_requested = 0;
- gen->header.force_release = 1;
- handle_reset_requests(gen);
+ if (fast_vdp)
+ {
+  gen->reset_requested = 0;
+  gen->header.force_release = 1;
+  handle_reset_requests(gen);
+ }
  m68k_reset(gen->m68k);
 
  while(1)
