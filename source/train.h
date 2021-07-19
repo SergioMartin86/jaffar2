@@ -53,15 +53,12 @@ class Train
   size_t _workerId;
   size_t _workerCount;
 
-  // Store the number of openMP threads in use
-  int _threadCount;
-
   // Communication schedule for frame exchange
   std::vector<size_t> _communicationSchedule;
 
-  // Craeting SDLPop and State class instances and rule vector, one per openMP thread
-  std::vector<blastemInstance*> _blastem;
-  std::vector<std::vector<Rule *>> _rules;
+  // Craeting SDLPop and State class instances and rule vector
+  blastemInstance* _blastem;
+  std::vector<Rule *> _rules;
 
   // Frame counter
   size_t _currentStep;

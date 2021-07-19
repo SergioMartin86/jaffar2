@@ -82,7 +82,6 @@ deps = [
   boost_dep,
   sdl2_dep,
   sdl2_image_dep,
-  dependency('openmp', required: true),
   abs_base,
   abs_cont
 ]

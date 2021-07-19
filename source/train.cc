@@ -140,8 +140,8 @@ void Train::run()
   if (_workerId == 0 && _winFrameFound == true)
   {
     printf("[Jaffar2] Win Frame Information:\n");
-    _blastem[0]->loadState(_globalWinFrame.frameStateData);
-    _blastem[0]->printState();
+    _blastem->loadState(_globalWinFrame.frameStateData);
+    _blastem->printState();
 
     printRuleStatus(_globalWinFrame);
 
@@ -457,139 +457,122 @@ void Train::computeFrames()
   _localStepFramesProcessedCounter = 0;
   _newCollisionCounter = 0;
 
-  // Processing frame database in parallel
-  #pragma omp parallel
+  // Creating thread-local storage for new frames
+  std::vector<std::unique_ptr<Frame>> newFrames;
+
+  // Reset blastem
+  _blastem->reset();
+
+  // Computing always the last frame while resizing the database to reduce memory footprint
+  for (size_t baseFrameIdx = 0; baseFrameIdx < _currentFrameDB.size(); baseFrameIdx++)
   {
-    // Getting thread id
-    int threadId = omp_get_thread_num();
+    // Storage for the base frame
+    const auto& baseFrame = _currentFrameDB[baseFrameIdx];
 
-    // Creating thread-local storage for new frames
-    std::vector<std::unique_ptr<Frame>> newThreadFrames;
+    // Getting possible moves for the current frame
+    auto gameState = _blastem->getGameState(baseFrame->frameStateData);
+    std::vector<uint8_t> possibleMoveIds = _blastem->getPossibleMoveIds(gameState);
 
-    // Reset blastem
-    _blastem[threadId]->reset();
-
-    // Computing always the last frame while resizing the database to reduce memory footprint
-    #pragma omp for schedule(guided)
-    for (size_t baseFrameIdx = 0; baseFrameIdx < _currentFrameDB.size(); baseFrameIdx++)
+    // If the restart flag is activated, then also try hitting Ctrl+A
+    if (baseFrame->isRestart == true)
     {
-      // Storage for the base frame
-      const auto& baseFrame = _currentFrameDB[baseFrameIdx];
-
-      // Getting possible moves for the current frame
-      auto gameState = _blastem[threadId]->getGameState(baseFrame->frameStateData);
-      std::vector<uint8_t> possibleMoveIds = _blastem[threadId]->getPossibleMoveIds(gameState);
-
-      // If the restart flag is activated, then also try hitting Ctrl+A
-      if (baseFrame->isRestart == true)
-      {
-       possibleMoveIds.push_back(14);
-       baseFrame->isRestart = false;
-      }
-
-      // Running possible moves
-      for (size_t idx = 0; idx < possibleMoveIds.size(); idx++)
-      {
-        // Increasing  frames processed counter
-        _localStepFramesProcessedCounter++;
-
-        // Getting possible move id
-        auto moveId = possibleMoveIds[idx];
-
-        // Getting possible move string
-        std::string move = _possibleMoves[moveId].c_str();
-
-        // Loading frame state
-        _blastem[threadId]->loadState(baseFrame->frameStateData);
-
-        // Perform the selected move
-        _blastem[threadId]->playFrame(move);
-
-        // Compute hash value
-        auto hash = _blastem[threadId]->computeHash();
-
-        // Checking for the existence of the hash in the hash databases
-        bool collisionDetected = _hashDatabase.contains(hash);
-
-        // If no collision detected with the normal databases, check the new hash DB
-        if (collisionDetected == false)
-         #pragma omp critical
-         {
-           collisionDetected |= _newHashes.contains(hash);
-
-           // If now there, add it now
-           if (collisionDetected == false) _newHashes.insert(hash);
-         }
-
-        // If collision detected, increase collision counter
-        if (collisionDetected)
-         #pragma omp atomic
-          _newCollisionCounter++;
-
-        // If collision detected, discard this frame
-        if (collisionDetected) continue;
-
-        // Creating new frame, mixing base frame information and the current blastem state
-        auto newFrame = std::make_unique<Frame>();
-        newFrame->rulesStatus = baseFrame->rulesStatus;
-
-        // If required, store move history
-        if (_storeMoveList == true)
-        {
-         newFrame->moveHistory = baseFrame->moveHistory;
-         newFrame->setMove(_currentStep, moveId);
-        }
-
-        // Evaluating rules on the new frame
-        evaluateRules(*newFrame);
-
-        // Check whether the frame needs to be flushed because it didn't reach a certain checkpoint
-        bool isFlushedFrame = checkFlush(*newFrame);
-
-        // If frame is to be flushed, discard it and proceed to the next one
-        if (isFlushedFrame) continue;
-
-        // Checks whether any fail rules were activated
-        bool isFailFrame = checkFail(*newFrame);
-
-        // If frame has failed, discard it and proceed to the next one
-        if (isFailFrame) continue;
-
-        // Check special actions for this state
-        checkSpecialActions(*newFrame);
-
-        // Storing the frame data
-        _blastem[threadId]->saveState(newFrame->frameStateData);
-
-        // Calculating current reward
-        newFrame->reward = getFrameReward(*newFrame);
-
-        // Check if the frame triggers a win condition
-        bool isWinFrame = checkWin(*newFrame);
-
-        // If frame has succeded, then flag it
-        if (isWinFrame)
-        {
-          _localWinFound = true;
-           #pragma omp critical(winFrame)
-           _localWinFrame = *newFrame;
-        }
-
-        // Contributing to flush mask
-        addFlushMask(*newFrame);
-
-        // Adding novel frame in the next frame database
-        newThreadFrames.push_back(std::move(newFrame));
-      }
-
-      // Freeing memory for the used base frame
-      _currentFrameDB[baseFrameIdx].reset();
+     possibleMoveIds.push_back(14);
+     baseFrame->isRestart = false;
     }
 
-    // Sequentially passing thread-local new frames to the common database
-    #pragma omp critical
-    for (size_t i = 0; i < newThreadFrames.size(); i++)
-     _nextFrameDB.push_back(std::move(newThreadFrames[i]));
+    // Running possible moves
+    for (size_t idx = 0; idx < possibleMoveIds.size(); idx++)
+    {
+      // Increasing  frames processed counter
+      _localStepFramesProcessedCounter++;
+
+      // Getting possible move id
+      auto moveId = possibleMoveIds[idx];
+
+      // Getting possible move string
+      std::string move = _possibleMoves[moveId].c_str();
+
+      // Loading frame state
+      _blastem->loadState(baseFrame->frameStateData);
+
+      // Perform the selected move
+      _blastem->playFrame(move);
+
+      // Compute hash value
+      auto hash = _blastem->computeHash();
+
+      // Checking for the existence of the hash in the hash databases
+      bool collisionDetected = _hashDatabase.contains(hash);
+
+      // If no collision detected with the normal databases, check the new hash DB
+      if (collisionDetected == false)
+       {
+         collisionDetected |= _newHashes.contains(hash);
+
+         // If now there, add it now
+         if (collisionDetected == false) _newHashes.insert(hash);
+       }
+
+      // If collision detected, increase collision counter
+      if (collisionDetected)   _newCollisionCounter++;
+
+      // If collision detected, discard this frame
+      if (collisionDetected) continue;
+
+      // Creating new frame, mixing base frame information and the current blastem state
+      auto newFrame = std::make_unique<Frame>();
+      newFrame->rulesStatus = baseFrame->rulesStatus;
+
+      // If required, store move history
+      if (_storeMoveList == true)
+      {
+       newFrame->moveHistory = baseFrame->moveHistory;
+       newFrame->setMove(_currentStep, moveId);
+      }
+
+      // Evaluating rules on the new frame
+      evaluateRules(*newFrame);
+
+      // Check whether the frame needs to be flushed because it didn't reach a certain checkpoint
+      bool isFlushedFrame = checkFlush(*newFrame);
+
+      // If frame is to be flushed, discard it and proceed to the next one
+      if (isFlushedFrame) continue;
+
+      // Checks whether any fail rules were activated
+      bool isFailFrame = checkFail(*newFrame);
+
+      // If frame has failed, discard it and proceed to the next one
+      if (isFailFrame) continue;
+
+      // Check special actions for this state
+      checkSpecialActions(*newFrame);
+
+      // Storing the frame data
+      _blastem->saveState(newFrame->frameStateData);
+
+      // Calculating current reward
+      newFrame->reward = getFrameReward(*newFrame);
+
+      // Check if the frame triggers a win condition
+      bool isWinFrame = checkWin(*newFrame);
+
+      // If frame has succeded, then flag it
+      if (isWinFrame)
+      {
+        _localWinFound = true;
+         _localWinFrame = *newFrame;
+      }
+
+      // Contributing to flush mask
+      addFlushMask(*newFrame);
+
+      // Adding novel frame in the next frame database
+      _nextFrameDB.push_back(std::move(newFrame));
+    }
+
+    // Freeing memory for the used base frame
+    _currentFrameDB[baseFrameIdx].reset();
   }
 }
 
@@ -756,25 +739,22 @@ void Train::updateHashDatabases()
 
 void Train::evaluateRules(Frame &frame)
 {
-  // Getting thread id
-  int threadId = omp_get_thread_num();
-
-  for (size_t ruleId = 0; ruleId < _rules[threadId].size(); ruleId++)
+  for (size_t ruleId = 0; ruleId < _rules.size(); ruleId++)
   {
     // Evaluate rule only if it's active
     if (frame.rulesStatus[ruleId] == false)
     {
       // Checking dependencies first. If not met, continue to the next rule
       bool dependenciesMet = true;
-      for (size_t i = 0; i < _rules[threadId][ruleId]->_dependenciesIndexes.size(); i++)
-        if (frame.rulesStatus[_rules[threadId][ruleId]->_dependenciesIndexes[i]] == false)
+      for (size_t i = 0; i < _rules[ruleId]->_dependenciesIndexes.size(); i++)
+        if (frame.rulesStatus[_rules[ruleId]->_dependenciesIndexes[i]] == false)
           dependenciesMet = false;
 
       // If dependencies aren't met, then continue to next rule
       if (dependenciesMet == false) continue;
 
       // Checking if conditions are met
-      bool isSatisfied = _rules[threadId][ruleId]->evaluate();
+      bool isSatisfied = _rules[ruleId]->evaluate();
 
       // If it's achieved, update its status and run its actions
       if (isSatisfied) satisfyRule(frame, ruleId);
@@ -784,29 +764,23 @@ void Train::evaluateRules(Frame &frame)
 
 void Train::checkSpecialActions(const Frame &frame)
 {
- // Getting thread id
- int threadId = omp_get_thread_num();
-
- for (size_t ruleId = 0; ruleId < _rules[threadId].size(); ruleId++)
+ for (size_t ruleId = 0; ruleId < _rules.size(); ruleId++)
   if (frame.rulesStatus[ruleId] == true)
   {
    // Checking if this rule makes guard disappear
-   if (_rules[threadId][ruleId]->_isRemoveGuard == true)
+   if (_rules[ruleId]->_isRemoveGuard == true)
    {
-    _blastem[threadId]->_state.guardPositionY = 250;
-    _blastem[threadId]->_state.guardPositionX = 250;
+    _blastem->_state.guardPositionY = 250;
+    _blastem->_state.guardPositionX = 250;
    }
   }
 }
 
 bool Train::checkFail(const Frame &frame)
 {
- // Getting thread id
- int threadId = omp_get_thread_num();
-
- for (size_t ruleId = 0; ruleId < _rules[threadId].size(); ruleId++)
+ for (size_t ruleId = 0; ruleId < _rules.size(); ruleId++)
   if (frame.rulesStatus[ruleId] == true)
-   if (_rules[threadId][ruleId]->_isFailRule == true)
+   if (_rules[ruleId]->_isFailRule == true)
     return true;
 
  return false;
@@ -814,12 +788,9 @@ bool Train::checkFail(const Frame &frame)
 
 bool Train::checkWin(const Frame &frame)
 {
- // Getting thread id
- int threadId = omp_get_thread_num();
-
- for (size_t ruleId = 0; ruleId < _rules[threadId].size(); ruleId++)
+ for (size_t ruleId = 0; ruleId < _rules.size(); ruleId++)
   if (frame.rulesStatus[ruleId] == true)
-   if (_rules[threadId][ruleId]->_isWinRule == true)
+   if (_rules[ruleId]->_isWinRule == true)
     return true;
 
  return false;
@@ -827,10 +798,7 @@ bool Train::checkWin(const Frame &frame)
 
 bool Train::checkFlush(const Frame &frame)
 {
- // Getting thread id
- int threadId = omp_get_thread_num();
-
- for (size_t ruleId = 0; ruleId < _rules[threadId].size(); ruleId++)
+ for (size_t ruleId = 0; ruleId < _rules.size(); ruleId++)
   if (_flushingMask[ruleId] == 1 && frame.rulesStatus[ruleId] == false)
    return true;
 
@@ -839,38 +807,29 @@ bool Train::checkFlush(const Frame &frame)
 
 void Train::addFlushMask(const Frame &frame)
 {
- // Getting thread id
- int threadId = omp_get_thread_num();
-
- for (size_t ruleId = 0; ruleId < _rules[threadId].size(); ruleId++)
+ for (size_t ruleId = 0; ruleId < _rules.size(); ruleId++)
   if (frame.rulesStatus[ruleId] == true)
-   if (_rules[threadId][ruleId]->_isFlushRule == true)
+   if (_rules[ruleId]->_isFlushRule == true)
     _flushingMask[ruleId] = 1;
 }
 
 float Train::getRuleRewards(const Frame &frame)
 {
- // Getting thread id
- int threadId = omp_get_thread_num();
-
  float reward = 0.0;
 
- for (size_t ruleId = 0; ruleId < _rules[threadId].size(); ruleId++)
+ for (size_t ruleId = 0; ruleId < _rules.size(); ruleId++)
   if (frame.rulesStatus[ruleId] == true)
-    reward += _rules[threadId][ruleId]->_reward;
+    reward += _rules[ruleId]->_reward;
  return reward;
 }
 
 void Train::satisfyRule(Frame &frame, const size_t ruleId)
 {
- // Getting thread id
- int threadId = omp_get_thread_num();
-
  // Recursively run actions for the yet unsatisfied rules that are satisfied by this one and mark them as satisfied
- for (size_t satisfiedIdx = 0; satisfiedIdx < _rules[threadId][ruleId]->_satisfiesIndexes.size(); satisfiedIdx++)
+ for (size_t satisfiedIdx = 0; satisfiedIdx < _rules[ruleId]->_satisfiesIndexes.size(); satisfiedIdx++)
  {
   // Obtaining index
-  size_t subRuleId = _rules[threadId][ruleId]->_satisfiesIndexes[satisfiedIdx];
+  size_t subRuleId = _rules[ruleId]->_satisfiesIndexes[satisfiedIdx];
 
   // Only activate it if it hasn't been activated before
   if(frame.rulesStatus[subRuleId] == false)
@@ -881,7 +840,7 @@ void Train::satisfyRule(Frame &frame, const size_t ruleId)
  frame.rulesStatus[ruleId] = true;
 
  // It it contained a restart action, set it now (so it doesn't repeat later)
- if (_rules[threadId][ruleId]->_isRestartRule) frame.isRestart = true;
+ if (_rules[ruleId]->_isRestartRule) frame.isRestart = true;
 }
 
 void Train::printTrainStatus()
@@ -908,13 +867,13 @@ void Train::printTrainStatus()
 
   printf("[Jaffar2] Best Frame Information:\n");
 
-  _blastem[0]->loadState(_bestFrame.frameStateData);
-  _blastem[0]->printState();
+  _blastem->loadState(_bestFrame.frameStateData);
+  _blastem->printState();
 
   printRuleStatus(_bestFrame);
 
   // Getting kid room
-  int kidCurrentRoom = _blastem[0]->_state.kidRoom;
+  int kidCurrentRoom = _blastem->_state.kidRoom;
 
   // Getting magnet values for the kid
   auto kidMagnet = getKidMagnetValues(_bestFrame, kidCurrentRoom);
@@ -923,7 +882,7 @@ void Train::printTrainStatus()
   printf("[Jaffar2]  + Kid Vertical Magnet Intensity: %.1f\n", kidMagnet.intensityY);
 
   // Getting guard room
-  int guardCurrentRoom = _blastem[0]->_state.guardRoom;
+  int guardCurrentRoom = _blastem->_state.guardRoom;
 
   // Getting magnet values for the guard
   auto guardMagnet = getGuardMagnetValues(_bestFrame, guardCurrentRoom);
@@ -944,9 +903,6 @@ void Train::printTrainStatus()
 
 magnetInfo_t Train::getKidMagnetValues(const Frame &frame, const int room)
 {
- // Getting thread id
- int threadId = omp_get_thread_num();
-
  // Storage for magnet information
  magnetInfo_t magnetInfo;
  magnetInfo.positionX = 0.0f;
@@ -958,17 +914,17 @@ magnetInfo_t Train::getKidMagnetValues(const Frame &frame, const int room)
  {
   if (frame.rulesStatus[ruleId] == true)
   {
-    const auto& rule = _rules[threadId][ruleId];
+    const auto& rule = _rules[ruleId];
 
-    for (size_t i = 0; i < _rules[threadId][ruleId]->_kidMagnetPositionX.size(); i++)
+    for (size_t i = 0; i < _rules[ruleId]->_kidMagnetPositionX.size(); i++)
      if (rule->_kidMagnetPositionX[i].room == room)
       magnetInfo.positionX = rule->_kidMagnetPositionX[i].value;
 
-    for (size_t i = 0; i < _rules[threadId][ruleId]->_kidMagnetIntensityX.size(); i++)
+    for (size_t i = 0; i < _rules[ruleId]->_kidMagnetIntensityX.size(); i++)
      if (rule->_kidMagnetIntensityX[i].room == room)
       magnetInfo.intensityX = rule->_kidMagnetIntensityX[i].value;
 
-    for (size_t i = 0; i < _rules[threadId][ruleId]->_kidMagnetIntensityY.size(); i++)
+    for (size_t i = 0; i < _rules[ruleId]->_kidMagnetIntensityY.size(); i++)
      if (rule->_kidMagnetIntensityY[i].room == room)
       magnetInfo.intensityY = rule->_kidMagnetIntensityY[i].value;
   }
@@ -979,9 +935,6 @@ magnetInfo_t Train::getKidMagnetValues(const Frame &frame, const int room)
 
 magnetInfo_t Train::getGuardMagnetValues(const Frame &frame, const int room)
 {
- // Getting thread id
- int threadId = omp_get_thread_num();
-
  // Storage for magnet information
  magnetInfo_t magnetInfo;
  magnetInfo.positionX = 0.0f;
@@ -992,17 +945,17 @@ magnetInfo_t Train::getGuardMagnetValues(const Frame &frame, const int room)
  for (size_t ruleId = 0; ruleId < frame.rulesStatus.size(); ruleId++)
   if (frame.rulesStatus[ruleId] == true)
   {
-    const auto& rule = _rules[threadId][ruleId];
+    const auto& rule = _rules[ruleId];
 
-    for (size_t i = 0; i < _rules[threadId][ruleId]->_guardMagnetPositionX.size(); i++)
+    for (size_t i = 0; i < _rules[ruleId]->_guardMagnetPositionX.size(); i++)
      if (rule->_guardMagnetPositionX[i].room == room)
       magnetInfo.positionX = rule->_guardMagnetPositionX[i].value;
 
-    for (size_t i = 0; i < _rules[threadId][ruleId]->_guardMagnetIntensityX.size(); i++)
+    for (size_t i = 0; i < _rules[ruleId]->_guardMagnetIntensityX.size(); i++)
      if (rule->_guardMagnetIntensityX[i].room == room)
       magnetInfo.intensityX = rule->_guardMagnetIntensityX[i].value;
 
-    for (size_t i = 0; i < _rules[threadId][ruleId]->_guardMagnetIntensityY.size(); i++)
+    for (size_t i = 0; i < _rules[ruleId]->_guardMagnetIntensityY.size(); i++)
      if (rule->_guardMagnetIntensityY[i].room == room)
       magnetInfo.intensityY = rule->_guardMagnetIntensityY[i].value;
   }
@@ -1012,23 +965,20 @@ magnetInfo_t Train::getGuardMagnetValues(const Frame &frame, const int room)
 
 float Train::getFrameReward(const Frame &frame)
 {
-  // Getting thread id
-  int threadId = omp_get_thread_num();
-
   // Accumulator for total reward
   float reward = getRuleRewards(frame);
 
   // Getting kid room
-  int kidCurrentRoom = _blastem[threadId]->_state.kidRoom;
+  int kidCurrentRoom = _blastem->_state.kidRoom;
 
   // Getting magnet values for the kid
   auto kidMagnet = getKidMagnetValues(frame, kidCurrentRoom);
 
   // Getting kid's current frame
-  const auto curKidFrame = _blastem[threadId]->_state.kidFrame;
+  const auto curKidFrame = _blastem->_state.kidFrame;
 
   // Evaluating kidMagnet's reward on the X axis
-  const float kidDiffX = std::abs(_blastem[threadId]->_state.kidPositionX - kidMagnet.positionX);
+  const float kidDiffX = std::abs(_blastem->_state.kidPositionX - kidMagnet.positionX);
   reward += (float) kidMagnet.intensityX * (512.0f - kidDiffX);
 
   // For positive Y axis kidMagnet, rewarding climbing frames
@@ -1045,7 +995,7 @@ float Train::getFrameReward(const Frame &frame)
     if (curKidFrame >= 135 && curKidFrame <= 149) reward += (float) kidMagnet.intensityY * (22.0f + (curKidFrame - 134));
 
     // Adding absolute reward for Y position
-    reward += (float) kidMagnet.intensityY * (512.0f - _blastem[threadId]->_state.kidPositionY);
+    reward += (float) kidMagnet.intensityY * (512.0f - _blastem->_state.kidPositionY);
   }
 
   // For negative Y axis kidMagnet, rewarding falling/climbing down frames
@@ -1070,27 +1020,27 @@ float Train::getFrameReward(const Frame &frame)
     if (curKidFrame == 148) reward += -2.0f + (float) kidMagnet.intensityY;
 
     // Adding absolute reward for Y position
-    reward += (float) -1.0f * kidMagnet.intensityY * (_blastem[threadId]->_state.kidPositionY);
+    reward += (float) -1.0f * kidMagnet.intensityY * (_blastem->_state.kidPositionY);
   }
 
   // Getting guard room
-  int guardCurrentRoom = _blastem[threadId]->_state.guardRoom;
+  int guardCurrentRoom = _blastem->_state.guardRoom;
 
   // Getting magnet values for the guard
   auto guardMagnet = getGuardMagnetValues(frame, guardCurrentRoom);
 
   // Getting guard's current frame
-  const auto curGuardFrame = _blastem[threadId]->_state.guardFrame;
+  const auto curGuardFrame = _blastem->_state.guardFrame;
 
   // Evaluating guardMagnet's reward on the X axis
-  const float guardDiffX = std::abs(_blastem[threadId]->_state.guardPositionX - guardMagnet.positionX);
+  const float guardDiffX = std::abs(_blastem->_state.guardPositionX - guardMagnet.positionX);
   reward += (float) guardMagnet.intensityX * (512.0f - guardDiffX);
 
   // For positive Y axis guardMagnet
   if ((float) guardMagnet.intensityY > 0.0f)
   {
    // Adding absolute reward for Y position
-   reward += (float) guardMagnet.intensityY * (512.0f - _blastem[threadId]->_state.guardPositionY);
+   reward += (float) guardMagnet.intensityY * (512.0f - _blastem->_state.guardPositionY);
   }
 
   // For negative Y axis guardMagnet, rewarding falling/climbing down frames
@@ -1103,7 +1053,7 @@ float Train::getFrameReward(const Frame &frame)
     if (curGuardFrame == 106) reward += -2.0f + (float) guardMagnet.intensityY;
 
     // Adding absolute reward for Y position
-    reward += (float) -1.0f * guardMagnet.intensityY * (_blastem[threadId]->_state.guardPositionY);
+    reward += (float) -1.0f * guardMagnet.intensityY * (_blastem->_state.guardPositionY);
   }
 
   // Returning reward
@@ -1113,11 +1063,7 @@ float Train::getFrameReward(const Frame &frame)
 Train::Train(int argc, char *argv[])
 {
   // Initialize the MPI environment
-  const int required = MPI_THREAD_SERIALIZED;
-  int provided;
-  MPI_Init_thread(&argc, &argv, required, &provided);
-  if (required != provided)
-   EXIT_WITH_ERROR("[ERROR] Error initializing threaded MPI");
+  MPI_Init(&argc, &argv);
 
   // Get the number of processes
   int mpiSize;
@@ -1128,7 +1074,6 @@ Train::Train(int argc, char *argv[])
   int mpiRank;
   MPI_Comm_rank(MPI_COMM_WORLD, &mpiRank);
   _workerId = (size_t)mpiRank;
-  _threadCount = omp_get_max_threads();
 
   // Profiling information
   _searchTotalTime = 0.0;
@@ -1266,29 +1211,23 @@ Train::Train(int argc, char *argv[])
    scriptFilesJs.push_back(scriptJs);
   }
 
-  // Getting number of omp threads and resizing containers based on that
-  _blastem.resize(_threadCount);
-  _rules.resize(_threadCount);
+  // Creating Blastem Instance
+  _blastem = new blastemInstance("libblastem.so", false);
+  _blastem->initialize(romFilePath.c_str(), saveFilePath.c_str(), true, true);
 
-  // Creating SDL Pop Instance, one per openMP Thread
-  for (int threadId = 0; threadId < _threadCount; threadId++)
-  {
-    _blastem[threadId] = new blastemInstance("libblastem.so", true);
-    _blastem[threadId]->initialize(romFilePath.c_str(), saveFilePath.c_str(), true, true);
-
-   // Adding rules, pointing to the thread-specific blastem instances
+   // Adding rules
    for (size_t scriptId = 0; scriptId < scriptFilesJs.size(); scriptId++)
     for (size_t ruleId = 0; ruleId < scriptFilesJs[scriptId]["Rules"].size(); ruleId++)
-     _rules[threadId].push_back(new Rule(scriptFilesJs[scriptId]["Rules"][ruleId], _blastem[threadId]));
+     _rules.push_back(new Rule(scriptFilesJs[scriptId]["Rules"][ruleId], _blastem));
 
    // Setting global rule count
-   _ruleCount = _rules[threadId].size();
+   _ruleCount = _rules.size();
 
    // Checking for repeated rule labels
    std::set<size_t> ruleLabelSet;
    for (size_t ruleId = 0; ruleId < _ruleCount; ruleId++)
    {
-    size_t label = _rules[threadId][ruleId]->_label;
+    size_t label = _rules[ruleId]->_label;
     ruleLabelSet.insert(label);
     if (ruleLabelSet.size() < ruleId + 1)
      EXIT_WITH_ERROR("[ERROR] Rule label %lu is repeated in the configuration file.\n", label);
@@ -1296,39 +1235,38 @@ Train::Train(int argc, char *argv[])
 
    // Looking for rule dependency indexes that match their labels
    for (size_t ruleId = 0; ruleId < _ruleCount; ruleId++)
-    for (size_t depId = 0; depId < _rules[threadId][ruleId]->_dependenciesLabels.size(); depId++)
+    for (size_t depId = 0; depId < _rules[ruleId]->_dependenciesLabels.size(); depId++)
     {
      bool foundLabel = false;
-     size_t label = _rules[threadId][ruleId]->_dependenciesLabels[depId];
-     if (label == _rules[threadId][ruleId]->_label) EXIT_WITH_ERROR("[ERROR] Rule %lu references itself in dependencies vector.\n", label);
+     size_t label = _rules[ruleId]->_dependenciesLabels[depId];
+     if (label == _rules[ruleId]->_label) EXIT_WITH_ERROR("[ERROR] Rule %lu references itself in dependencies vector.\n", label);
      for (size_t subRuleId = 0; subRuleId < _ruleCount; subRuleId++)
-      if (_rules[threadId][subRuleId]->_label == label)
+      if (_rules[subRuleId]->_label == label)
       {
-       _rules[threadId][ruleId]->_dependenciesIndexes[depId] = subRuleId;
+       _rules[ruleId]->_dependenciesIndexes[depId] = subRuleId;
        foundLabel = true;
        break;
       }
-     if (foundLabel == false) EXIT_WITH_ERROR("[ERROR] Could not find rule label %lu, specified as dependency by rule %lu.\n", label, _rules[threadId][ruleId]->_label);
+     if (foundLabel == false) EXIT_WITH_ERROR("[ERROR] Could not find rule label %lu, specified as dependency by rule %lu.\n", label, _rules[ruleId]->_label);
     }
 
    // Looking for rule satisfied sub-rules indexes that match their labels
    for (size_t ruleId = 0; ruleId < _ruleCount; ruleId++)
-    for (size_t satisfiedId = 0; satisfiedId < _rules[threadId][ruleId]->_satisfiesLabels.size(); satisfiedId++)
+    for (size_t satisfiedId = 0; satisfiedId < _rules[ruleId]->_satisfiesLabels.size(); satisfiedId++)
     {
      bool foundLabel = false;
-     size_t label = _rules[threadId][ruleId]->_satisfiesLabels[satisfiedId];
-     if (label == _rules[threadId][ruleId]->_label) EXIT_WITH_ERROR("[ERROR] Rule %lu references itself in satisfied vector.\n", label);
+     size_t label = _rules[ruleId]->_satisfiesLabels[satisfiedId];
+     if (label == _rules[ruleId]->_label) EXIT_WITH_ERROR("[ERROR] Rule %lu references itself in satisfied vector.\n", label);
 
      for (size_t subRuleId = 0; subRuleId < _ruleCount; subRuleId++)
-      if (_rules[threadId][subRuleId]->_label == label)
+      if (_rules[subRuleId]->_label == label)
       {
-       _rules[threadId][ruleId]->_satisfiesIndexes[satisfiedId] = subRuleId;
+       _rules[ruleId]->_satisfiesIndexes[satisfiedId] = subRuleId;
        foundLabel = true;
        break;
       }
      if (foundLabel == false) EXIT_WITH_ERROR("[ERROR] Could not find rule label %lu, specified as satisfied by rule %lu.\n", label, satisfiedId);
     }
-  }
 
   // Allocating database flushing mask
   _flushingMask.resize(_ruleCount, 0);
@@ -1361,10 +1299,10 @@ Train::Train(int argc, char *argv[])
   if (_workerId == 0)
   {
     // Computing initial hash
-    const auto hash = _blastem[0]->computeHash();
+    const auto hash = _blastem->computeHash();
 
     auto initialFrame = std::make_unique<Frame>();
-    _blastem[0]->saveState(initialFrame->frameStateData);
+    _blastem->saveState(initialFrame->frameStateData);
     initialFrame->rulesStatus = rulesStatus;
 
     // Evaluating Rules on initial frame
