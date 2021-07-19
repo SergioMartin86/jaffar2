@@ -50,7 +50,7 @@ void handleError(m68k_context * context, const char* errorMessage)
 {
  printf("Error detected: %s\n", errorMessage);
  fflush(stdout);
- co_switch(_jaffarThread);
+ start_genesis(context->system, "");
 }
 
 void genesis_serialize(genesis_context *gen, serialize_buffer *buf, uint32_t m68k_pc, uint8_t all)
@@ -1469,9 +1469,12 @@ void handle_reset_requests(genesis_context *gen)
 extern uint8_t* _stateData;
 extern size_t _stateSize;
 
-static void start_genesis(system_header *system, char *statefile)
+void start_genesis(system_header *system, char *statefile)
 {
  genesis_context *gen = (genesis_context *)system;
+ gen->reset_requested = 0;
+ gen->header.force_release = 1;
+ handle_reset_requests(gen);
  m68k_reset(gen->m68k);
 
  while(1)

@@ -20,3 +20,4 @@ extern void jaffarInject(m68k_context *context);
 extern void updateFrameInfo();
 extern void reloadState();
 extern void redraw();
+extern void restartGenesis();
