@@ -276,6 +276,7 @@ static void interp_sample(audio_source *src, int16_t last, int16_t current)
 static uint32_t sync_samples;
 void render_put_mono_sample(audio_source *src, int16_t value)
 {
+ return;
 	value = lowpass_sample(src, src->last_left, value);
 	src->buffer_fraction += src->buffer_inc;
 	uint32_t base = render_is_audio_sync() ? 0 : src->read_end;
@@ -294,6 +295,7 @@ void render_put_mono_sample(audio_source *src, int16_t value)
 
 void render_put_stereo_sample(audio_source *src, int16_t left, int16_t right)
 {
+ return;
 	left = lowpass_sample(src, src->last_left, left);
 	right = lowpass_sample(src, src->last_right, right);
 	src->buffer_fraction += src->buffer_inc;

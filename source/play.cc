@@ -115,33 +115,32 @@ int main(int argc, char *argv[])
   refresh();
 
   // Initializing replay generating SDLPop Instance
-  blastemInstance genBlastem;
-  genBlastem.initialize(romFilePath.c_str(), saveFilePath.c_str(), true, false);
+  blastemInstance blastem;
+  blastem.initialize(romFilePath.c_str(), saveFilePath.c_str(), true, false);
 
   // Storage for sequence frames
   std::vector<uint8_t*> frameSequence;
 
   // Saving initial frame
   frameSequence.push_back((uint8_t*) malloc(sizeof(uint8_t) * _STATE_DATA_SIZE));
-  genBlastem.saveState(frameSequence[0]);
+  blastem.saveState(frameSequence[0]);
 
   // Iterating move list in the sequence
   for (int i = 0; i < sequenceLength; i++)
   {
-    genBlastem.playFrame(moveList[i]);
+    blastem.playFrame(moveList[i]);
 
     // Storing new frame
     frameSequence.push_back((uint8_t*) malloc(sizeof(uint8_t) * _STATE_DATA_SIZE));
-    genBlastem.saveState(frameSequence[i]);
+    blastem.saveState(frameSequence[i]);
   }
 
-  genBlastem.finalize();
+  printw("[Jaffar] Opening blastem window...\n");
 
-  printw("[Jaffar] Opening BlastEm window...\n");
+  refresh();
 
   // Initializing showing SDLPop Instance
-  blastemInstance showBlastem;
-  showBlastem.initialize(romFilePath.c_str(), saveFilePath.c_str(), false, false);
+  blastem.initialize(romFilePath.c_str(), saveFilePath.c_str(), false, false);
 
   // Variable for current step in view
   int currentStep = 1;
@@ -154,6 +153,8 @@ int main(int argc, char *argv[])
    printw("[Jaffar]  s: quicksave | g: set RNG state | q: quit  \n");
   }
 
+  refresh();
+
   // Flag to display frame information
   bool showFrameInfo = true;
 
@@ -162,19 +163,19 @@ int main(int argc, char *argv[])
   do
   {
     // Loading requested step
-    showBlastem.loadState(frameSequence[currentStep - 1]);
-    showBlastem.redraw();
+    blastem.loadState(frameSequence[currentStep - 1]);
+    blastem.redraw();
 
     if (showFrameInfo)
     {
       printw("[Jaffar2] ----------------------------------------------------------------\n");
       printw("[Jaffar2] Current Step #: %d / %d\n", currentStep, sequenceLength);
       printw("[Jaffar2]  + Move: %s\n", moveList[currentStep - 1].c_str());
-      printw("[Jaffar2]  + Current Level: %2d\n", showBlastem._state.currentLevel);
-      printw("[Jaffar2]  + Current RNG Value: 0x%X\n", showBlastem._state.rngValue);
-      printw("[Jaffar2]  + Game / Video Frame: %d / %d\n", showBlastem._state.gameFrame, showBlastem._state.videoFrame);
-      printw("[Jaffar2]  + [Kid]   Room: %d, Pos.x: %3d, Pos.y: %3d, Frame: %3d, Direction: %s, HP: %d/%d\n", showBlastem._state.kidRoom, showBlastem._state.kidPositionX, showBlastem._state.kidPositionY, showBlastem._state.kidFrame, showBlastem._state.kidDirection == 255 ? "L" : "R", showBlastem._state.kidCurrentHP, showBlastem._state.kidMaxHP);
-      printw("[Jaffar2]  + [Guard] Room: %d, Pos.x: %3d, Pos.y: %3d, Frame: %3d, Direction: %s, HP: %d/%d\n", showBlastem._state.guardRoom, showBlastem._state.guardPositionX, showBlastem._state.guardPositionY, showBlastem._state.guardFrame, showBlastem._state.guardDirection == 255 ? "L" : "R", showBlastem._state.guardCurrentHP, showBlastem._state.guardMaxHP);
+      printw("[Jaffar2]  + Current Level: %2d\n", blastem._state.currentLevel);
+      printw("[Jaffar2]  + Current RNG Value: 0x%X\n", blastem._state.rngValue);
+      printw("[Jaffar2]  + Game / Video Frame: %d / %d\n", blastem._state.gameFrame, blastem._state.videoFrame);
+      printw("[Jaffar2]  + [Kid]   Room: %d, Pos.x: %3d, Pos.y: %3d, Frame: %3d, Direction: %s, HP: %d/%d\n", blastem._state.kidRoom, blastem._state.kidPositionX, blastem._state.kidPositionY, blastem._state.kidFrame, blastem._state.kidDirection == 255 ? "L" : "R", blastem._state.kidCurrentHP, blastem._state.kidMaxHP);
+      printw("[Jaffar2]  + [Guard] Room: %d, Pos.x: %3d, Pos.y: %3d, Frame: %3d, Direction: %s, HP: %d/%d\n", blastem._state.guardRoom, blastem._state.guardPositionX, blastem._state.guardPositionY, blastem._state.guardFrame, blastem._state.guardDirection == 255 ? "L" : "R", blastem._state.guardCurrentHP, blastem._state.guardMaxHP);
     }
 
     // Resetting show frame info flag
@@ -227,10 +228,10 @@ int main(int argc, char *argv[])
       // Setting input as new rng
       char str[80];
       getstr(str);
-      showBlastem.setRNGValue(std::stol(str));
+      blastem.setRNGValue(std::stol(str));
 
       // Replacing current sequence
-      showBlastem.saveState(frameSequence[currentStep-1]);
+      blastem.saveState(frameSequence[currentStep-1]);
     }
 
   } while (command != 'q');

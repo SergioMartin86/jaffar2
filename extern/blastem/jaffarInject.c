@@ -60,6 +60,13 @@ void reloadState()
  updateFrameInfo();
  lastExitFrame = _curFrameId;
 
+ if (!headless)
+ {
+  vdp_context * v_context = gen->vdp;
+  vdp_run_to_vblank(v_context);
+  vdp_print_sprite_table(v_context);
+ }
+
 // gen->header.delayed_load_slot = 0;
 // resume_68k(gen->m68k);
 }
@@ -67,6 +74,7 @@ void reloadState()
 void finalize()
 {
  system_request_exit(current_system, 1);
+ current_system->free_context(current_system);
  SDL_Quit();
 }
 

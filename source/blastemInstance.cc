@@ -384,7 +384,7 @@ void blastemInstance::saveState(uint8_t* state)
 
 void blastemInstance::redraw()
 {
- redraw();
+// redraw();
 }
 
 void blastemInstance::finalize()

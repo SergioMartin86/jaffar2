@@ -85,19 +85,6 @@ void render_buffer_consumed(audio_source *src)
 
 static void audio_callback(void * userdata, uint8_t *byte_stream, int len)
 {
- if (fast_vdp) return;
- SDL_LockMutex(audio_mutex);
-		uint8_t all_ready;
-		do {
-			all_ready = all_sources_ready();
-			if (!quitting && !all_ready) {
-				SDL_CondWait(audio_ready, audio_mutex);
-			}
-		} while(!quitting && !all_ready);
-		if (!quitting) {
-			mix_and_convert(byte_stream, len, NULL);
-		}
-	SDL_UnlockMutex(audio_mutex);
 }
 
 #define NO_LAST_BUFFERED -2000000000
