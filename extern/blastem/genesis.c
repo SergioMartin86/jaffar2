@@ -610,12 +610,14 @@ static m68k_context * vdp_port_write(uint32_t vdp_port, m68k_context * context, 
 	if (vdp_port & 0x2700E0)
 	{
 	 handleError(context, "Warning  1\n");
-		fatal_error("machine freeze due to write to address %X\n", 0xC00000 | vdp_port);
+//		fatal_error("machine freeze due to write to address %X\n", 0xC00000 | vdp_port);
+		return context;
 	}
 
 	if (!gen->vdp_unlocked) {
 	 handleError(context, "Warning  2\n");
-		fatal_error("machine freeze due to VDP write to %X without TMSS unlock\n", 0xC00000 | vdp_port);
+//		fatal_error("machine freeze due to VDP write to %X without TMSS unlock\n", 0xC00000 | vdp_port);
+	 return context;
 	}
 	vdp_port &= 0x1F;
 	//printf("vdp_port write: %X, value: %X, cycle: %d\n", vdp_port, value, context->current_cycle);
@@ -730,7 +732,8 @@ static void * z80_vdp_port_write(uint32_t vdp_port, void * vcontext, uint8_t val
 	vdp_port &= 0xFF;
 	if (vdp_port & 0xE0) {
 	 handleError(context, "Warning  4\n");
-		fatal_error("machine freeze due to write to Z80 address %X\n", 0x7F00 | vdp_port);
+//		fatal_error("machine freeze due to write to Z80 address %X\n", 0x7F00 | vdp_port);
+	 return context;
 	}
 	if (vdp_port < 0x10) {
 		//These probably won't currently interact well with the 68K accessing the VDP
@@ -759,12 +762,14 @@ static uint16_t vdp_port_read(uint32_t vdp_port, m68k_context * context)
 
 	if (vdp_port & 0x2700E0) {
 	 handleError(context, "Warning  5\n");
-		fatal_error("machine freeze due to read from address %X\n", 0xC00000 | vdp_port);
+//		fatal_error("machine freeze due to read from address %X\n", 0xC00000 | vdp_port);
+	 return 0;
 	}
 
 	if (!gen->vdp_unlocked) {
 	 handleError(context, "Warning A1");
-		fatal_error("machine freeze due to VDP read from %X without TMSS unlock\n", 0xC00000 | vdp_port);
+//		fatal_error("machine freeze due to VDP read from %X without TMSS unlock\n", 0xC00000 | vdp_port);
+	 return 0;
 	}
 	vdp_port &= 0x1F;
 	uint16_t value;
@@ -828,7 +833,8 @@ static uint8_t z80_vdp_port_read(uint32_t vdp_port, void * vcontext)
 	z80_context * context = vcontext;
 	if (vdp_port & 0xE0) {
 	  handleError(context, "Warning 6\n");
-		fatal_error("machine freeze due to read from Z80 address %X\n", 0x7F00 | vdp_port);
+//		fatal_error("machine freeze due to read from Z80 address %X\n", 0x7F00 | vdp_port);
+	  return 0xFFFF;
 	}
 	genesis_context * gen = context->system;
 	//VDP access goes over the 68K bus like a bank area access
@@ -900,7 +906,8 @@ static m68k_context * io_write(uint32_t location, m68k_context * context, uint8_
 				}
 			} else {
 		  handleError(context, "Warning  7\n");
-				fatal_error("68K write to unhandled Z80 address %X\n", location);
+//				fatal_error("68K write to unhandled Z80 address %X\n", location);
+		  return context;
 			}
 		}
 	} else {
@@ -995,7 +1002,8 @@ static m68k_context * io_write(uint32_t location, m68k_context * context, uint8_
 				}
 			} else if (masked != 0x11300 && masked != 0x11000) {
 		  handleError(context, "Warning 8\n");
-				fatal_error("Machine freeze due to unmapped write to address %X\n", location | 0xA00000);
+		  return context;
+				//fatal_error("Machine freeze due to unmapped write to address %X\n", location | 0xA00000);
 			}
 		}
 	}
@@ -1048,7 +1056,8 @@ static uint8_t io_read(uint32_t location, m68k_context * context)
 				value = 0xFF;
 			} else {
 		  handleError(context, "Warning  9\n");
-				fatal_error("Machine freeze due to read of Z80 VDP memory window by 68K: %X\n", location | 0xA00000);
+		  return 0xFF;
+//				fatal_error("Machine freeze due to read of Z80 VDP memory window by 68K: %X\n", location | 0xA00000);
 				value = 0xFF;
 			}
 		} else {
@@ -1126,8 +1135,9 @@ static uint8_t io_read(uint32_t location, m68k_context * context)
 			} else {
 		  handleError(context, "Warning  9\n");
 				location |= 0xA00000;
-				fatal_error("Machine freeze due to read of unmapped IO location %X\n", location);
+//				fatal_error("Machine freeze due to read of unmapped IO location %X\n", location);
 				value = 0xFF;
+				return value;
 			}
 		}
 	}
@@ -1258,7 +1268,7 @@ static uint16_t unused_read(uint32_t location, void *vcontext)
 			return gen->tmss_lock[location >> 1 & 1];
 		} else {
 	  handleError(context, "Warning  10\n");
-			fatal_error("Machine freeze due to read from TMSS lock when TMSS is not present %X\n", location);
+//			fatal_error("Machine freeze due to read from TMSS lock when TMSS is not present %X\n", location);
 			return 0xFFFF;
 		}
 	} else if (location == 0xA14100) {
@@ -1266,12 +1276,12 @@ static uint16_t unused_read(uint32_t location, void *vcontext)
 			return get_open_bus_value(&gen->header);
 		} else {
 	  handleError(context, "Warning 11\n");
-			fatal_error("Machine freeze due to read from TMSS control when TMSS is not present %X\n", location);
+//			fatal_error("Machine freeze due to read from TMSS control when TMSS is not present %X\n", location);
 			return 0xFFFF;
 		}
 	} else {
   handleError(context, "Warning 12\n");
-		fatal_error("Machine freeze due to unmapped read from %X\n", location);
+//		fatal_error("Machine freeze due to unmapped read from %X\n", location);
 		return 0xFFFF;
 	}
 }
@@ -1321,7 +1331,8 @@ static void *unused_write(uint32_t location, void *vcontext, uint16_t value)
 		//these writes are ignored when no relevant hardware is present
 	} else {
   handleError(context, "Warning 13\n");
-		fatal_error("Machine freeze due to unmapped write to %X\n", location);
+//		fatal_error("Machine freeze due to unmapped write to %X\n", location);
+		return vcontext;
 	}
 	return vcontext;
 }
@@ -1353,7 +1364,8 @@ static void *unused_write_b(uint32_t location, void *vcontext, uint8_t value)
 		//these writes are ignored when no relevant hardware is present
 	} else {
   handleError(context, "Warning 14\n");
-		fatal_error("Machine freeze due to unmapped byte write to %X\n", location);
+//		fatal_error("Machine freeze due to unmapped byte write to %X\n", location);
+  return vcontext;
 	}
 	return vcontext;
 }
