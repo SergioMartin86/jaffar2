@@ -48,9 +48,9 @@ void reloadState()
 
  gen->reset_requested = 0;
  gen->m68k->should_return = 0;
-// z80_assert_reset(gen->z80, gen->m68k->current_cycle);
-// z80_clear_busreq(gen->z80, gen->m68k->current_cycle);
-// ym_reset(gen->ym);
+ z80_assert_reset(gen->z80, gen->m68k->current_cycle);
+ z80_clear_busreq(gen->z80, gen->m68k->current_cycle);
+ ym_reset(gen->ym);
  //Is there any sort of VDP reset?
 // m68k_reset(gen->m68k);
 
