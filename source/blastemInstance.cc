@@ -97,7 +97,7 @@ uint64_t blastemInstance::computeHash()
   MetroHash64 hash;
 
 //  hash.Update(&_state.videoFrame, sizeof(uint16_t));
-//  hash.Update(&_state.framesPerStep, sizeof(uint8_t));
+  hash.Update(&_state.framesPerStep, sizeof(uint8_t));
   hash.Update(&_state.currentLevel, sizeof(uint8_t));
   hash.Update(&_state.drawnRoom, sizeof(uint8_t));
 //  hash.Update(&_state.minutesLeft, sizeof(uint16_t));
@@ -116,13 +116,13 @@ uint64_t blastemInstance::computeHash()
   hash.Update(&_state.kidPositionX, sizeof(uint16_t));
   hash.Update(&_state.kidPositionY, sizeof(uint16_t));
 
-//  hash.Update(&_state.guardFrame, sizeof(uint8_t));
-//  hash.Update(&_state.guardCurrentHP, sizeof(uint8_t));
-//  hash.Update(&_state.guardMaxHP, sizeof(uint8_t));
-//  hash.Update(&_state.guardRoom, sizeof(uint8_t));
-//  hash.Update(&_state.guardDirection, sizeof(uint8_t));
-//  hash.Update(&_state.guardPositionX, sizeof(uint16_t));
-//  hash.Update(&_state.guardPositionY, sizeof(uint16_t));
+  hash.Update(&_state.guardFrame, sizeof(uint8_t));
+  hash.Update(&_state.guardCurrentHP, sizeof(uint8_t));
+  hash.Update(&_state.guardMaxHP, sizeof(uint8_t));
+  hash.Update(&_state.guardRoom, sizeof(uint8_t));
+  hash.Update(&_state.guardDirection, sizeof(uint8_t));
+  hash.Update(&_state.guardPositionX, sizeof(uint16_t));
+  hash.Update(&_state.guardPositionY, sizeof(uint16_t));
 
   uint64_t result;
   hash.Finalize(reinterpret_cast<uint8_t *>(&result));
