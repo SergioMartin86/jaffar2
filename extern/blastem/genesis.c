@@ -1502,7 +1502,7 @@ void resume_genesis(system_header *system)
 		render_resume_source(gen->ym->audio);
 		render_resume_source(gen->psg->audio);
 	}
-	if (_stateData == NULL) free(_stateData);
+	if (_stateData != NULL) free(_stateData);
 	resume_68k(gen->m68k);
  _stateData = serialize(system, &_stateSize);
 	//handle_reset_requests(gen);
