@@ -1,34 +1,24 @@
 #include "blastemInstance.h"
 #include "utils.h"
-#include "libco.h"
 #include <dlfcn.h>
 #include <iostream>
 #include "metrohash64.h"
 #include <omp.h>
 
+extern uint8_t _framesPerGameFrame;
+extern uint16_t _curFrameId;
+extern uint16_t prevFrameId;
+extern size_t _stateWorkRamOffset;
+extern move_t _nextMove;
+extern uint8_t* _stateData;
+extern size_t _stateSize;
 
-blastemInstance::blastemInstance(const char* libraryFile, const bool multipleLibraries)
-{
-  if (multipleLibraries)
-   _dllHandle = dlmopen (LM_ID_NEWLM, libraryFile, RTLD_NOW | RTLD_LOCAL | RTLD_NODELETE);
-  else
-   _dllHandle = dlopen (libraryFile, RTLD_NOW);
-
-  if (!_dllHandle)
-    EXIT_WITH_ERROR("Could not load %s. Check that this library's path is included in the LD_LIBRARY_PATH environment variable. Try also reducing the number of openMP threads.\n", libraryFile);
-
-  // Variables
-  _start = (start_t) dlsym(_dllHandle, "start");
-  resume = (resume_t) dlsym(_dllHandle, "resume");
-  _finalize = (finalize_t) dlsym(_dllHandle, "finalize");
-  _redraw = (redraw_t) dlsym(_dllHandle, "redraw");
-  reloadState = (reloadState_t) dlsym(_dllHandle, "reloadState");
-  _stateData = (uint8_t**) dlsym(_dllHandle, "_stateData");
-  _stateSize = (size_t*) dlsym(_dllHandle, "_stateSize");
-  _stateWorkRamOffset = (size_t*) dlsym(_dllHandle, "_stateWorkRamOffset");
-  _nextMove = (move_t*) dlsym(_dllHandle, "_nextMove");
-  _restartGenesis = (restartGenesis_t) dlsym(_dllHandle, "restartGenesis");
-}
+extern "C" void blastem_start(int argc, char** argv, int isHeadlessMode, int isFastVdp);
+extern "C" void blastem_resume();
+extern "C" void updateFrameInfo();
+extern "C" void reloadState();
+extern "C" void redraw();
+extern "C" void restartGenesis();
 
 void blastemInstance::initialize(char* romFile, char* saveFile, const bool headlessMode, const bool fastVdp)
 {
@@ -41,7 +31,7 @@ void blastemInstance::initialize(char* romFile, char* saveFile, const bool headl
  argv[1] = romFile;
  argv[2] = flag;
  argv[3] = saveFile;
- _start(argc, argv, headlessMode, fastVdp);
+ blastem_start(argc, argv, headlessMode, fastVdp);
  _saveFile = std::string(saveFile);
 
  _startStateData = (uint8_t*) malloc(sizeof(uint8_t) * _STATE_DATA_SIZE);
@@ -51,56 +41,51 @@ void blastemInstance::initialize(char* romFile, char* saveFile, const bool headl
 
 void blastemInstance::reset()
 {
- _restartGenesis();
+ restartGenesis();
  loadState(_startStateData);
-}
-
-blastemInstance::~blastemInstance()
-{
-  dlclose(_dllHandle);
 }
 
 void blastemInstance::setRNGValue(const uint32_t& rngValue)
 {
  _state.rngValue = rngValue;
- memcpyBigEndian32((uint32_t*)&(*_stateData)[*_stateWorkRamOffset + 0x19C4], (uint8_t*)&_state.rngValue);
+ memcpyBigEndian32((uint32_t*)&_stateData[_stateWorkRamOffset + 0x19C4], (uint8_t*)&_state.rngValue);
  reloadState();
- _state = getGameState(*_stateData);
+ _state = getGameState(_stateData);
 }
 
 gameStateStruct blastemInstance::getGameState(const uint8_t* state)
 {
  gameStateStruct gameState;
 
- memcpyBigEndian32(&gameState.rngValue,          &state[*_stateWorkRamOffset + 0x19C4]);
- memcpyBigEndian16(&gameState.gameFrame,         &state[*_stateWorkRamOffset + 0x5002]);
- memcpyBigEndian16(&gameState.videoFrame,      &state[*_stateWorkRamOffset + 0x19C8]);
- memcpyBigEndian8(&gameState.framesPerStep,      &state[*_stateWorkRamOffset + 0x5005]);
- memcpyBigEndian8(&gameState.currentLevel,       &state[*_stateWorkRamOffset + 0x4AA5]);
- memcpyBigEndian8(&gameState.drawnRoom,          &state[*_stateWorkRamOffset + 0x4A36]);
- memcpyBigEndian16(&gameState.minutesLeft,       &state[*_stateWorkRamOffset + 0x4C90]);
- memcpyBigEndian16(&gameState.twelthSecondsLeft, &state[*_stateWorkRamOffset + 0x4FC8]);
- memcpyBigEndian32(&gameState.checkpointPointer, &state[*_stateWorkRamOffset + 0x4FF0]);
- memcpyBigEndian8(&gameState.slowfallFramesLeft, &state[*_stateWorkRamOffset + 0x4AA1]);
+ memcpyBigEndian32(&gameState.rngValue,          &state[_stateWorkRamOffset + 0x19C4]);
+ memcpyBigEndian16(&gameState.gameFrame,         &state[_stateWorkRamOffset + 0x5002]);
+ memcpyBigEndian16(&gameState.videoFrame,        &state[_stateWorkRamOffset + 0x19C8]);
+ memcpyBigEndian8(&gameState.framesPerStep,      &state[_stateWorkRamOffset + 0x5005]);
+ memcpyBigEndian8(&gameState.currentLevel,       &state[_stateWorkRamOffset + 0x4AA5]);
+ memcpyBigEndian8(&gameState.drawnRoom,          &state[_stateWorkRamOffset + 0x4A36]);
+ memcpyBigEndian16(&gameState.minutesLeft,       &state[_stateWorkRamOffset + 0x4C90]);
+ memcpyBigEndian16(&gameState.twelthSecondsLeft, &state[_stateWorkRamOffset + 0x4FC8]);
+ memcpyBigEndian32(&gameState.checkpointPointer, &state[_stateWorkRamOffset + 0x4FF0]);
+ memcpyBigEndian8(&gameState.slowfallFramesLeft, &state[_stateWorkRamOffset + 0x4AA1]);
 
- memcpyBigEndian8(&gameState.kidCurrentSequence, &state[*_stateWorkRamOffset + 0x4C55]);
- memcpyBigEndian8(&gameState.kidLastSequence,    &state[*_stateWorkRamOffset + 0x4C57]);
- memcpyBigEndian8(&gameState.kidFrame,           &state[*_stateWorkRamOffset + 0x4C45]);
- memcpyBigEndian8(&gameState.kidCurrentHP,       &state[*_stateWorkRamOffset + 0x4C4F]);
- memcpyBigEndian8(&gameState.kidMaxHP,           &state[*_stateWorkRamOffset + 0x4C50]);
- memcpyBigEndian8(&gameState.kidRoom,            &state[*_stateWorkRamOffset + 0x4C4B]);
- memcpyBigEndian8(&gameState.kidHasSword,        &state[*_stateWorkRamOffset + 0x4C4D]);
- memcpyBigEndian8(&gameState.kidDirection,       &state[*_stateWorkRamOffset + 0x4C3D]);
- memcpyBigEndian16(&gameState.kidPositionX,      &state[*_stateWorkRamOffset + 0x4C3E]);
- memcpyBigEndian16(&gameState.kidPositionY,      &state[*_stateWorkRamOffset + 0x4C40]);
+ memcpyBigEndian8(&gameState.kidCurrentSequence, &state[_stateWorkRamOffset + 0x4C55]);
+ memcpyBigEndian8(&gameState.kidLastSequence,    &state[_stateWorkRamOffset + 0x4C57]);
+ memcpyBigEndian8(&gameState.kidFrame,           &state[_stateWorkRamOffset + 0x4C45]);
+ memcpyBigEndian8(&gameState.kidCurrentHP,       &state[_stateWorkRamOffset + 0x4C4F]);
+ memcpyBigEndian8(&gameState.kidMaxHP,           &state[_stateWorkRamOffset + 0x4C50]);
+ memcpyBigEndian8(&gameState.kidRoom,            &state[_stateWorkRamOffset + 0x4C4B]);
+ memcpyBigEndian8(&gameState.kidHasSword,        &state[_stateWorkRamOffset + 0x4C4D]);
+ memcpyBigEndian8(&gameState.kidDirection,       &state[_stateWorkRamOffset + 0x4C3D]);
+ memcpyBigEndian16(&gameState.kidPositionX,      &state[_stateWorkRamOffset + 0x4C3E]);
+ memcpyBigEndian16(&gameState.kidPositionY,      &state[_stateWorkRamOffset + 0x4C40]);
 
- memcpyBigEndian8(&gameState.guardFrame,         &state[*_stateWorkRamOffset + 0x4AFB]);
- memcpyBigEndian8(&gameState.guardCurrentHP,     &state[*_stateWorkRamOffset + 0x4B05]);
- memcpyBigEndian8(&gameState.guardMaxHP,         &state[*_stateWorkRamOffset + 0x4B06]);
- memcpyBigEndian8(&gameState.guardRoom,          &state[*_stateWorkRamOffset + 0x4B01]);
- memcpyBigEndian8(&gameState.guardDirection,     &state[*_stateWorkRamOffset + 0x4AF3]);
- memcpyBigEndian16(&gameState.guardPositionX,    &state[*_stateWorkRamOffset + 0x4AF4]);
- memcpyBigEndian16(&gameState.guardPositionY,    &state[*_stateWorkRamOffset + 0x4AF6]);
+ memcpyBigEndian8(&gameState.guardFrame,         &state[_stateWorkRamOffset + 0x4AFB]);
+ memcpyBigEndian8(&gameState.guardCurrentHP,     &state[_stateWorkRamOffset + 0x4B05]);
+ memcpyBigEndian8(&gameState.guardMaxHP,         &state[_stateWorkRamOffset + 0x4B06]);
+ memcpyBigEndian8(&gameState.guardRoom,          &state[_stateWorkRamOffset + 0x4B01]);
+ memcpyBigEndian8(&gameState.guardDirection,     &state[_stateWorkRamOffset + 0x4AF3]);
+ memcpyBigEndian16(&gameState.guardPositionX,    &state[_stateWorkRamOffset + 0x4AF4]);
+ memcpyBigEndian16(&gameState.guardPositionY,    &state[_stateWorkRamOffset + 0x4AF6]);
 
  return gameState;
 }
@@ -369,31 +354,30 @@ std::vector<uint8_t> blastemInstance::getPossibleMoveIds(const gameStateStruct& 
 
 void blastemInstance::playFrame(const std::string& move)
 {
- strcpy(*_nextMove, move.c_str());
- resume();
- _state = getGameState(*_stateData);
+ strcpy(_nextMove, move.c_str());
+ blastem_resume();
+ _state = getGameState(_stateData);
 }
 
 void blastemInstance::loadState(const uint8_t* state)
 {
- memcpy(*_stateData, state, *_stateSize);
+ memcpy(_stateData, state, _stateSize);
  reloadState();
- _state = getGameState(*_stateData);
+ _state = getGameState(_stateData);
 }
 
 void blastemInstance::saveState(uint8_t* state)
 {
- memcpy(state, *_stateData, *_stateSize);
+ memcpy(state, _stateData, _stateSize);
 }
 
 void blastemInstance::redraw()
 {
- _redraw();
+ redraw();
 }
 
 void blastemInstance::finalize()
 {
- _finalize();
- dlclose(_dllHandle);
+ finalize();
 }
 

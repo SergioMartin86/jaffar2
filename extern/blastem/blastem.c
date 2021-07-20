@@ -37,9 +37,6 @@ extern m68k_context* _context;
 #define FULLSCREEN_DEFAULT 0
 #endif
 
-cothread_t _jaffarThread;
-cothread_t _blastemThread;
-
 int headless = 0;
 int fast_vdp = 0;
 int exit_after = 0;
@@ -380,7 +377,7 @@ char *parse_addr_port(char *arg)
 	return NULL;
 }
 
-int main(int argc, char ** argv)
+int blastemMain(int argc, char ** argv)
 {
 	set_exe_str(argv[0]);
 	config = load_config();
@@ -591,33 +588,19 @@ int main(int argc, char ** argv)
 	return 0;
 }
 
-int __argc;
-char** __argv;
-
-void blastemWrapper()
-{
-  main(__argc, __argv);
-  fatal_error("Should not reach this point!\n");
-}
-
-void start(int argc, char** argv, int isHeadlessMode, int isFastVdp)
+void blastem_start(int argc, char** argv, int isHeadlessMode, int isFastVdp)
 {
  headless = isHeadlessMode;
  fast_vdp = isFastVdp;
- __argc = argc;
- __argv = (char**) malloc (sizeof(char*) * argc);
- for (size_t i = 0; i < argc; i++)
- {
-  __argv[i] = (char*) malloc(strlen(argv[i]));
-  strcpy(__argv[i], argv[i]);
- }
- _blastemThread = co_create(1 << 24, blastemWrapper);
- _jaffarThread = co_active();
- co_switch(_blastemThread);
+ blastemMain(argc, argv);
 }
 
-void resume()
+extern uint8_t* _stateData;
+extern size_t _stateSize;
+extern uint8_t *serialize(void *sys, size_t *size_out);
+void blastem_resume()
 {
- co_switch(_blastemThread);
+// free(_stateData);
+ resume_genesis(current_system);
 }
 

@@ -8,7 +8,6 @@ cc = meson.get_compiler('c')
 cxx = meson.get_compiler('cpp')
 
 inc = include_directories([
- 'extern/libco',
  'extern/blastem',
  'extern/metrohash64',
  'extern/argparse',
@@ -24,7 +23,6 @@ jaffar2Files = [
 ]
 
 blastemFiles = [
-  'extern/libco/libco.c',
   'extern/blastem/blastem.c',
   'extern/blastem/system.c',
   'extern/blastem/genesis.c',
@@ -86,7 +84,6 @@ deps = [
   abs_cont
 ]
 
-
 blastemLib = shared_library('blastem',
   blastemFiles,
   c_args: [   
@@ -109,14 +106,13 @@ blastemLib = shared_library('blastem',
   dependencies : [ sdl2_dep, sdl2_image_dep, glew_dep ],
   link_args: [ '-lm' ]
   )
-  
     
 executable('jaffar2-test',
   'source/test.cc',
   jaffar2Files,
   dependencies: deps,
   include_directories: inc,
-  link_with: [ ],
+  link_with: [ blastemLib ],
   link_args: [ '-ldl', '-lncurses' ],
   cpp_args: [ '-Wfatal-errors', '-fpermissive' ]
   )
@@ -126,7 +122,7 @@ executable('jaffar2-train',
   jaffar2Files,
   dependencies: deps,
   include_directories: inc,
-  link_with: [ ],
+  link_with: [ blastemLib ],
   link_args: [ '-ldl', '-lncurses' ],
   cpp_args: [ '-Wfatal-errors', '-fpermissive' ]
   )
@@ -136,7 +132,7 @@ executable('jaffar2-play',
   jaffar2Files,
   dependencies: deps,
   include_directories: inc,
-  link_with: [ ],
+  link_with: [ blastemLib ],
   link_args: [ '-ldl', '-lncurses' ],
   cpp_args: [ '-Wfatal-errors', '-fpermissive' ]
   )
@@ -146,7 +142,7 @@ executable('jaffar2-show',
   jaffar2Files,
   dependencies: deps,
   include_directories: inc,
-  link_with: [ ],
+  link_with: [ blastemLib ],
   link_args: [ '-ldl', '-lncurses' ],
   cpp_args: [ '-Wfatal-errors', '-fpermissive' ]
   )

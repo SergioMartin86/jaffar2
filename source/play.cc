@@ -115,7 +115,7 @@ int main(int argc, char *argv[])
   refresh();
 
   // Initializing replay generating SDLPop Instance
-  blastemInstance genBlastem("libblastem.so", false);
+  blastemInstance genBlastem;
   genBlastem.initialize(romFilePath.c_str(), saveFilePath.c_str(), true, false);
 
   // Storage for sequence frames
@@ -140,7 +140,7 @@ int main(int argc, char *argv[])
   printw("[Jaffar] Opening BlastEm window...\n");
 
   // Initializing showing SDLPop Instance
-  blastemInstance showBlastem("libblastem.so", false);
+  blastemInstance showBlastem;
   showBlastem.initialize(romFilePath.c_str(), saveFilePath.c_str(), false, false);
 
   // Variable for current step in view

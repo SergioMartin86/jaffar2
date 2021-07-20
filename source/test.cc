@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
 {
  printf("Testing...\n");
 
- blastemInstance blastem("libblastem.so", false);
+ blastemInstance blastem;
  printf("Blastem created.\n");
  blastem.initialize(argv[1], argv[3], false, false);
  printf("Blastem initialized.\n");

@@ -4,13 +4,6 @@
 #include <vector>
 
 #define _STATE_DATA_SIZE 141601
-typedef void (*start_t)(int, char**, int, int);
-typedef void (*resume_t)(void);
-typedef void (*redraw_t)(void);
-typedef void (*reloadState_t)(void);
-typedef void (*finalize_t)(void);
-typedef void (*restartGenesis_t)(void);
-
 #define MAX_MOVE_SIZE 4
 typedef char move_t[MAX_MOVE_SIZE];
 
@@ -57,7 +50,6 @@ struct gameStateStruct
 class blastemInstance
 {
   public:
-  blastemInstance(const char* libraryFile, const bool multipleLibraries);
   void initialize(char* romFile, char* saveFile, const bool headlessMode, const bool fastVdp);
   void finalize();
   void playFrame(const std::string& move);
@@ -65,35 +57,20 @@ class blastemInstance
   void printState();
   void redraw();
   uint64_t computeHash();
-  ~blastemInstance();
   void loadState(const uint8_t* state);
   void saveState(uint8_t* state);
   std::vector<uint8_t> getPossibleMoveIds(const gameStateStruct& gameState);
   void setRNGValue(const uint32_t& rngValue);
   void reset();
 
-  // blastem Functions
-  start_t _start;
-  resume_t resume;
-  reloadState_t reloadState;
-  finalize_t _finalize;
-  redraw_t _redraw;
-  restartGenesis_t _restartGenesis;
-
   // State
   gameStateStruct _state;
-  uint8_t** _stateData;
-  uint8_t* _startStateData;
-  size_t* _stateSize;
-  size_t* _stateWorkRamOffset;
-  move_t* _nextMove;
   std::string _saveFile;
+  uint8_t* _startStateData;
 
   private:
 
   void memcpyBigEndian8(uint8_t* dst, uint8_t* src) { ((uint8_t*)dst)[0] = src[0]; }
   void memcpyBigEndian16(uint16_t* dst, uint8_t* src) { ((uint8_t*)dst)[0] = src[1]; ((uint8_t*)dst)[1] = src[0]; }
   void memcpyBigEndian32(uint32_t* dst, uint8_t* src) { ((uint8_t*)dst)[0] = src[3]; ((uint8_t*)dst)[1] = src[2]; ((uint8_t*)dst)[2] = src[1]; ((uint8_t*)dst)[3] = src[0]; }
-
-  void *_dllHandle;
 };

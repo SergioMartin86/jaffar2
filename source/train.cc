@@ -899,6 +899,7 @@ void Train::printTrainStatus()
      printf("%s ", _possibleMoves[_bestFrame.getMove(i)].c_str());
    printf("\n");
   }
+  fflush(stdout);
 }
 
 magnetInfo_t Train::getKidMagnetValues(const Frame &frame, const int room)
@@ -1212,7 +1213,7 @@ Train::Train(int argc, char *argv[])
   }
 
   // Creating Blastem Instance
-  _blastem = new blastemInstance("libblastem.so", false);
+  _blastem = new blastemInstance;
   _blastem->initialize(romFilePath.c_str(), saveFilePath.c_str(), true, true);
 
    // Adding rules

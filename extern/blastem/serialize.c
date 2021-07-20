@@ -280,7 +280,7 @@ uint8_t load_from_file(deserialize_buffer *buf, char *path)
 	return 1;
 }
 
-int loadBinFromFile(uint8_t* dst, size_t size, const char *fileName)
+int loadEntireFile(uint8_t* dst, size_t size, const char *fileName)
 {
  FILE *f = fopen(fileName, "rb+");
  if (f)

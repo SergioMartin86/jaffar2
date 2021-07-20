@@ -87,3 +87,14 @@ void restartGenesis()
  }
  resume_68k(gen->m68k);
 }
+
+void handleError(m68k_context * context, const char* errorMessage)
+{
+ printf("Error detected: %s\n", errorMessage);
+ fflush(stdout);
+ genesis_context *gen = current_system;
+ gen->reset_requested = 0;
+ gen->header.force_release = 1;
+ handle_reset_requests(gen);
+ request_exit(current_system);
+}

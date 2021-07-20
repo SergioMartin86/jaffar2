@@ -46,13 +46,6 @@ uint32_t MCLKS_PER_68K;
 #define Z80_OPTS options
 #endif
 
-void handleError(m68k_context * context, const char* errorMessage)
-{
- printf("Error detected: %s\n", errorMessage);
- fflush(stdout);
- start_genesis(context->system, "");
-}
-
 void genesis_serialize(genesis_context *gen, serialize_buffer *buf, uint32_t m68k_pc, uint8_t all)
 {
 	if (all) {
@@ -134,6 +127,7 @@ uint8_t *serialize(void *sys, size_t *size_out)
  }
  return state.data;
 }
+
 
 static void ram_deserialize(deserialize_buffer *buf, void *vgen)
 {
@@ -1479,15 +1473,8 @@ void start_genesis(system_header *system, char *statefile)
   handle_reset_requests(gen);
  }
  m68k_reset(gen->m68k);
-
- while(1)
- {
-  _stateData = serialize(system, &_stateSize);
-  co_switch(_jaffarThread);
-  free(_stateData);
-  resume_genesis(system);
- }
-
+ _stateData = serialize(system, &_stateSize);
+ resume_genesis(system);
  return;
 }
 
@@ -1503,7 +1490,9 @@ void resume_genesis(system_header *system)
 		render_resume_source(gen->ym->audio);
 		render_resume_source(gen->psg->audio);
 	}
+	free(_stateData);
 	resume_68k(gen->m68k);
+ _stateData = serialize(system, &_stateSize);
 	//handle_reset_requests(gen);
 }
 

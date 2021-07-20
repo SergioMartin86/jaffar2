@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
   if (status == false) EXIT_WITH_ERROR("[ERROR] Could not load save state from file: %s\n", saveFilePath.c_str());
 
   // Initializing showing SDLPop Instance
-  blastemInstance showBlastem("libblastem.so", false);
+  blastemInstance showBlastem;
   showBlastem.initialize(romFilePath.c_str(), saveFilePath.c_str(), false, false);
 
   // Constant loop of updates

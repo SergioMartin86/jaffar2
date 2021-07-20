@@ -71,5 +71,5 @@ void load_buffer32(deserialize_buffer *buf, uint32_t *dst, size_t len);
 int load_section(deserialize_buffer *buf);
 uint8_t save_to_file(serialize_buffer *buf, char *path);
 uint8_t load_from_file(deserialize_buffer *buf, char *path);
-int loadBinFromFile(uint8_t* dst, size_t size, const char *fileName);
+int loadEntireFile(uint8_t* dst, size_t size, const char *fileName);
 #endif //SERIALIZE_H
