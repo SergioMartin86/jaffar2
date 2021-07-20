@@ -8,6 +8,7 @@ cc = meson.get_compiler('c')
 cxx = meson.get_compiler('cpp')
 
 inc = include_directories([
+ 'extern/libco',
  'extern/blastem',
  'extern/metrohash64',
  'extern/argparse',
@@ -23,6 +24,7 @@ jaffar2Files = [
 ]
 
 blastemFiles = [
+  'extern/libco/libco.c',
   'extern/blastem/blastem.c',
   'extern/blastem/system.c',
   'extern/blastem/genesis.c',

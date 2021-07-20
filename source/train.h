@@ -52,6 +52,8 @@ class Train
   // Worker id and count
   size_t _workerId;
   size_t _workerCount;
+  std::string _romFilePath;
+  std::string _saveFilePath;
 
   // Communication schedule for frame exchange
   std::vector<size_t> _communicationSchedule;

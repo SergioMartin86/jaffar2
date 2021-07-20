@@ -460,8 +460,7 @@ void Train::computeFrames()
   // Creating thread-local storage for new frames
   std::vector<std::unique_ptr<Frame>> newFrames;
 
-  // Reset blastem
-  _blastem->reset();
+//  _blastem->initialize(_romFilePath.c_str(), _saveFilePath.c_str(), true, true);
 
   // Computing always the last frame while resizing the database to reduce memory footprint
   for (size_t baseFrameIdx = 0; baseFrameIdx < _currentFrameDB.size(); baseFrameIdx++)
@@ -496,7 +495,11 @@ void Train::computeFrames()
       _blastem->loadState(baseFrame->frameStateData);
 
       // Perform the selected move
-      _blastem->playFrame(move);
+      int error = _blastem->playFrame(move);
+      if (error == 1)
+      {
+       _blastem->initialize(_romFilePath.c_str(), _saveFilePath.c_str(), true, true);
+      }
 
       // Compute hash value
       auto hash = _blastem->computeHash();
@@ -1165,15 +1168,15 @@ Train::Train(int argc, char *argv[])
   _storeMoveList = program.get<bool>("--disableHistory") == false;
 
   // Getting romfile path
-  auto romFilePath = program.get<std::string>("--romFile");
+  _romFilePath = program.get<std::string>("--romFile");
 
   // Getting savefile path
-  auto saveFilePath = program.get<std::string>("--savFile");
+  _saveFilePath = program.get<std::string>("--savFile");
 
   // Loading save file contents
   std::string saveString;
-  bool status = loadStringFromFile(saveString, saveFilePath.c_str());
-  if (status == false) EXIT_WITH_ERROR("[ERROR] Could not load save state from file: %s\n", saveFilePath.c_str());
+  bool status = loadStringFromFile(saveString, _saveFilePath.c_str());
+  if (status == false) EXIT_WITH_ERROR("[ERROR] Could not load save state from file: %s\n", _saveFilePath.c_str());
 
   // Parsing max steps
   _maxSteps = program.get<size_t>("--maxSteps");
@@ -1214,7 +1217,7 @@ Train::Train(int argc, char *argv[])
 
   // Creating Blastem Instance
   _blastem = new blastemInstance;
-  _blastem->initialize(romFilePath.c_str(), saveFilePath.c_str(), true, true);
+  _blastem->initialize(_romFilePath.c_str(), _saveFilePath.c_str(), true, true);
 
    // Adding rules
    for (size_t scriptId = 0; scriptId < scriptFilesJs.size(); scriptId++)

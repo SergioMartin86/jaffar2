@@ -52,7 +52,7 @@ class blastemInstance
   public:
   void initialize(char* romFile, char* saveFile, const bool headlessMode, const bool fastVdp);
   void finalize();
-  void playFrame(const std::string& move);
+  int playFrame(const std::string& move);
   gameStateStruct getGameState(const uint8_t* state);
   void printState();
   void redraw();

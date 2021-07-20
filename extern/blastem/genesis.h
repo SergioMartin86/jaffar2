@@ -90,7 +90,6 @@ uint8_t *soft_serialize(system_header *sys, size_t *size_out);
 void soft_deserialize(system_header *sys, uint8_t *data, size_t size);
 void jaffarLoop(system_header *system);
 void handle_reset_requests(genesis_context *gen);
-void handleError(m68k_context * context, const char* errorMessage);
 void start_genesis(system_header *system, char *statefile);
 #endif //GENESIS_H_
 

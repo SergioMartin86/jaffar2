@@ -352,12 +352,14 @@ void init_system_with_media(const char *path, system_type force_stype)
 		fatal_error("Failed to detect system type for %s\n", path);
 	}
 	//allocate new system context
+	printf("Re-loaded genesis\n");
 	game_system = alloc_config_system(stype, &cart, opts, force_region);
 	if (!game_system) {
 		fatal_error("Failed to configure emulated machine for %s\n", path);
 	}
 	setup_saves(&cart, game_system);
 	update_title(game_system->info.name);
+	current_system = game_system;
 }
 
 char *parse_addr_port(char *arg)
@@ -376,6 +378,13 @@ char *parse_addr_port(char *arg)
 	}
 	return NULL;
 }
+system_type stype = SYSTEM_UNKNOWN;
+
+void buildSystem()
+{
+ if (current_system) game_system->free_context(game_system);
+ current_system = alloc_config_system(stype, &cart, 0, force_region );
+}
 
 int blastemMain(int argc, char ** argv)
 {
@@ -385,7 +394,7 @@ int blastemMain(int argc, char ** argv)
 	int height = -1;
 	int debug = 0;
 	int loaded = 0;
-	system_type stype = SYSTEM_UNKNOWN, force_stype = SYSTEM_UNKNOWN;
+	system_type force_stype = SYSTEM_UNKNOWN;
 	char * romfname = NULL;
 	char * statefile = argv[3];
 	char *reader_addr = NULL, *reader_port = NULL;
@@ -555,7 +564,7 @@ int blastemMain(int argc, char ** argv)
 		render_init(width, height, "BlastEm", fullscreen);
 		render_set_drag_drop_handler(on_drag_drop);
 	}
-	set_bindings();
+//	set_bindings();
 	
 	uint8_t use_nuklear = 0;
 	char *state_format = tern_find_path(config, "ui\0state_format\0", TVAL_PTR).ptrval;
@@ -573,7 +582,7 @@ int blastemMain(int argc, char ** argv)
 			fatal_error("Failed to detect system type for %s\n", romfname);
 		}
 		
-		current_system = alloc_config_system(stype, &cart, 0, force_region );
+		buildSystem();
 		if (!current_system) {
 			fatal_error("Failed to configure emulated machine for %s\n", romfname);
 		}
@@ -586,21 +595,5 @@ int blastemMain(int argc, char ** argv)
 	_context = (m68k_context*)current_system;
 	current_system->start_context(current_system, statefile);
 	return 0;
-}
-
-void blastem_start(int argc, char** argv, int isHeadlessMode, int isFastVdp)
-{
- headless = isHeadlessMode;
- fast_vdp = isFastVdp;
- blastemMain(argc, argv);
-}
-
-extern uint8_t* _stateData;
-extern size_t _stateSize;
-extern uint8_t *serialize(void *sys, size_t *size_out);
-void blastem_resume()
-{
-// free(_stateData);
- resume_genesis(current_system);
 }
 

@@ -12,6 +12,7 @@ extern size_t _stateWorkRamOffset;
 extern move_t _nextMove;
 extern uint8_t* _stateData;
 extern size_t _stateSize;
+extern int _detectedError;
 
 extern "C" void blastem_start(int argc, char** argv, int isHeadlessMode, int isFastVdp);
 extern "C" void blastem_resume();
@@ -19,6 +20,7 @@ extern "C" void updateFrameInfo();
 extern "C" void reloadState();
 extern "C" void redraw();
 extern "C" void restartGenesis();
+extern "C" void buildSystem();
 
 void blastemInstance::initialize(char* romFile, char* saveFile, const bool headlessMode, const bool fastVdp)
 {
@@ -352,11 +354,20 @@ std::vector<uint8_t> blastemInstance::getPossibleMoveIds(const gameStateStruct& 
   return {0};
 }
 
-void blastemInstance::playFrame(const std::string& move)
+
+int blastemInstance::playFrame(const std::string& move)
 {
  strcpy(_nextMove, move.c_str());
  blastem_resume();
+
+ if (_detectedError == 1)
+ {
+  printf("Coming back from error\n");
+  _detectedError = 0;
+  return 1;
+ }
  _state = getGameState(_stateData);
+ return 0;
 }
 
 void blastemInstance::loadState(const uint8_t* state)

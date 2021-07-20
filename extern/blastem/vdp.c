@@ -51,6 +51,7 @@
 #define BORDER_BOT_V28_PAL 32
 #define BORDER_BOT_V30_PAL 24
 
+extern int _detectedError;
 enum {
 	INACTIVE = 0,
 	PREPARING, //used for line 0x1FF
@@ -3609,6 +3610,7 @@ void vdp_run_context_full(vdp_context * context, uint32_t target_cycles)
 	uint8_t mode_5 = context->regs[REG_MODE_2] & BIT_MODE_5;
 	while(context->cycles < target_cycles)
 	{
+	 if (_detectedError == 1) return;
 		check_switch_inactive(context, is_h40);
 		
 		if (is_active(context)) {

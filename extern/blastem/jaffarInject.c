@@ -1,5 +1,6 @@
 #include "jaffarInject.h"
 #include "vdp.h"
+#include "libco.h"
 
 uint8_t _framesPerGameFrame;
 uint16_t _curFrameId = 0;
@@ -11,6 +12,7 @@ move_t _nextMove;
 m68k_context* _context;
 uint16_t lastExitFrame = 9999;
 size_t injectCalls = 0;
+int _detectedError = 0;
 
 #define MAX_INJECTS 100
 
@@ -46,9 +48,9 @@ void reloadState()
 
  gen->reset_requested = 0;
  gen->m68k->should_return = 0;
- z80_assert_reset(gen->z80, gen->m68k->current_cycle);
- z80_clear_busreq(gen->z80, gen->m68k->current_cycle);
- ym_reset(gen->ym);
+// z80_assert_reset(gen->z80, gen->m68k->current_cycle);
+// z80_clear_busreq(gen->z80, gen->m68k->current_cycle);
+// ym_reset(gen->ym);
  //Is there any sort of VDP reset?
 // m68k_reset(gen->m68k);
 
@@ -79,22 +81,55 @@ void redraw()
 void restartGenesis()
 {
  genesis_context *gen = current_system;
+
  if (fast_vdp)
  {
   gen->reset_requested = 0;
   gen->header.force_release = 1;
   handle_reset_requests(gen);
  }
+ request_exit(current_system);
  resume_68k(gen->m68k);
 }
 
+cothread_t _jaffarThread;
+cothread_t _blastemThread;
+
+extern int blastemMain(int argc, char** argv);
+extern void init_system_with_media(const char *path, system_type force_stype);
 void handleError(m68k_context * context, const char* errorMessage)
 {
- printf("Error detected: %s\n", errorMessage);
- fflush(stdout);
- genesis_context *gen = current_system;
- gen->reset_requested = 0;
- gen->header.force_release = 1;
- handle_reset_requests(gen);
- request_exit(current_system);
+// genesis_context *gen = current_system;
+// printf("Error detected: %s\n", errorMessage);
+// fflush(stdout);
+// init_system_with_media("../rom/pop2.bin", SYSTEM_UNKNOWN);
+// gen = current_system;
+// _context = gen->m68k;
+ _gameFrameId = 0;
+ lastExitFrame = 9999;
+// printf("Restarted");
+ _detectedError = 1;
+ co_switch(_jaffarThread);
 }
+
+void routineWrapper()
+{
+ resume_genesis(current_system);
+ co_switch(_jaffarThread);
+}
+
+void blastem_start(int argc, char** argv, int isHeadlessMode, int isFastVdp)
+{
+ headless = isHeadlessMode;
+ fast_vdp = isFastVdp;
+ blastemMain(argc, argv);
+}
+
+void blastem_resume()
+{
+ _jaffarThread = co_active();
+ _blastemThread = co_create(1 << 24, routineWrapper);
+ co_switch(_blastemThread);
+ co_delete(_blastemThread);
+}
+

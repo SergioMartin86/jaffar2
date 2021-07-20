@@ -603,10 +603,11 @@ m68k_context * sync_components(m68k_context * context, uint32_t address)
 	return context;
 }
 
+int activated = 0;
 static m68k_context * vdp_port_write(uint32_t vdp_port, m68k_context * context, uint16_t value)
 {
  genesis_context * gen = context->system;
-
+// if (_curFrameId > 1700 && activated == 0) {handleError(context, "test"); activated = 1;}
 	if (vdp_port & 0x2700E0)
 	{
 	 handleError(context, "Warning  1\n");
@@ -759,7 +760,6 @@ static void * z80_vdp_port_write(uint32_t vdp_port, void * vcontext, uint8_t val
 static uint16_t vdp_port_read(uint32_t vdp_port, m68k_context * context)
 {
  genesis_context *gen = context->system;
-
 	if (vdp_port & 0x2700E0) {
 	 handleError(context, "Warning  5\n");
 //		fatal_error("machine freeze due to read from address %X\n", 0xC00000 | vdp_port);
@@ -1502,7 +1502,7 @@ void resume_genesis(system_header *system)
 		render_resume_source(gen->ym->audio);
 		render_resume_source(gen->psg->audio);
 	}
-	free(_stateData);
+	if (_stateData == NULL) free(_stateData);
 	resume_68k(gen->m68k);
  _stateData = serialize(system, &_stateSize);
 	//handle_reset_requests(gen);
@@ -1810,6 +1810,8 @@ static void *tmss_even_write_8(uint32_t address, void *context, uint8_t value)
 	return context;
 }
 
+int alreadyInitialized = 0;
+
 genesis_context *alloc_init_genesis(rom_info *rom, void *main_rom, void *lock_on, uint32_t system_opts, uint8_t force_region)
 {
 	static memmap_chunk z80_map[] = {
@@ -1876,7 +1878,7 @@ genesis_context *alloc_init_genesis(rom_info *rom, void *main_rom, void *lock_on
 	gen->psg = malloc(sizeof(psg_context));
 	psg_init(gen->psg, gen->master_clock, MCLKS_PER_PSG);
 	
-	set_audio_config(gen);
+	if (alreadyInitialized == 0) set_audio_config(gen);
 
 	z80_map[0].buffer = gen->zram = calloc(1, Z80_RAM_BYTES);
 #ifndef NO_Z80
@@ -2113,7 +2115,7 @@ genesis_context *alloc_init_genesis(rom_info *rom, void *main_rom, void *lock_on
 		}
 	}
 	gen->reset_cycle = CYCLE_NEVER;
-
+ alreadyInitialized = 1;
 	return gen;
 }
 
