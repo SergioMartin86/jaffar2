@@ -97,7 +97,7 @@ uint64_t blastemInstance::computeHash()
   MetroHash64 hash;
 
 //  hash.Update(&_state.videoFrame, sizeof(uint16_t));
-  hash.Update(&_state.framesPerStep, sizeof(uint8_t));
+//  hash.Update(&_state.framesPerStep, sizeof(uint8_t));
   hash.Update(&_state.currentLevel, sizeof(uint8_t));
   hash.Update(&_state.drawnRoom, sizeof(uint8_t));
 //  hash.Update(&_state.minutesLeft, sizeof(uint16_t));
@@ -116,13 +116,13 @@ uint64_t blastemInstance::computeHash()
   hash.Update(&_state.kidPositionX, sizeof(uint16_t));
   hash.Update(&_state.kidPositionY, sizeof(uint16_t));
 
-  hash.Update(&_state.guardFrame, sizeof(uint8_t));
-  hash.Update(&_state.guardCurrentHP, sizeof(uint8_t));
-  hash.Update(&_state.guardMaxHP, sizeof(uint8_t));
-  hash.Update(&_state.guardRoom, sizeof(uint8_t));
-  hash.Update(&_state.guardDirection, sizeof(uint8_t));
-  hash.Update(&_state.guardPositionX, sizeof(uint16_t));
-  hash.Update(&_state.guardPositionY, sizeof(uint16_t));
+//  hash.Update(&_state.guardFrame, sizeof(uint8_t));
+//  hash.Update(&_state.guardCurrentHP, sizeof(uint8_t));
+//  hash.Update(&_state.guardMaxHP, sizeof(uint8_t));
+//  hash.Update(&_state.guardRoom, sizeof(uint8_t));
+//  hash.Update(&_state.guardDirection, sizeof(uint8_t));
+//  hash.Update(&_state.guardPositionX, sizeof(uint16_t));
+//  hash.Update(&_state.guardPositionY, sizeof(uint16_t));
 
   uint64_t result;
   hash.Finalize(reinterpret_cast<uint8_t *>(&result));
@@ -141,17 +141,13 @@ void blastemInstance::printState()
 
 //                                   Move Ids =    0    1    2    3    4    5     6     7     8    9     10    11    12    13   14    15
 const std::vector<std::string> _possibleMoves = { ".", "B", "A", "L", "R", "D", "LA", "LD", "RA", "RD", "BR", "BL", "BU", "BD", "C",  "U" };
+// A = Jump
+// B = Hold / Careful Step
+// C = Attack
+// S = Start
 
 std::vector<uint8_t> blastemInstance::getPossibleMoveIds(const gameStateStruct& gameState)
 {
-  // Move Ids =         0    1    2    3    4    5     6     7     8    9     10    11    12    13   14    15
-  //_possibleMoves = { ".", "B", "A", "L", "R", "D", "LA", "LD", "RA", "RD", "BR", "BL", "BU", "BD", "C",  "U" };
-  // A = Jump
-  // B = Hold / Careful Step
-  // C = Attack
-  // S = Start
-  //return {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
-
   if (gameState.kidFrame == 1) return {0, 3, 4, 5}; // Running
   if (gameState.kidFrame == 2) return {0, 3, 4, 5}; // Running
   if (gameState.kidFrame == 3) return {0, 3, 4, 5}; // Running
