@@ -14,7 +14,7 @@ uint16_t lastExitFrame = 9999;
 size_t injectCalls = 0;
 int _detectedError = 0;
 
-#define MAX_INJECTS 100
+#define MAX_INJECTS 1000
 
 void jaffarInject(m68k_context *context)
 {
