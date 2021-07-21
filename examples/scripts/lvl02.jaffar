@@ -77,6 +77,24 @@
     [
      { "Type": "Trigger Fail" }
     ]
+   },
+   
+   {
+    "Label": 2901,
+    "Description": "If Kid falls into quicksand, fail.",
+    "Conditions":
+    [
+     { "Property": "Current Level", "Op": "==", "Value":  2 },
+     { "Property": "Kid Position Y", "Op": ">", "Value":  118 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ ],
+    
+    "Actions":
+    [
+     { "Type": "Trigger Fail" }
+    ]
    }
   ]  
 }
