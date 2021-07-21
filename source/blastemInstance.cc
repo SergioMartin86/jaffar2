@@ -248,11 +248,11 @@ std::vector<uint8_t> blastemInstance::getPossibleMoveIds(const gameStateStruct& 
   if (gameState.kidFrame == 99) return {0, 1, 12}; // Hanging from ledge
   if (gameState.kidFrame == 100) return {0, 1, 12}; // Hanging from ledge
   if (gameState.kidFrame == 101) return {0, 1, 12}; // Turning
-  if (gameState.kidFrame == 102) return {0, 1}; // Falling
-  if (gameState.kidFrame == 103) return {0, 1}; // Falling
-  if (gameState.kidFrame == 104) return {0, 1}; // Falling
-  if (gameState.kidFrame == 105) return {0, 1}; // Falling
-  if (gameState.kidFrame == 106) return {0, 1}; // Falling
+  if (gameState.kidFrame == 102) return {0, 1, 12}; // Falling
+  if (gameState.kidFrame == 103) return {0, 1, 12}; // Falling
+  if (gameState.kidFrame == 104) return {0, 1, 12}; // Falling
+  if (gameState.kidFrame == 105) return {0, 1, 12}; // Falling
+  if (gameState.kidFrame == 106) return {0, 1, 12}; // Falling
   if (gameState.kidFrame == 107) return {0}; // Pre-Crouching
   if (gameState.kidFrame == 108) return {0}; // Pre-Crouching
   if (gameState.kidFrame == 109) return {0, 7, 9}; // Crouching
