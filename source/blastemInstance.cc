@@ -139,8 +139,8 @@ void blastemInstance::printState()
  printf("[Jaffar2]  + [Guard] Room: %d, Pos.x: %3d, Pos.y: %3d, Frame: %3d, Direction: %s, HP: %d/%d\n", _state.guardRoom, _state.guardPositionX, _state.guardPositionY, _state.guardFrame, _state.guardDirection == 255 ? "L" : "R", _state.guardCurrentHP, _state.guardMaxHP);
 }
 
-//                                   Move Ids =    0    1    2    3    4    5     6     7     8    9     10    11    12    13   14    15
-const std::vector<std::string> _possibleMoves = { ".", "B", "A", "L", "R", "D", "LA", "LD", "RA", "RD", "BR", "BL", "BU", "BD", "C",  "U" };
+//                                   Move Ids =    0    1    2    3    4    5     6     7     8    9     10    11    12    13   14    15   16
+const std::vector<std::string> _possibleMoves = { ".", "B", "A", "L", "R", "D", "LA", "LD", "RA", "RD", "BR", "BL", "BU", "BD", "C",  "U", "S" };
 // A = Jump
 // B = Hold / Careful Step
 // C = Attack
