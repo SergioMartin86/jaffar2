@@ -70,6 +70,13 @@ gameStateStruct blastemInstance::getGameState(const uint8_t* state)
  memcpyBigEndian32(&gameState.checkpointPointer, &state[_stateWorkRamOffset + 0x4FF0]);
  memcpyBigEndian8(&gameState.slowfallFramesLeft, &state[_stateWorkRamOffset + 0x4AA1]);
 
+ // Specific to beach level:
+ memcpyBigEndian8(&gameState.sandTile1,          &state[_stateWorkRamOffset + 0x6861]);
+ memcpyBigEndian8(&gameState.sandTile2,          &state[_stateWorkRamOffset + 0x6871]);
+ memcpyBigEndian8(&gameState.sandTile3,          &state[_stateWorkRamOffset + 0x6881]);
+ memcpyBigEndian8(&gameState.sandTile4,          &state[_stateWorkRamOffset + 0x6891]);
+ memcpyBigEndian8(&gameState.sandTile5,          &state[_stateWorkRamOffset + 0x68A1]);
+
  memcpyBigEndian8(&gameState.kidCurrentSequence, &state[_stateWorkRamOffset + 0x4C55]);
  memcpyBigEndian8(&gameState.kidLastSequence,    &state[_stateWorkRamOffset + 0x4C57]);
  memcpyBigEndian8(&gameState.kidFrame,           &state[_stateWorkRamOffset + 0x4C45]);
@@ -104,6 +111,16 @@ uint64_t blastemInstance::computeHash()
 //  hash.Update(&_state.twelthSecondsLeft, sizeof(uint16_t));
 //  hash.Update(&_state.checkpointPointer, sizeof(uint32_t));
 //  hash.Update(&_state.slowfallFramesLeft, sizeof(uint8_t));
+
+  // If beach level, we take into account sand tile status
+  if (_state.currentLevel == 2)
+  {
+   hash.Update(&_state.sandTile1, sizeof(uint8_t));
+   hash.Update(&_state.sandTile2, sizeof(uint8_t));
+   hash.Update(&_state.sandTile3, sizeof(uint8_t));
+   hash.Update(&_state.sandTile4, sizeof(uint8_t));
+   hash.Update(&_state.sandTile5, sizeof(uint8_t));
+  }
 
 //  hash.Update(&_state.kidCurrentSequence, sizeof(uint8_t));
 //  hash.Update(&_state.kidLastSequence, sizeof(uint8_t));
