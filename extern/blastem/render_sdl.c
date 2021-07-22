@@ -80,6 +80,7 @@ uint8_t render_should_release_on_exit(void)
 
 void render_buffer_consumed(audio_source *src)
 {
+ if (fast_vdp) return;
 	SDL_CondSignal(src->opaque);
 }
 
@@ -97,6 +98,7 @@ static int32_t cur_min_buffered;
 static uint32_t min_remaining_buffer;
 static void audio_callback_drc(void *userData, uint8_t *byte_stream, int len)
 {
+ if (fast_vdp) return;
 	if (cur_min_buffered < 0) {
 		//underflow last frame, but main thread hasn't gotten a chance to call SDL_PauseAudio yet
 		return;
@@ -106,6 +108,7 @@ static void audio_callback_drc(void *userData, uint8_t *byte_stream, int len)
 
 static void audio_callback_run_on_audio(void *user_data, uint8_t *byte_stream, int len)
 {
+ if (fast_vdp) return;
 	if (current_system) {
 		current_system->resume_context(current_system);
 	}
@@ -149,11 +152,13 @@ static void render_close_audio()
 
 void *render_new_audio_opaque(void)
 {
+ if (fast_vdp) return NULL;
 	return SDL_CreateCond();
 }
 
 void render_free_audio_opaque(void *opaque)
 {
+ if (fast_vdp) return;
 	SDL_DestroyCond(opaque);
 }
 
@@ -273,6 +278,7 @@ uint32_t render_map_color(uint8_t r, uint8_t g, uint8_t b)
 static uint8_t external_sync;
 void render_set_external_sync(uint8_t ext_sync_on)
 {
+ if (fast_vdp) return;
 	if (ext_sync_on != external_sync) {
 		external_sync = ext_sync_on;
 		if (windowed_width) {
@@ -454,6 +460,7 @@ static void gl_teardown()
 static uint8_t texture_init;
 static void render_alloc_surfaces()
 {
+ if (fast_vdp) return;
 	if (texture_init) {
 		return;
 	}
@@ -919,6 +926,7 @@ static int32_t handle_event(SDL_Event *event)
 
 static void drain_events()
 {
+ if (fast_vdp) return;
 	SDL_Event event;
 	while(SDL_PollEvent(&event))
 	{
@@ -1203,6 +1211,7 @@ void render_init(int width, int height, char * title, uint8_t fullscreen)
 
 void render_reset_mappings(void)
 {
+ if (fast_vdp) return;
 	SDL_QuitSubSystem(SDL_INIT_GAMECONTROLLER);
 	SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER);
 	uint32_t db_size;
@@ -1292,12 +1301,14 @@ SDL_Window *render_get_window(void)
 
 uint32_t render_audio_syncs_per_sec(void)
 {
+ if (fast_vdp) return 0;
 	//sync samples with audio thread approximately every 8 lines when doing sync to video
 	return render_is_audio_sync() ? 0 : source_hz * (video_standard == VID_PAL ? 313 : 262) / 8;
 }
 
 void render_set_video_standard(vid_std std)
 {
+ if (fast_vdp) return;
 	video_standard = std;
 	if (render_is_audio_sync()) {
 		return;
@@ -1337,6 +1348,7 @@ void render_set_video_standard(vid_std std)
 
 void render_update_caption(char *title)
 {
+ if (fast_vdp) return;
  caption = title;
 	free(fps_caption);
 	fps_caption = NULL;
@@ -1462,6 +1474,7 @@ uint32_t *render_get_framebuffer(uint8_t which, int *pitch)
 
 static void release_buffer(uint32_t *buffer)
 {
+ if (fast_vdp) return;
  SDL_LockMutex(free_buffer_mutex);
 		if (num_buffers == buffer_storage) {
 			buffer_storage *= 2;

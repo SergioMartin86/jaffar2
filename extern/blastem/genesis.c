@@ -511,13 +511,13 @@ static void sync_sound(genesis_context * gen, uint32_t target)
 }
 
 //My refresh emulation isn't currently good enough and causes more problems than it solves
-#define REFRESH_EMULATION
-#ifdef REFRESH_EMULATION
-#define REFRESH_INTERVAL 128
-#define REFRESH_DELAY 2
-uint32_t last_sync_cycle;
-uint32_t refresh_counter;
-#endif
+//#define REFRESH_EMULATION
+//#ifdef REFRESH_EMULATION
+//#define REFRESH_INTERVAL 128
+//#define REFRESH_DELAY 2
+//uint32_t last_sync_cycle;
+//uint32_t refresh_counter;
+//#endif
 
 #include <limits.h>
 #define ADJUST_BUFFER (8*MCLKS_LINE*313)
