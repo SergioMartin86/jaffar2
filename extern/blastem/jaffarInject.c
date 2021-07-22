@@ -147,6 +147,7 @@ void blastem_resume()
 
 void checkTimeout()
 {
+ if (!headless) return;
  genesis_context *gen = current_system;
  time_t curTime = time(NULL);
  if (curTime >= _startTime + TIMEOUT_SECONDS)
