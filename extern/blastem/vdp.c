@@ -3651,7 +3651,8 @@ uint32_t vdp_run_to_vblank(vdp_context * context)
 
 void vdp_run_dma_done(vdp_context * context, uint32_t target_cycles)
 {
-	for(;;) {
+	for(size_t counter = 0; 1; counter++) {
+  if (counter > 1000) { printf("Too many attemps at vdp_run_dma_done\n"); return; };
 		uint32_t dmalen = (context->regs[REG_DMALEN_H] << 8) | context->regs[REG_DMALEN_L];
 		if (!dmalen) {
 			dmalen = 0x10000;

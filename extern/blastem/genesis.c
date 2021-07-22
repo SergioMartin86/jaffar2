@@ -632,58 +632,18 @@ static m68k_context * vdp_port_write(uint32_t vdp_port, m68k_context * context, 
 	sync_components(context, 0);
 	vdp_context *v_context = gen->vdp;
 	uint32_t before_cycle = v_context->cycles;
+	size_t dmaCalls = 0;
 	if (vdp_port < 0x10) {
 		int blocked;
 		if (vdp_port < 4) {
-			while (vdp_data_port_write(v_context, value) < 0) {
-				while(v_context->flags & FLAG_DMA_RUN) {
-					vdp_run_dma_done(v_context, gen->frame_end);
-					if (v_context->cycles >= gen->frame_end) {
-						uint32_t cycle_diff = v_context->cycles - context->current_cycle;
-						uint32_t m68k_cycle_diff = (cycle_diff / MCLKS_PER_68K) * MCLKS_PER_68K;
-						if (m68k_cycle_diff < cycle_diff) {
-							m68k_cycle_diff += MCLKS_PER_68K;
-						}
-						context->current_cycle += m68k_cycle_diff;
-						gen->bus_busy = 1;
-						sync_components(context, 0);
-						gen->bus_busy = 0;
-					}
-				}
-				//context->current_cycle = v_context->cycles;
-			}
+			vdp_data_port_write(v_context, value);
 		} else if(vdp_port < 8) {
 			vdp_run_context_full(v_context, context->current_cycle);
 			before_cycle = v_context->cycles;
 			blocked = vdp_control_port_write(v_context, value);
-			if (blocked) {
-				while (blocked) {
-					while(v_context->flags & FLAG_DMA_RUN) {
-						vdp_run_dma_done(v_context, gen->frame_end);
-						if (v_context->cycles >= gen->frame_end) {
-							uint32_t cycle_diff = v_context->cycles - context->current_cycle;
-							uint32_t m68k_cycle_diff = (cycle_diff / MCLKS_PER_68K) * MCLKS_PER_68K;
-							if (m68k_cycle_diff < cycle_diff) {
-								m68k_cycle_diff += MCLKS_PER_68K;
-							}
-							context->current_cycle += m68k_cycle_diff;
-							gen->bus_busy = 1;
-							sync_components(context, 0);
-							gen->bus_busy = 0;
-						}
-					}
-					
-					if (blocked < 0) {
-						blocked = vdp_control_port_write(v_context, value);
-					} else {
-						blocked = 0;
-					}
-				}
-			} else {
 				context->sync_cycle = gen->frame_end = vdp_cycles_to_frame_end(v_context);
 				//printf("Set sync cycle to: %d @ %d, vcounter: %d, hslot: %d\n", context->sync_cycle, context->current_cycle, v_context->vcounter, v_context->hslot);
 				adjust_int_cycle(context, v_context);
-			}
 		} else {
 		 handleError(context, "Warning  3\n");
 			fatal_error("Illegal write to HV Counter port %X\n", vdp_port);

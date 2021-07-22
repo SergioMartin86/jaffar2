@@ -1,6 +1,7 @@
 #include "jaffarInject.h"
 #include "vdp.h"
 #include "libco.h"
+#include <time.h>
 
 uint8_t _framesPerGameFrame;
 uint16_t _curFrameId = 0;
@@ -13,6 +14,7 @@ m68k_context* _context;
 uint16_t lastExitFrame = 9999;
 size_t injectCalls = 0;
 int _detectedError = 0;
+time_t _startTime;
 
 #define MAX_INJECTS 1000
 
@@ -135,6 +137,7 @@ void blastem_start(int argc, char** argv, int isHeadlessMode, int isFastVdp)
 
 void blastem_resume()
 {
+ _startTime = time(NULL);
  _jaffarThread = co_active();
  _blastemThread = co_create(1 << 24, routineWrapper);
  co_switch(_blastemThread);
