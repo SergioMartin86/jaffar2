@@ -10,6 +10,8 @@
 #include "render.h"
 #include "util.h"
 
+extern void checkTimeout();
+
 #define NTSC_INACTIVE_START 224
 #define PAL_INACTIVE_START 240
 #define MODE4_INACTIVE_START 192
@@ -3456,6 +3458,7 @@ static void vdp_inactive(vdp_context *context, uint32_t target_cycles, uint8_t i
 	
 	while(context->cycles < target_cycles)
 	{
+	 checkTimeout();
 		check_switch_inactive(context, is_h40);
 		if (context->hslot == BG_START_SLOT && context->output) {
 			dst = context->output + (context->hslot - BG_START_SLOT) * 2;
@@ -3610,6 +3613,7 @@ void vdp_run_context_full(vdp_context * context, uint32_t target_cycles)
 	uint8_t mode_5 = context->regs[REG_MODE_2] & BIT_MODE_5;
 	while(context->cycles < target_cycles)
 	{
+	 checkTimeout();
 	 if (_detectedError == 1) return;
 		check_switch_inactive(context, is_h40);
 		
@@ -3652,6 +3656,7 @@ uint32_t vdp_run_to_vblank(vdp_context * context)
 void vdp_run_dma_done(vdp_context * context, uint32_t target_cycles)
 {
 	for(size_t counter = 0; 1; counter++) {
+	 checkTimeout();
   if (counter > 1000) { printf("Too many attemps at vdp_run_dma_done\n"); return; };
 		uint32_t dmalen = (context->regs[REG_DMALEN_H] << 8) | context->regs[REG_DMALEN_L];
 		if (!dmalen) {
@@ -4026,6 +4031,7 @@ uint8_t vdp_data_port_read_pbc(vdp_context * context)
 
 void vdp_adjust_cycles(vdp_context * context, uint32_t deduction)
 {
+ checkTimeout();
 	context->cycles -= deduction;
 	if (context->pending_vint_start >= deduction) {
 		context->pending_vint_start -= deduction;

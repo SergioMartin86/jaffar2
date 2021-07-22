@@ -14,8 +14,9 @@ m68k_context* _context;
 uint16_t lastExitFrame = 9999;
 size_t injectCalls = 0;
 int _detectedError = 0;
-time_t _startTime;
+time_t _startTime = 999999999999;
 
+#define TIMEOUT_SECONDS 3
 #define MAX_INJECTS 1000
 
 void jaffarInject(m68k_context *context)
@@ -110,8 +111,8 @@ extern void init_system_with_media(const char *path, system_type force_stype);
 void handleError(m68k_context * context, const char* errorMessage)
 {
 // genesis_context *gen = current_system;
-// printf("Error detected: %s\n", errorMessage);
-// fflush(stdout);
+ printf("Error detected: %s\n", errorMessage);
+ fflush(stdout);
 // init_system_with_media("../rom/pop2.bin", SYSTEM_UNKNOWN);
 // gen = current_system;
 // _context = gen->m68k;
@@ -144,3 +145,10 @@ void blastem_resume()
  co_delete(_blastemThread);
 }
 
+void checkTimeout()
+{
+ genesis_context *gen = current_system;
+ time_t curTime = time(NULL);
+ if (curTime >= _startTime + TIMEOUT_SECONDS)
+  handleError(gen->m68k, "Timeout found");
+}
