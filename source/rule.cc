@@ -264,6 +264,8 @@ size_t Rule::getPropertyType(const std::string &property)
  if (property == "Checkpoint Pointer") return 32;
  if (property == "Is Feather Fall") return 8;
 
+ if (property == "Level 3 Exit Door State") return 8;
+
  EXIT_WITH_ERROR("[Error] Rule %lu, unrecognized property: %s\n", _label, property.c_str());
 
  return 1;
@@ -294,6 +296,8 @@ void *Rule::getPropertyPointer(const std::string &property, blastemInstance *bla
   if (property == "Drawn Room") return &blastem->_state.drawnRoom;
   if (property == "Checkpoint Pointer") return &blastem->_state.checkpointPointer;
   if (property == "Is Feather Fall") return &blastem->_state.slowfallFramesLeft;
+
+  if (property == "Level 3 Exit Door State") return &blastem->_state.lvl3ExitDoor;
 
   EXIT_WITH_ERROR("[Error] Rule %lu, unrecognized property: %s\n", _label, property.c_str());
 

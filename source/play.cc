@@ -173,6 +173,7 @@ int main(int argc, char *argv[])
       printw("[Jaffar2]  + Move: %s\n", moveList[currentStep - 1].c_str());
       printw("[Jaffar2]  + Current Level: %2d\n", blastem._state.currentLevel);
       printw("[Jaffar2]  + Current RNG Value: 0x%X\n", blastem._state.rngValue);
+      printw("[Jaffar2]  + Hash Value: 0x%lX\n", blastem.computeHash());
       printw("[Jaffar2]  + Game / Video Frame: %d / %d\n", blastem._state.gameFrame, blastem._state.videoFrame);
       printw("[Jaffar2]  + [Kid]   Room: %d, Pos.x: %3d, Pos.y: %3d, Frame: %3d, Direction: %s, HP: %d/%d\n", blastem._state.kidRoom, blastem._state.kidPositionX, blastem._state.kidPositionY, blastem._state.kidFrame, blastem._state.kidDirection == 255 ? "L" : "R", blastem._state.kidCurrentHP, blastem._state.kidMaxHP);
       printw("[Jaffar2]  + [Guard] Room: %d, Pos.x: %3d, Pos.y: %3d, Frame: %3d, Direction: %s, HP: %d/%d\n", blastem._state.guardRoom, blastem._state.guardPositionX, blastem._state.guardPositionY, blastem._state.guardFrame, blastem._state.guardDirection == 255 ? "L" : "R", blastem._state.guardCurrentHP, blastem._state.guardMaxHP);

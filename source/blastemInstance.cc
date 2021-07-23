@@ -78,7 +78,11 @@ gameStateStruct blastemInstance::getGameState(const uint8_t* state)
  memcpyBigEndian8(&gameState.sandTile5,          &state[_stateWorkRamOffset + 0x68A1]);
  memcpyBigEndian8(&gameState.caveEntrancePos,    &state[_stateWorkRamOffset + 0x6851]);
 
+ // Specific to lvl3
+ memcpyBigEndian8(&gameState.lvl3ExitDoor,       &state[_stateWorkRamOffset + 0x2B93]);
+
  memcpyBigEndian8(&gameState.kidCurrentSequence, &state[_stateWorkRamOffset + 0x4C55]);
+ memcpyBigEndian8(&gameState.kidCurrentSequenceStage, &state[_stateWorkRamOffset + 0x4C53]);
  memcpyBigEndian8(&gameState.kidLastSequence,    &state[_stateWorkRamOffset + 0x4C57]);
  memcpyBigEndian8(&gameState.kidFrame,           &state[_stateWorkRamOffset + 0x4C45]);
  memcpyBigEndian8(&gameState.kidCurrentHP,       &state[_stateWorkRamOffset + 0x4C4F]);
@@ -124,8 +128,14 @@ uint64_t blastemInstance::computeHash()
    hash.Update(&_state.caveEntrancePos, sizeof(uint8_t));
   }
 
-//  hash.Update(&_state.kidCurrentSequence, sizeof(uint8_t));
-//  hash.Update(&_state.kidLastSequence, sizeof(uint8_t));
+  if (_state.currentLevel == 3)
+  {
+   hash.Update(&_state.lvl3ExitDoor, sizeof(uint8_t));
+  }
+
+  hash.Update(&_state.kidCurrentSequence, sizeof(uint8_t));
+  hash.Update(&_state.kidCurrentSequenceStage, sizeof(uint8_t));
+  hash.Update(&_state.kidLastSequence, sizeof(uint8_t));
   hash.Update(&_state.kidFrame, sizeof(uint8_t));
   hash.Update(&_state.kidCurrentHP, sizeof(uint8_t));
   hash.Update(&_state.kidMaxHP, sizeof(uint8_t));
@@ -167,6 +177,7 @@ const std::vector<std::string> _possibleMoves = { ".", "B", "A", "L", "R", "D", 
 
 std::vector<uint8_t> blastemInstance::getPossibleMoveIds(const gameStateStruct& gameState)
 {
+  if (gameState.kidFrame == 0) return {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14}; // Standing??
   if (gameState.kidFrame == 1) return {0, 3, 4, 5}; // Running
   if (gameState.kidFrame == 2) return {0, 3, 4, 5}; // Running
   if (gameState.kidFrame == 3) return {0, 3, 4, 5}; // Running
@@ -181,7 +192,7 @@ std::vector<uint8_t> blastemInstance::getPossibleMoveIds(const gameStateStruct& 
   if (gameState.kidFrame == 12) return {0, 3, 4, 5}; // Running
   if (gameState.kidFrame == 13) return {0, 3, 4, 5}; // Running
   if (gameState.kidFrame == 14) return {0, 3, 4, 5}; // Running
-  if (gameState.kidFrame == 15) return {0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14}; // Standing
+  if (gameState.kidFrame == 15) return {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14}; // Standing
   if (gameState.kidFrame == 16) return {0}; // Standing Jump
   if (gameState.kidFrame == 17) return {0}; // Standing Jump
   if (gameState.kidFrame == 18) return {0}; // Standing Jump
@@ -216,9 +227,9 @@ std::vector<uint8_t> blastemInstance::getPossibleMoveIds(const gameStateStruct& 
   if (gameState.kidFrame == 47) return {0}; // Turning
   if (gameState.kidFrame == 48) return {0}; // Turning
   if (gameState.kidFrame == 49) return {0}; // Stopping after run / Recovering
-  if (gameState.kidFrame == 50) return {0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14}; // Stopping after run / Recovering (Can act now)
-  if (gameState.kidFrame == 51) return {0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14}; // Stopping after run / Recovering (Can act now)
-  if (gameState.kidFrame == 52) return {0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14}; // Stopping after run / Recovering (Can act now)
+  if (gameState.kidFrame == 50) return {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14}; // Stopping after run / Recovering (Can act now)
+  if (gameState.kidFrame == 51) return {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14}; // Stopping after run / Recovering (Can act now)
+  if (gameState.kidFrame == 52) return {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14}; // Stopping after run / Recovering (Can act now)
   if (gameState.kidFrame == 53) return {0}; // Stopping after run
   if (gameState.kidFrame == 54) return {0}; // Stopping after run
   if (gameState.kidFrame == 55) return {0}; // Stopping after run
@@ -272,9 +283,9 @@ std::vector<uint8_t> blastemInstance::getPossibleMoveIds(const gameStateStruct& 
   if (gameState.kidFrame == 104) return {0, 1, 12}; // Falling
   if (gameState.kidFrame == 105) return {0, 1, 12}; // Falling
   if (gameState.kidFrame == 106) return {0, 1, 12}; // Falling
-  if (gameState.kidFrame == 107) return {0}; // Pre-Crouching
-  if (gameState.kidFrame == 108) return {0}; // Pre-Crouching
-  if (gameState.kidFrame == 109) return {0, 7, 9}; // Crouching
+  if (gameState.kidFrame == 107) return {0, 1}; // Pre-Crouching
+  if (gameState.kidFrame == 108) return {0, 1}; // Pre-Crouching
+  if (gameState.kidFrame == 109) return {0, 1, 7, 9}; // Crouching
   if (gameState.kidFrame == 110) return {0}; // Post-Crouching
   if (gameState.kidFrame == 111) return {0}; // Post-Crouching
   if (gameState.kidFrame == 111) return {0}; // Post-Crouching
@@ -324,12 +335,16 @@ std::vector<uint8_t> blastemInstance::getPossibleMoveIds(const gameStateStruct& 
   if (gameState.kidFrame == 156) return {0, 2}; // [Sword] After Attack / Recovering from Hit
   if (gameState.kidFrame == 157) return {0, 3, 4, 5, 14, 15}; // [Sword] After Attack / Recovering from Hit
   if (gameState.kidFrame == 158) return {0, 3, 4, 5, 14, 15}; // [Sword] En Guarde
+  if (gameState.kidFrame == 159) return {0, 3, 4, 5, 14, 15}; // [Sword] Parry
   if (gameState.kidFrame == 160) return {0}; // [Sword] Walk Backward 2
   if (gameState.kidFrame == 161) return {0, 14, 15}; // [Sword] Attack While parrying
   if (gameState.kidFrame == 162) return {0}; // [Sword] Attack While parrying
   if (gameState.kidFrame == 163) return {0}; // [Sword] Walk Forward
   if (gameState.kidFrame == 164) return {0}; // [Sword] Walk Forward
   if (gameState.kidFrame == 165) return {0, 3, 4, 5, 14, 15}; // [Sword] Walk Forward
+  if (gameState.kidFrame == 166) return {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14}; // Standing??
+  if (gameState.kidFrame == 167) return {0, 3, 4, 5, 14, 15}; // [Sword] Attack
+  if (gameState.kidFrame == 168) return {0, 3, 4, 5, 14, 15}; // [Sword] Attack?
   if (gameState.kidFrame == 169) return {0}; // [Sword] Parrying 1
   if (gameState.kidFrame == 170) return {0, 3, 4, 5, 14, 15}; // [Sword] En Guarde
   if (gameState.kidFrame == 171) return {0, 3, 4, 5, 14, 15}; // [Sword] En Guarde
@@ -338,16 +353,33 @@ std::vector<uint8_t> blastemInstance::getPossibleMoveIds(const gameStateStruct& 
   if (gameState.kidFrame == 174) return {0, 3, 4, 5, 14, 15}; // [Sword] Getting Hit
   if (gameState.kidFrame == 177) return {0}; // [Sword] Turning
   if (gameState.kidFrame == 178) return {0}; // [Sword] Turning
-  if (gameState.kidFrame == 179) return {0}; // [Sword] Dying
-  if (gameState.kidFrame == 180) return {0}; // [Sword] Dying
-  if (gameState.kidFrame == 181) return {0}; // [Sword] Dying
-  if (gameState.kidFrame == 182) return {0}; // [Sword] Dying
-  if (gameState.kidFrame == 183) return {0}; // [Sword] Dying
-  if (gameState.kidFrame == 185) return {0}; // [Sword] Dying
-  if (gameState.kidFrame == 186) return {0}; // [Sword] Gruesome Death
-  if (gameState.kidFrame == 187) return {0}; // [Sword] Gruesome Death
-  if (gameState.kidFrame == 188) return {0}; // [Sword] Gruesome Death
-  if (gameState.kidFrame == 189) return {0}; // [Sword] Gruesome Death
+  if (gameState.kidFrame == 179) return {0}; // Dying
+  if (gameState.kidFrame == 180) return {0}; // Dying
+  if (gameState.kidFrame == 181) return {0}; // Dying
+  if (gameState.kidFrame == 182) return {0}; // Dying
+  if (gameState.kidFrame == 183) return {0}; // Dying
+  if (gameState.kidFrame == 184) return {0}; // Falling
+  if (gameState.kidFrame == 185) return {0}; // Dying
+  if (gameState.kidFrame == 186) return {0}; // Gruesome Death
+  if (gameState.kidFrame == 187) return {0}; // Gruesome Death
+  if (gameState.kidFrame == 188) return {0}; // Gruesome Death
+  if (gameState.kidFrame == 189) return {0}; // Gruesome Death
+  if (gameState.kidFrame == 191) return {0}; // Drinking
+  if (gameState.kidFrame == 192) return {0}; // Drinking
+  if (gameState.kidFrame == 193) return {0}; // Drinking
+  if (gameState.kidFrame == 194) return {0}; // Drinking
+  if (gameState.kidFrame == 195) return {0}; // Drinking
+  if (gameState.kidFrame == 196) return {0}; // Drinking
+  if (gameState.kidFrame == 197) return {0}; // Drinking
+  if (gameState.kidFrame == 198) return {0}; // Drinking
+  if (gameState.kidFrame == 199) return {0}; // Drinking
+  if (gameState.kidFrame == 200) return {0}; // Drinking
+  if (gameState.kidFrame == 201) return {0}; // Drinking
+  if (gameState.kidFrame == 202) return {0}; // Drinking
+  if (gameState.kidFrame == 203) return {0}; // Drinking
+  if (gameState.kidFrame == 204) return {0}; // Drinking
+  if (gameState.kidFrame == 205) return {0}; // Drinking
+  if (gameState.kidFrame == 206) return {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14}; // Standing??
   if (gameState.kidFrame == 207) return {0}; // [Sword] Drawing Sword
   if (gameState.kidFrame == 208) return {0}; // [Sword] Drawing Sword
   if (gameState.kidFrame == 209) return {0}; // [Sword] Drawing Sword
@@ -355,6 +387,20 @@ std::vector<uint8_t> blastemInstance::getPossibleMoveIds(const gameStateStruct& 
   if (gameState.kidFrame == 211) return {0}; // [Sword] Turning
   if (gameState.kidFrame == 212) return {0}; // [Sword] Turning
   if (gameState.kidFrame == 213) return {0}; // [Sword] Turning
+  if (gameState.kidFrame == 217) return {0}; // Leaving Level (Door)
+  if (gameState.kidFrame == 218) return {0}; // Leaving Level (Door)
+  if (gameState.kidFrame == 219) return {0}; // Leaving Level (Door)
+  if (gameState.kidFrame == 220) return {0}; // Leaving Level (Door)
+  if (gameState.kidFrame == 221) return {0}; // Leaving Level (Door)
+  if (gameState.kidFrame == 222) return {0}; // Leaving Level (Door)
+  if (gameState.kidFrame == 223) return {0}; // Leaving Level (Door)
+  if (gameState.kidFrame == 224) return {0}; // Leaving Level (Door)
+  if (gameState.kidFrame == 225) return {0}; // Leaving Level (Door)
+  if (gameState.kidFrame == 226) return {0}; // Leaving Level (Door)
+  if (gameState.kidFrame == 229) return {0}; // Grabbing Sword
+  if (gameState.kidFrame == 230) return {0}; // Grabbing Sword
+  if (gameState.kidFrame == 231) return {0}; // Grabbing Sword
+  if (gameState.kidFrame == 232) return {0}; // Grabbing Sword
   if (gameState.kidFrame == 233) return {0}; // [Sword] Sheathing Sword
   if (gameState.kidFrame == 234) return {0}; // [Sword] Sheathing Sword
   if (gameState.kidFrame == 235) return {0}; // [Sword] Sheathing Sword
@@ -363,6 +409,21 @@ std::vector<uint8_t> blastemInstance::getPossibleMoveIds(const gameStateStruct& 
   if (gameState.kidFrame == 238) return {0}; // [Sword] Sheathing Sword
   if (gameState.kidFrame == 239) return {0}; // [Sword] Sheathing Sword
   if (gameState.kidFrame == 240) return {0}; // [Sword] Sheathing Sword
+  if (gameState.kidFrame == 241) return {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14}; // Standing??
+  if (gameState.kidFrame == 242) return {0}; // Gruesome Death
+  if (gameState.kidFrame == 243) return {0}; // Gruesome Death
+  if (gameState.kidFrame == 244) return {0}; // [Sword] Attacking Downward
+  if (gameState.kidFrame == 245) return {0}; // [Sword] Attacking Downward
+  if (gameState.kidFrame == 246) return {0}; // Crawling
+  if (gameState.kidFrame == 247) return {0}; // Crawling
+  if (gameState.kidFrame == 248) return {0}; // Crawling
+  if (gameState.kidFrame == 249) return {0}; // Crawling
+  if (gameState.kidFrame == 250) return {0}; // Crawling
+  if (gameState.kidFrame == 251) return {0}; // Crawling
+  if (gameState.kidFrame == 252) return {0}; // Crawling
+  if (gameState.kidFrame == 253) return {0}; // Crawling
+  if (gameState.kidFrame == 254) return {0}; // Crawling
+  if (gameState.kidFrame == 255) return {0}; // Crawling
 
   // Default, report unrecognized frame
   EXIT_WITH_ERROR("[Jaffar2] Warning: Frame %d not recognized.\n", gameState.kidFrame);

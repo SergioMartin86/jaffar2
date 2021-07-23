@@ -27,6 +27,7 @@ struct gameStateStruct
  // A system needs to be established to keep track of these changes to know what checkpoint it refers to
  uint32_t checkpointPointer;
 
+ uint8_t kidCurrentSequenceStage;
  uint8_t kidCurrentSequence;
  uint8_t kidLastSequence;
  uint8_t kidFrame;
@@ -44,6 +45,7 @@ struct gameStateStruct
  uint8_t sandTile4;
  uint8_t sandTile5;
  uint8_t caveEntrancePos;
+ uint8_t lvl3ExitDoor;
 
  uint8_t guardFrame;
  uint8_t guardCurrentHP;
