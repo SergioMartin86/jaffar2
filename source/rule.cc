@@ -245,6 +245,7 @@ size_t Rule::getPropertyType(const std::string &property)
  if (property == "Kid Max HP") return 8;
  if (property == "Kid Position X") return 16;
  if (property == "Kid Position Y") return 16;
+ if (property == "Kid Falling Speed") return 8;
  if (property == "Kid Direction") return 8;
  if (property == "Kid Room") return 8;
  if (property == "Kid Has Sword") return 8;
@@ -265,6 +266,7 @@ size_t Rule::getPropertyType(const std::string &property)
  if (property == "Is Feather Fall") return 8;
 
  if (property == "Level 3 Exit Door State") return 8;
+ if (property == "Level 4 Exit Door State") return 8;
 
  EXIT_WITH_ERROR("[Error] Rule %lu, unrecognized property: %s\n", _label, property.c_str());
 
@@ -278,6 +280,7 @@ void *Rule::getPropertyPointer(const std::string &property, blastemInstance *bla
   if (property == "Kid Max HP") return &blastem->_state.kidMaxHP;
   if (property == "Kid Position X") return &blastem->_state.kidPositionX;
   if (property == "Kid Position Y") return &blastem->_state.kidPositionY;
+  if (property == "Kid Falling Speed") return &blastem->_state.kidFallingSpeed;
   if (property == "Kid Direction") return &blastem->_state.kidDirection;
   if (property == "Kid Room") return &blastem->_state.kidRoom;
   if (property == "Kid Has Sword") return &blastem->_state.kidHasSword;
@@ -298,6 +301,7 @@ void *Rule::getPropertyPointer(const std::string &property, blastemInstance *bla
   if (property == "Is Feather Fall") return &blastem->_state.slowfallFramesLeft;
 
   if (property == "Level 3 Exit Door State") return &blastem->_state.lvl3ExitDoor;
+  if (property == "Level 4 Exit Door State") return &blastem->_state.lvl4ExitDoor;
 
   EXIT_WITH_ERROR("[Error] Rule %lu, unrecognized property: %s\n", _label, property.c_str());
 

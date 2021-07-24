@@ -8,7 +8,6 @@
     "Description": "Setting magnet to make kid go to the right on the first screen",
     "Conditions":
     [
-     { "Property": "Current Level", "Op": "==", "Value":  3 },
      { "Property": "Kid Room", "Op": "==", "Value":  1 }
     ],
     
@@ -28,7 +27,6 @@
     "Description": "Rewarding kid for advancing to the second screen",
     "Conditions":
     [
-     { "Property": "Current Level", "Op": "==", "Value":  3 },
      { "Property": "Kid Room", "Op": "==", "Value":  4 }
     ],
     
@@ -49,7 +47,6 @@
     "Description": "Rewarding kid for advancing to the next screen",
     "Conditions":
     [
-     { "Property": "Current Level", "Op": "==", "Value":  3 },
      { "Property": "Kid Room", "Op": "==", "Value":  16 }
     ],
     
@@ -70,7 +67,6 @@
     "Description": "Rewarding kid for advancing to the next screen",
     "Conditions":
     [
-     { "Property": "Current Level", "Op": "==", "Value":  3 },
      { "Property": "Kid Room", "Op": "==", "Value":  3 }
     ],
     
@@ -91,7 +87,6 @@
     "Description": "Rewarding kid for advancing to the next screen",
     "Conditions":
     [
-     { "Property": "Current Level", "Op": "==", "Value":  3 },
      { "Property": "Kid Room", "Op": "==", "Value":  2 }
     ],
     
@@ -112,7 +107,6 @@
     "Description": "Rewarding kid for advancing to the next screen",
     "Conditions":
     [
-     { "Property": "Current Level", "Op": "==", "Value":  3 },
      { "Property": "Kid Room", "Op": "==", "Value":  14 }
     ],
     
@@ -133,7 +127,6 @@
     "Description": "Rewarding kid for advancing to the next screen",
     "Conditions":
     [
-     { "Property": "Current Level", "Op": "==", "Value":  3 },
      { "Property": "Kid Room", "Op": "==", "Value":  10 }
     ],
     
@@ -154,7 +147,6 @@
     "Description": "Rewarding kid for drinking potion",
     "Conditions":
     [
-     { "Property": "Current Level", "Op": "==", "Value":  3 },
      { "Property": "Kid Room", "Op": "==", "Value":  10 },
      { "Property": "Kid Frame", "Op": "==", "Value":  191 }
     ],
@@ -175,7 +167,6 @@
     "Description": "Go right after drinking potion",
     "Conditions":
     [
-     { "Property": "Current Level", "Op": "==", "Value":  3 },
      { "Property": "Kid Room", "Op": "==", "Value":  14 },
      { "Property": "Kid Max HP", "Op": ">", "Value": 3 }
     ],
@@ -197,7 +188,6 @@
     "Description": "Keep going right",
     "Conditions":
     [
-     { "Property": "Current Level", "Op": "==", "Value":  3 },
      { "Property": "Kid Room", "Op": "==", "Value":  15 },
      { "Property": "Kid Max HP", "Op": ">", "Value": 3 }
     ],
@@ -219,7 +209,6 @@
     "Description": "Keep going right",
     "Conditions":
     [
-     { "Property": "Current Level", "Op": "==", "Value":  3 },
      { "Property": "Kid Room", "Op": "==", "Value":  17 },
      { "Property": "Kid Max HP", "Op": ">", "Value": 3 }
     ],
@@ -241,7 +230,6 @@
     "Description": "Add reward for opening door",
     "Conditions":
     [
-     { "Property": "Current Level", "Op": "==", "Value":  3 },
      { "Property": "Kid Room", "Op": "==", "Value":  17 },
      { "Property": "Kid Frame", "Op": "==", "Value":  91 },
      { "Property": "Kid Max HP", "Op": ">", "Value": 3 }
@@ -261,7 +249,6 @@
     "Description": "Keep Advancing",
     "Conditions":
     [
-     { "Property": "Current Level", "Op": "==", "Value":  3 },
      { "Property": "Kid Room", "Op": "==", "Value":  19 },
      { "Property": "Kid Max HP", "Op": ">", "Value": 3 }
     ],
@@ -284,7 +271,6 @@
     "Description": "Keep Advancing",
     "Conditions":
     [
-     { "Property": "Current Level", "Op": "==", "Value":  3 },
      { "Property": "Kid Room", "Op": "==", "Value":  22 },
      { "Property": "Kid Max HP", "Op": ">", "Value": 3 }
     ],
@@ -307,7 +293,6 @@
     "Description": "Keep Advancing",
     "Conditions":
     [
-     { "Property": "Current Level", "Op": "==", "Value":  3 },
      { "Property": "Kid Room", "Op": "==", "Value":  30 },
      { "Property": "Kid Max HP", "Op": ">", "Value": 3 }
     ],
@@ -329,7 +314,6 @@
     "Description": "Keep Advancing",
     "Conditions":
     [
-     { "Property": "Current Level", "Op": "==", "Value":  3 },
      { "Property": "Kid Room", "Op": "==", "Value":  31 },
      { "Property": "Kid Max HP", "Op": ">", "Value": 3 }
     ],
@@ -350,7 +334,6 @@
     "Description": "Keep Advancing",
     "Conditions":
     [
-     { "Property": "Current Level", "Op": "==", "Value":  3 },
      { "Property": "Kid Room", "Op": "==", "Value":  30 },
      { "Property": "Kid Position X", "Op": ">", "Value":  400 },
      { "Property": "Kid Position Y", "Op": "<", "Value":  60 },
@@ -374,7 +357,6 @@
     "Description": "Opened Exit Door",
     "Conditions":
     [
-     { "Property": "Current Level", "Op": "==", "Value":  3 },
      { "Property": "Kid Room", "Op": "==", "Value":  30 },
      { "Property": "Kid Max HP", "Op": ">", "Value": 3 },
      { "Property": "Level 3 Exit Door State", "Op": ">", "Value": 0 }
@@ -396,7 +378,6 @@
     "Description": "Keep Advancing",
     "Conditions":
     [
-     { "Property": "Current Level", "Op": "==", "Value":  3 },
      { "Property": "Kid Room", "Op": "==", "Value":  31 },
      { "Property": "Kid Max HP", "Op": ">", "Value": 3 },
      { "Property": "Level 3 Exit Door State", "Op": ">", "Value": 0 }
@@ -418,7 +399,6 @@
     "Description": "Keep Advancing",
     "Conditions":
     [
-     { "Property": "Current Level", "Op": "==", "Value":  3 },
      { "Property": "Kid Room", "Op": "==", "Value":  30 },
      { "Property": "Kid Max HP", "Op": ">", "Value": 3 },
      { "Property": "Level 3 Exit Door State", "Op": ">", "Value": 0 },
@@ -459,7 +439,6 @@
     "Description": "If Kid dies, then fail.",
     "Conditions":
     [
-     { "Property": "Current Level", "Op": "==", "Value":  2 },
      { "Property": "Kid Current HP", "Op": "==", "Value":  0 }
     ],
     

@@ -37,6 +37,7 @@ struct gameStateStruct
  uint8_t kidDirection;
  uint16_t kidPositionX;
  uint16_t kidPositionY;
+ uint8_t kidFallingSpeed;
  uint8_t kidHasSword;
 
  uint8_t sandTile1;
@@ -46,6 +47,7 @@ struct gameStateStruct
  uint8_t sandTile5;
  uint8_t caveEntrancePos;
  uint8_t lvl3ExitDoor;
+ uint8_t lvl4ExitDoor;
 
  uint8_t guardFrame;
  uint8_t guardCurrentHP;

@@ -69,17 +69,17 @@ gameStateStruct blastemInstance::getGameState(const uint8_t* state)
  memcpyBigEndian16(&gameState.twelthSecondsLeft, &state[_stateWorkRamOffset + 0x4FC8]);
  memcpyBigEndian32(&gameState.checkpointPointer, &state[_stateWorkRamOffset + 0x4FF0]);
  memcpyBigEndian8(&gameState.slowfallFramesLeft, &state[_stateWorkRamOffset + 0x4AA1]);
+ memcpyBigEndian8(&gameState.kidFallingSpeed,    &state[_stateWorkRamOffset + 0x4C4A]);
 
- // Specific to beach level:
+ // Level-Specific
  memcpyBigEndian8(&gameState.sandTile1,          &state[_stateWorkRamOffset + 0x6861]);
  memcpyBigEndian8(&gameState.sandTile2,          &state[_stateWorkRamOffset + 0x6871]);
  memcpyBigEndian8(&gameState.sandTile3,          &state[_stateWorkRamOffset + 0x6881]);
  memcpyBigEndian8(&gameState.sandTile4,          &state[_stateWorkRamOffset + 0x6891]);
  memcpyBigEndian8(&gameState.sandTile5,          &state[_stateWorkRamOffset + 0x68A1]);
  memcpyBigEndian8(&gameState.caveEntrancePos,    &state[_stateWorkRamOffset + 0x6851]);
-
- // Specific to lvl3
  memcpyBigEndian8(&gameState.lvl3ExitDoor,       &state[_stateWorkRamOffset + 0x2B93]);
+ memcpyBigEndian8(&gameState.lvl4ExitDoor,       &state[_stateWorkRamOffset + 0x27CF]);
 
  memcpyBigEndian8(&gameState.kidCurrentSequence, &state[_stateWorkRamOffset + 0x4C55]);
  memcpyBigEndian8(&gameState.kidCurrentSequenceStage, &state[_stateWorkRamOffset + 0x4C53]);
@@ -133,6 +133,11 @@ uint64_t blastemInstance::computeHash()
    hash.Update(&_state.lvl3ExitDoor, sizeof(uint8_t));
   }
 
+  if (_state.currentLevel == 4)
+  {
+   hash.Update(&_state.lvl4ExitDoor, sizeof(uint8_t));
+  }
+
   hash.Update(&_state.kidCurrentSequence, sizeof(uint8_t));
   hash.Update(&_state.kidCurrentSequenceStage, sizeof(uint8_t));
   hash.Update(&_state.kidLastSequence, sizeof(uint8_t));
@@ -144,6 +149,7 @@ uint64_t blastemInstance::computeHash()
   hash.Update(&_state.kidDirection, sizeof(uint8_t));
   hash.Update(&_state.kidPositionX, sizeof(uint16_t));
   hash.Update(&_state.kidPositionY, sizeof(uint16_t));
+  hash.Update(&_state.kidFallingSpeed, sizeof(uint8_t));
 
   hash.Update(&_state.guardFrame, sizeof(uint8_t));
   hash.Update(&_state.guardCurrentHP, sizeof(uint8_t));
@@ -164,7 +170,7 @@ void blastemInstance::printState()
  printf("[Jaffar2]  + Current RNG Value: 0x%X\n", _state.rngValue);
  printf("[Jaffar2]  + Game / Video Frame: %d / %d\n", _state.gameFrame, _state.videoFrame);
  printf("[Jaffar2]  + Checkpoint Pointer: 0x%X\n", _state.checkpointPointer);
- printf("[Jaffar2]  + [Kid]   Room: %d, Pos.x: %3d, Pos.y: %3d, Frame: %3d, Direction: %s, HP: %d/%d, Seq: %d/%d\n", _state.kidRoom, _state.kidPositionX, _state.kidPositionY, _state.kidFrame, _state.kidDirection == 255 ? "L" : "R", _state.kidCurrentHP, _state.kidMaxHP, _state.kidCurrentSequence, _state.kidLastSequence);
+ printf("[Jaffar2]  + [Kid]   Room: %d, Pos.x: %3d, Pos.y: %3d (+%3d), Frame: %2d, Direction: %s, HP: %d/%d\n", _state.kidRoom, _state.kidPositionX, _state.kidPositionY, _state.kidFallingSpeed, _state.kidFrame, _state.kidDirection == 255 ? "L" : "R", _state.kidCurrentHP, _state.kidMaxHP);
  printf("[Jaffar2]  + [Guard] Room: %d, Pos.x: %3d, Pos.y: %3d, Frame: %3d, Direction: %s, HP: %d/%d\n", _state.guardRoom, _state.guardPositionX, _state.guardPositionY, _state.guardFrame, _state.guardDirection == 255 ? "L" : "R", _state.guardCurrentHP, _state.guardMaxHP);
 }
 

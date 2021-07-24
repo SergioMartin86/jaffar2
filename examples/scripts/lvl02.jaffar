@@ -8,7 +8,6 @@
     "Description": "Setting magnet to make kid go to the left on the first screen",
     "Conditions":
     [
-     { "Property": "Current Level", "Op": "==", "Value":  2 },
      { "Property": "Kid Room", "Op": "==", "Value":  2 }
     ],
     
@@ -28,7 +27,6 @@
     "Description": "Rewarding kid for advancing to the second screen",
     "Conditions":
     [
-     { "Property": "Current Level", "Op": "==", "Value":  2 },
      { "Property": "Kid Room", "Op": "==", "Value":  1 }
     ],
     
@@ -66,7 +64,6 @@
     "Description": "If Kid dies, then fail.",
     "Conditions":
     [
-     { "Property": "Current Level", "Op": "==", "Value":  2 },
      { "Property": "Kid Current HP", "Op": "==", "Value":  0 }
     ],
     
@@ -84,7 +81,6 @@
     "Description": "If Kid falls into quicksand, fail.",
     "Conditions":
     [
-     { "Property": "Current Level", "Op": "==", "Value":  2 },
      { "Property": "Kid Position Y", "Op": ">", "Value":  118 }
     ],
     
