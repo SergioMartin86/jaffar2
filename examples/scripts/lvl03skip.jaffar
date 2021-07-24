@@ -94,6 +94,25 @@
     [
      { "Type": "Trigger Fail" }
     ]
+   },
+   
+   {
+    "Label": 3901,
+    "Description": "If Kid enters normal zone, fail.",
+    "Conditions":
+    [
+     { "Property": "Kid Room", "Op": "==", "Value":  14 },
+     { "Property": "Kid Position Y", "Op": "==", "Value":  118 },
+     { "Property": "Kid Position X", "Op": "<", "Value":  310 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ ],
+    
+    "Actions":
+    [
+     { "Type": "Trigger Fail" }
+    ]
    }
    
   ]  
