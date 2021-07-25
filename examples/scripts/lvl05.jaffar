@@ -98,8 +98,162 @@
      { "Type": "Add Reward", "Value": 1000 },
      { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 9, "Value": 0.0 },
      { "Type": "Set Kid Horizontal Magnet Position", "Room": 3,  "Value": 512.0 },
-     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 3, "Value": 1.0 },
-     { "Type": "Trigger Win" }
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 3, "Value": 1.0 }
+    ]
+   },
+   
+   {
+    "Label": 5005,
+    "Description": "Rewarding kid for advancing to the second screen",
+    "Conditions":
+    [
+     { "Property": "Kid Room", "Op": "==", "Value": 4 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ 5004 ],
+    
+    "Actions":
+    [
+     { "Type": "Add Reward", "Value": 1000 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 3, "Value": 0.0 },
+     { "Type": "Set Kid Horizontal Magnet Position", "Room": 4,  "Value": 512.0 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 4, "Value": 1.0 }
+    ]
+   },
+   
+   {
+    "Label": 5006,
+    "Description": "Rewarding kid for advancing to the second screen",
+    "Conditions":
+    [
+     { "Property": "Kid Room", "Op": "==", "Value": 5 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ 5005 ],
+    
+    "Actions":
+    [
+     { "Type": "Add Reward", "Value": 1000 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 4, "Value": 0.0 },
+     { "Type": "Set Kid Vertical Magnet Intensity", "Room": 5, "Value": -1.0 }
+    ]
+   },
+   
+   {
+    "Label": 5007,
+    "Description": "Rewarding kid for advancing to the second screen",
+    "Conditions":
+    [
+     { "Property": "Kid Room", "Op": "==", "Value": 8 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ 5006 ],
+    
+    "Actions":
+    [
+     { "Type": "Add Reward", "Value": 1000 },
+     { "Type": "Set Kid Vertical Magnet Intensity", "Room": 5, "Value": 0.0 },
+     { "Type": "Set Kid Vertical Magnet Intensity", "Room": 8, "Value": -1.0 }
+    ]
+   },
+   
+   {
+    "Label": 5008,
+    "Description": "Rewarding kid for advancing to the second screen",
+    "Conditions":
+    [
+     { "Property": "Kid Room", "Op": "==", "Value": 13 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ 5007 ],
+    
+    "Actions":
+    [
+     { "Type": "Add Reward", "Value": 1000 },
+     { "Type": "Set Kid Vertical Magnet Intensity", "Room": 8, "Value": 0.0 },
+     { "Type": "Set Kid Horizontal Magnet Position", "Room": 13,  "Value": 512.0 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 13, "Value": 1.0 }
+    ]
+   },
+   
+   {
+    "Label": 5009,
+    "Description": "Rewarding kid for advancing to the second screen",
+    "Conditions":
+    [
+     { "Property": "Kid Room", "Op": "==", "Value": 14 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ 5008 ],
+    
+    "Actions":
+    [
+     { "Type": "Add Reward", "Value": 1000 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 13, "Value": 0.0 },
+     { "Type": "Set Kid Horizontal Magnet Position", "Room": 14,  "Value": 512.0 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 14, "Value": 1.0 }
+    ]
+   },
+   
+   {
+    "Label": 5010,
+    "Description": "Rewarding kid for advancing to the second screen",
+    "Conditions":
+    [
+     { "Property": "Kid Room", "Op": "==", "Value": 15 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ 5009 ],
+    
+    "Actions":
+    [
+     { "Type": "Add Reward", "Value": 1000 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 14, "Value": 0.0 },
+     { "Type": "Set Kid Horizontal Magnet Position", "Room": 15,  "Value": 512.0 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 15, "Value": 1.0 }
+    ]
+   },
+   
+   {
+    "Label": 5011,
+    "Description": "Rewarding kid for advancing to the second screen",
+    "Conditions":
+    [
+     { "Property": "Kid Room", "Op": "==", "Value": 16 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ 5010 ],
+    
+    "Actions":
+    [
+     { "Type": "Add Reward", "Value": 1000 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 15, "Value": 0.0 },
+     { "Type": "Set Kid Horizontal Magnet Position", "Room": 16,  "Value": 512.0 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 16, "Value": 1.0 }
+    ]
+   },
+   
+   {
+    "Label": 5098,
+    "Description": "Win on checkpoint reached",
+    "Conditions":
+    [
+      { "Property": "Checkpoint Pointer", "Op": ">", "Value":  0 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ ],
+    
+    "Actions":
+    [
+      { "Type": "Trigger Win" }
     ]
    },
    
