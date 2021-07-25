@@ -73,6 +73,7 @@ class blastemInstance
   void saveState(uint8_t* state);
   std::vector<uint8_t> getPossibleMoveIds(const gameStateStruct& gameState);
   void setRNGValue(const uint32_t& rngValue);
+  void setHPValue(const uint8_t& hp);
   void reset();
 
   // State

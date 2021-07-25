@@ -55,6 +55,14 @@ void blastemInstance::setRNGValue(const uint32_t& rngValue)
  _state = getGameState(_stateData);
 }
 
+void blastemInstance::setHPValue(const uint8_t& hp)
+{
+ _state.kidCurrentHP = hp;
+ memcpyBigEndian8((uint8_t*)&_stateData[_stateWorkRamOffset + 0x4C4F], (uint8_t*)&_state.kidCurrentHP);
+ reloadState();
+ _state = getGameState(_stateData);
+}
+
 gameStateStruct blastemInstance::getGameState(const uint8_t* state)
 {
  gameStateStruct gameState;
