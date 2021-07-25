@@ -265,6 +265,7 @@ std::vector<uint8_t> blastemInstance::getPossibleMoveIds(const gameStateStruct& 
   if (gameState.kidFrame == 63) return {0}; // Running Turn
   if (gameState.kidFrame == 64) return {0}; // Running Turn
   if (gameState.kidFrame == 65) return {0}; // Running Turn
+  if (gameState.kidFrame == 66) return {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14}; // Standing?
   if (gameState.kidFrame == 67) return {0}; // Upwards Jump / Climbing
   if (gameState.kidFrame == 68) return {0}; // Upwards Jump / Climbing
   if (gameState.kidFrame == 69) return {0}; // Upwards Jump / Climbing
