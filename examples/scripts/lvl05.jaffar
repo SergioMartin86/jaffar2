@@ -98,7 +98,8 @@
      { "Type": "Add Reward", "Value": 1000 },
      { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 9, "Value": 0.0 },
      { "Type": "Set Kid Horizontal Magnet Position", "Room": 3,  "Value": 512.0 },
-     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 3, "Value": 1.0 }
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 3, "Value": 1.0 },
+     { "Type": "Trigger Win" }
     ]
    },
    
@@ -107,7 +108,7 @@
     "Description": "Win on Potion Room Level Reached",
     "Conditions":
     [
-     { "Property": "Kid Room", "Op": "==", "Value":  7 }
+     { "Property": "Kid Room", "Op": "==", "Value":  22 }
     ],
     
     "Dependencies": [ ],
