@@ -78,6 +78,14 @@ gameStateStruct blastemInstance::getGameState(const uint8_t* state)
  memcpyBigEndian32(&gameState.checkpointPointer, &state[_stateWorkRamOffset + 0x4FF0]);
  memcpyBigEndian8(&gameState.slowfallFramesLeft, &state[_stateWorkRamOffset + 0x4AA1]);
  memcpyBigEndian8(&gameState.kidFallingSpeed,    &state[_stateWorkRamOffset + 0x4C4A]);
+ memcpyBigEndian8(&gameState.kidFrameVariant,    &state[_stateWorkRamOffset + 0x4C8A]);
+ memcpyBigEndian8(&gameState.kidRotation1,       &state[_stateWorkRamOffset + 0x4C6D]);
+ memcpyBigEndian8(&gameState.kidRotation2,       &state[_stateWorkRamOffset + 0x4C71]);
+ memcpyBigEndian8(&gameState.kidRotation3,       &state[_stateWorkRamOffset + 0x4A6F]);
+ memcpyBigEndian8(&gameState.kidRotation4,       &state[_stateWorkRamOffset + 0x4A71]);
+ memcpyBigEndian8(&gameState.kidRotation5,       &state[_stateWorkRamOffset + 0x4A75]);
+ memcpyBigEndian8(&gameState.kidRotation6,       &state[_stateWorkRamOffset + 0x1965]);
+ memcpyBigEndian8(&gameState.kidRotation7,       &state[_stateWorkRamOffset + 0x196F]);
 
  // Level-Specific
  memcpyBigEndian8(&gameState.sandTile1,          &state[_stateWorkRamOffset + 0x6861]);
@@ -166,6 +174,14 @@ uint64_t blastemInstance::computeHash()
   hash.Update(&_state.kidPositionX, sizeof(uint16_t));
   hash.Update(&_state.kidPositionY, sizeof(uint16_t));
   hash.Update(&_state.kidFallingSpeed, sizeof(uint8_t));
+  hash.Update(&_state.kidFrameVariant, sizeof(uint8_t));
+  hash.Update(&_state.kidRotation1, sizeof(uint8_t));
+  hash.Update(&_state.kidRotation2, sizeof(uint8_t));
+  hash.Update(&_state.kidRotation3, sizeof(uint8_t));
+  hash.Update(&_state.kidRotation4, sizeof(uint8_t));
+  hash.Update(&_state.kidRotation5, sizeof(uint8_t));
+  hash.Update(&_state.kidRotation6, sizeof(uint8_t));
+  hash.Update(&_state.kidRotation7, sizeof(uint8_t));
 
   hash.Update(&_state.guardFrame, sizeof(uint8_t));
   hash.Update(&_state.guardCurrentHP, sizeof(uint8_t));

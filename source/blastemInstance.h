@@ -31,6 +31,7 @@ struct gameStateStruct
  uint8_t kidCurrentSequence;
  uint8_t kidLastSequence;
  uint8_t kidFrame;
+ uint8_t kidPreviousFrame;
  uint8_t kidCurrentHP;
  uint8_t kidMaxHP;
  uint8_t kidRoom;
@@ -39,6 +40,14 @@ struct gameStateStruct
  uint16_t kidPositionY;
  uint8_t kidFallingSpeed;
  uint8_t kidHasSword;
+ uint8_t kidFrameVariant;
+ uint8_t kidRotation1;
+ uint8_t kidRotation2;
+ uint8_t kidRotation3;
+ uint8_t kidRotation4;
+ uint8_t kidRotation5;
+ uint8_t kidRotation6;
+ uint8_t kidRotation7;
 
  uint8_t sandTile1;
  uint8_t sandTile2;

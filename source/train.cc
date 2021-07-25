@@ -517,7 +517,7 @@ void Train::computeFrames()
        }
 
       // If collision detected, increase collision counter
-      if (collisionDetected)   _newCollisionCounter++;
+      if (collisionDetected) _newCollisionCounter++;
 
       // If collision detected, discard this frame
       if (collisionDetected) continue;
