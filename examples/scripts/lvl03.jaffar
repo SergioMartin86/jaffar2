@@ -369,64 +369,39 @@
     [
      { "Type": "Add Reward", "Value": 1000 },
      { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 30, "Value": 1.0 },
-     { "Type": "Set Kid Horizontal Magnet Position", "Room": 30, "Value": 512.0 }
+     { "Type": "Set Kid Horizontal Magnet Position", "Room": 30, "Value": 310.0 }
     ]
    },
    
    {
     "Label": 3017,
-    "Description": "Keep Advancing",
+    "Description": "Fail if not attempting wall clip",
     "Conditions":
     [
      { "Property": "Kid Room", "Op": "==", "Value":  31 },
-     { "Property": "Kid Max HP", "Op": ">", "Value": 3 },
+     { "Property": "Kid Max HP", "Op": ">", "Value": 3 }, 
      { "Property": "Level 3 Exit Door State", "Op": ">", "Value": 0 }
     ],
     
     "Dependencies": [ ],
-    "Satisfies": [ 3016 ],
+    "Satisfies": [ ],
     
     "Actions":
     [
-     { "Type": "Add Reward", "Value": 1000 },
-     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 30, "Value": 0.0 },
-     { "Type": "Set Kid Vertical Magnet Intensity", "Room": 31, "Value": -1.0 }
-    ]
-   },
-   
-   {
-    "Label": 3018,
-    "Description": "Keep Advancing",
-    "Conditions":
-    [
-     { "Property": "Kid Room", "Op": "==", "Value":  30 },
-     { "Property": "Kid Max HP", "Op": ">", "Value": 3 },
-     { "Property": "Level 3 Exit Door State", "Op": ">", "Value": 0 },
-     { "Property": "Kid Position Y", "Op": ">", "Value": 60 }
-    ],
-    
-    "Dependencies": [ ],
-    "Satisfies": [ 3017 ],
-    
-    "Actions":
-    [
-     { "Type": "Add Reward", "Value": 1000 },
-     { "Type": "Set Kid Vertical Magnet Intensity", "Room": 31, "Value": 0.0 },
-     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 30, "Value": 1.0 },
-     { "Type": "Set Kid Horizontal Magnet Position", "Room": 30, "Value": 310 }
+      { "Type": "Trigger Fail" }
     ]
    },
    
    {
     "Label": 3019,
-    "Description": "Win on Next Level Reached",
+    "Description": "Win on going up stairs",
     "Conditions":
     [
-     { "Property": "Current Level", "Op": "==", "Value":  4 }
+     { "Property": "Kid Frame", "Op": "==", "Value":  217 }
     ],
     
     "Dependencies": [ ],
-    "Satisfies": [ 3018 ],
+    "Satisfies": [ 3017 ],
     
     "Actions":
     [
