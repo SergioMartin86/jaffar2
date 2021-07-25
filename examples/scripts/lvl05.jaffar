@@ -24,7 +24,7 @@
    
    {
     "Label": 5001,
-    "Description": "Rewarding kid for advancing to the second screen",
+    "Description": "Continue Going",
     "Conditions":
     [
      { "Property": "Kid Room", "Op": "==", "Value":  23 }
@@ -44,7 +44,7 @@
 
    {
     "Label": 5002,
-    "Description": "Rewarding kid for advancing to the second screen",
+    "Description": "Continue Going",
     "Conditions":
     [
      { "Property": "Kid Room", "Op": "==", "Value":  2 }
@@ -64,7 +64,7 @@
    
    {
     "Label": 5003,
-    "Description": "Rewarding kid for advancing to the second screen",
+    "Description": "Continue Going",
     "Conditions":
     [
      { "Property": "Kid Room", "Op": "==", "Value":  9 }
@@ -84,7 +84,7 @@
    
    {
     "Label": 5004,
-    "Description": "Rewarding kid for advancing to the second screen",
+    "Description": "Continue Going",
     "Conditions":
     [
      { "Property": "Kid Room", "Op": "==", "Value": 3 }
@@ -104,7 +104,7 @@
    
    {
     "Label": 5005,
-    "Description": "Rewarding kid for advancing to the second screen",
+    "Description": "Continue Going",
     "Conditions":
     [
      { "Property": "Kid Room", "Op": "==", "Value": 4 }
@@ -124,7 +124,7 @@
    
    {
     "Label": 5006,
-    "Description": "Rewarding kid for advancing to the second screen",
+    "Description": "Continue Going",
     "Conditions":
     [
      { "Property": "Kid Room", "Op": "==", "Value": 5 }
@@ -143,7 +143,7 @@
    
    {
     "Label": 5007,
-    "Description": "Rewarding kid for advancing to the second screen",
+    "Description": "Continue Going",
     "Conditions":
     [
      { "Property": "Kid Room", "Op": "==", "Value": 8 }
@@ -162,7 +162,7 @@
    
    {
     "Label": 5008,
-    "Description": "Rewarding kid for advancing to the second screen",
+    "Description": "Continue Going",
     "Conditions":
     [
      { "Property": "Kid Room", "Op": "==", "Value": 13 }
@@ -182,7 +182,7 @@
    
    {
     "Label": 5009,
-    "Description": "Rewarding kid for advancing to the second screen",
+    "Description": "Continue Going",
     "Conditions":
     [
      { "Property": "Kid Room", "Op": "==", "Value": 14 }
@@ -202,7 +202,7 @@
    
    {
     "Label": 5010,
-    "Description": "Rewarding kid for advancing to the second screen",
+    "Description": "Continue Going",
     "Conditions":
     [
      { "Property": "Kid Room", "Op": "==", "Value": 15 }
@@ -222,7 +222,7 @@
    
    {
     "Label": 5011,
-    "Description": "Rewarding kid for advancing to the second screen",
+    "Description": "Continue Going",
     "Conditions":
     [
      { "Property": "Kid Room", "Op": "==", "Value": 16 }
@@ -235,20 +235,302 @@
     [
      { "Type": "Add Reward", "Value": 1000 },
      { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 15, "Value": 0.0 },
-     { "Type": "Set Kid Horizontal Magnet Position", "Room": 16,  "Value": 512.0 },
-     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 16, "Value": 1.0 }
+     { "Type": "Set Kid Vertical Magnet Intensity", "Room": 16, "Value": 1.0 }
     ]
    },
    
    {
-    "Label": 5098,
-    "Description": "Win on checkpoint reached",
+    "Label": 5012,
+    "Description": "Continue Going",
     "Conditions":
     [
-      { "Property": "Checkpoint Pointer", "Op": ">", "Value":  0 }
+     { "Property": "Kid Room", "Op": "==", "Value": 17 }
     ],
     
     "Dependencies": [ ],
+    "Satisfies": [ 5011 ],
+    
+    "Actions":
+    [
+     { "Type": "Add Reward", "Value": 1000 },
+     { "Type": "Set Kid Vertical Magnet Intensity", "Room": 16, "Value": 0.0 },
+     { "Type": "Set Kid Vertical Magnet Intensity", "Room": 17, "Value": 1.0 },
+     { "Type": "Set Kid Horizontal Magnet Position", "Room": 17,  "Value": 0.0 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 17, "Value": 1.0 }
+    ]
+   },
+   
+   {
+    "Label": 5013,
+    "Description": "Continue Going",
+    "Conditions":
+    [
+     { "Property": "Kid Room", "Op": "==", "Value": 20 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ 5012 ],
+    
+    "Actions":
+    [
+     { "Type": "Add Reward", "Value": 1000 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 17, "Value": 0.0 },
+     { "Type": "Set Kid Vertical Magnet Intensity", "Room": 17, "Value": 0.0 },
+     { "Type": "Set Kid Horizontal Magnet Position", "Room": 20,  "Value": 0.0 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 20, "Value": 1.0 }
+    ]
+   },
+   
+   {
+    "Label": 5014,
+    "Description": "Continue Going",
+    "Conditions":
+    [
+     { "Property": "Kid Room", "Op": "==", "Value": 25 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ 5013 ],
+    
+    "Actions":
+    [
+     { "Type": "Add Reward", "Value": 1000 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 20, "Value": 0.0 },
+     { "Type": "Set Kid Horizontal Magnet Position", "Room": 25,  "Value": 408.0 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 25, "Value": 1.0 },
+     { "Type": "Set Kid Vertical Magnet Intensity", "Room": 25, "Value": 1.0 }
+    ]
+   },
+   
+   {
+    "Label": 5015,
+    "Description": "Continue Going",
+    "Conditions":
+    [
+     { "Property": "Kid Room", "Op": "==", "Value": 6 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ 5014 ],
+    
+    "Actions":
+    [
+     { "Type": "Add Reward", "Value": 1000 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 25, "Value": 0.0 },
+     { "Type": "Set Kid Vertical Magnet Intensity", "Room": 25, "Value": 0.0 },
+     { "Type": "Set Kid Horizontal Magnet Position", "Room": 6,  "Value": 325.0 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 6, "Value": 1.0 },
+     { "Type": "Set Kid Vertical Magnet Intensity", "Room": 6, "Value": 1.0 }
+    ]
+   },
+   
+   {
+    "Label": 5016,
+    "Description": "Continue Going + Took Big Potion",
+    "Conditions":
+    [
+     { "Property": "Kid Room", "Op": "==", "Value": 6 },
+     { "Property": "Kid Max HP", "Op": ">", "Value": 5 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ 5015 ],
+    
+    "Actions":
+    [
+     { "Type": "Add Reward", "Value": 1000 },
+     { "Type": "Set Kid Horizontal Magnet Position", "Room": 6,  "Value": 512.0 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 6, "Value": 1.0 },
+     { "Type": "Set Kid Vertical Magnet Intensity", "Room": 6, "Value": 0.0 }
+    ]
+   },
+   
+   {
+    "Label": 5017,
+    "Description": "Continue Going + Took Big Potion",
+    "Conditions":
+    [
+     { "Property": "Kid Room", "Op": "==", "Value": 11 },
+     { "Property": "Kid Max HP", "Op": ">", "Value": 5 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ 5016 ],
+    
+    "Actions":
+    [
+     { "Type": "Add Reward", "Value": 1000 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 6, "Value": 0.0 },
+     { "Type": "Set Kid Horizontal Magnet Position", "Room": 11,  "Value": 512.0 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 11, "Value": 1.0 }
+    ]
+   },
+   
+   {
+    "Label": 5018,
+    "Description": "Continue Going + Took Big Potion",
+    "Conditions":
+    [
+     { "Property": "Kid Room", "Op": "==", "Value": 18 },
+     { "Property": "Kid Max HP", "Op": ">", "Value": 5 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ 5017 ],
+    
+    "Actions":
+    [
+     { "Type": "Add Reward", "Value": 1000 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 11, "Value": 0.0 },
+     { "Type": "Set Kid Horizontal Magnet Position", "Room": 18,  "Value": 512.0 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 18, "Value": 1.0 },
+     { "Type": "Set Kid Vertical Magnet Intensity", "Room": 18, "Value": 1.0 }
+    ]
+   },
+   
+   {
+    "Label": 5019,
+    "Description": "Continue Going + Took Big Potion",
+    "Conditions":
+    [
+     { "Property": "Kid Room", "Op": "==", "Value": 12 },
+     { "Property": "Kid Max HP", "Op": ">", "Value": 5 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ 5018 ],
+    
+    "Actions":
+    [
+     { "Type": "Add Reward", "Value": 1000 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 18, "Value": 0.0 },
+     { "Type": "Set Kid Vertical Magnet Intensity", "Room": 18, "Value": 0.0 },
+     { "Type": "Set Kid Horizontal Magnet Position", "Room": 12,  "Value": 0.0 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 12, "Value": 1.0 },
+     { "Type": "Set Kid Vertical Magnet Intensity", "Room": 12, "Value": 1.0 }
+    ]
+   },
+   
+   {
+    "Label": 5020,
+    "Description": "Continue Going + Took Big Potion",
+    "Conditions":
+    [
+     { "Property": "Kid Room", "Op": "==", "Value": 10 },
+     { "Property": "Kid Max HP", "Op": ">", "Value": 5 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ 5019 ],
+    
+    "Actions":
+    [
+     { "Type": "Add Reward", "Value": 1000 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 12, "Value": 0.0 },
+     { "Type": "Set Kid Vertical Magnet Intensity", "Room": 12, "Value": 0.0 },
+     { "Type": "Set Kid Horizontal Magnet Position", "Room": 10,  "Value": 0.0 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 10, "Value": 1.0 }
+    ]
+   },
+   
+   {
+    "Label": 5021,
+    "Description": "Continue Going + Took Big Potion",
+    "Conditions":
+    [
+     { "Property": "Kid Room", "Op": "==", "Value": 7 },
+     { "Property": "Kid Max HP", "Op": ">", "Value": 5 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ 5020 ],
+    
+    "Actions":
+    [
+     { "Type": "Add Reward", "Value": 1000 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 10, "Value": 0.0 },
+     { "Type": "Set Kid Vertical Magnet Intensity", "Room": 10, "Value": 0.0 },
+     { "Type": "Set Kid Horizontal Magnet Position", "Room": 7,  "Value": 0.0 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 7, "Value": 1.0 }
+    ]
+   },
+   
+   {
+    "Label": 5022,
+    "Description": "Continue Going + Took Big Potion",
+    "Conditions":
+    [
+     { "Property": "Kid Room", "Op": "==", "Value": 4 },
+     { "Property": "Kid Max HP", "Op": ">", "Value": 5 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ 5021 ],
+    
+    "Actions":
+    [
+     { "Type": "Add Reward", "Value": 1000 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 7, "Value": 0.0 },
+     { "Type": "Set Kid Vertical Magnet Intensity", "Room": 7, "Value": 0.0 },
+     { "Type": "Set Kid Horizontal Magnet Position", "Room": 4,  "Value": 0.0 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 4, "Value": 1.0 }
+    ]
+   },
+   
+   {
+    "Label": 5023,
+    "Description": "Continue Going + Took Big Potion",
+    "Conditions":
+    [
+     { "Property": "Kid Room", "Op": "==", "Value": 3 },
+     { "Property": "Kid Max HP", "Op": ">", "Value": 5 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ 5022 ],
+    
+    "Actions":
+    [
+     { "Type": "Add Reward", "Value": 1000 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 4, "Value": 0.0 },
+     { "Type": "Set Kid Vertical Magnet Intensity", "Room": 4, "Value": 0.0 },
+     { "Type": "Set Kid Horizontal Magnet Position", "Room": 3,  "Value": 268.0 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 3, "Value": 1.0 }
+    ]
+   },
+   
+   {
+    "Label": 5024,
+    "Description": "Opening hatch",
+    "Conditions":
+    [
+     { "Property": "Kid Room", "Op": "==", "Value": 3 },
+     { "Property": "Level 5 Carpet Hatch State", "Op": ">", "Value": 0 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ 5023 ],
+    
+    "Actions":
+    [
+     { "Type": "Add Reward", "Value": 1000 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 4, "Value": 0.0 },
+     { "Type": "Set Kid Vertical Magnet Intensity", "Room": 4, "Value": 0.0 },
+     { "Type": "Set Kid Horizontal Magnet Position", "Room": 3,  "Value": 268.0 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 3, "Value": 1.0 }
+    ]
+   },
+   
+   {
+    "Label": 5025,
+    "Description": "Win on sitting if hatch open",
+    "Conditions":
+    [
+     { "Property": "Kid Room", "Op": "==", "Value": 3 },
+     { "Property": "Kid Frame", "Op": "==", "Value": 40 }
+    ],
+    
+    "Dependencies": [ 5024 ],
     "Satisfies": [ ],
     
     "Actions":
