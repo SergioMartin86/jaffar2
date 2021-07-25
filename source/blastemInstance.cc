@@ -140,12 +140,12 @@ uint64_t blastemInstance::computeHash()
 
   if (_state.currentLevel == 3)
   {
-   hash.Update(&_state.lvl3ExitDoor, sizeof(uint8_t));
+   //hash.Update(&_state.lvl3ExitDoor, sizeof(uint8_t));
   }
 
   if (_state.currentLevel == 4)
   {
-   hash.Update(&_state.lvl4ExitDoor, sizeof(uint8_t));
+   //hash.Update(&_state.lvl4ExitDoor, sizeof(uint8_t));
   }
 
   if (_state.currentLevel == 5)

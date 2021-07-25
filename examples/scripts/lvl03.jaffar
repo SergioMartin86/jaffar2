@@ -374,25 +374,6 @@
    },
    
    {
-    "Label": 3017,
-    "Description": "Fail if not attempting wall clip",
-    "Conditions":
-    [
-     { "Property": "Kid Room", "Op": "==", "Value":  31 },
-     { "Property": "Kid Max HP", "Op": ">", "Value": 3 }, 
-     { "Property": "Level 3 Exit Door State", "Op": ">", "Value": 0 }
-    ],
-    
-    "Dependencies": [ ],
-    "Satisfies": [ ],
-    
-    "Actions":
-    [
-      { "Type": "Trigger Fail" }
-    ]
-   },
-   
-   {
     "Label": 3019,
     "Description": "Win on going up stairs",
     "Conditions":
@@ -401,7 +382,7 @@
     ],
     
     "Dependencies": [ ],
-    "Satisfies": [ 3017 ],
+    "Satisfies": [ 3016 ],
     
     "Actions":
     [
