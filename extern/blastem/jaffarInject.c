@@ -108,17 +108,12 @@ cothread_t _blastemThread;
 
 extern int blastemMain(int argc, char** argv);
 extern void init_system_with_media(const char *path, system_type force_stype);
-void handleError(m68k_context * context, const char* errorMessage)
+void handleError(const char* errorMessage)
 {
-// genesis_context *gen = current_system;
  printf("Error detected: %s\n", errorMessage);
  fflush(stdout);
-// init_system_with_media("../rom/pop2.bin", SYSTEM_UNKNOWN);
-// gen = current_system;
-// _context = gen->m68k;
  _gameFrameId = 0;
  lastExitFrame = 9999;
-// printf("Restarted");
  _detectedError = 1;
  co_switch(_jaffarThread);
 }
@@ -151,5 +146,5 @@ void checkTimeout()
  genesis_context *gen = current_system;
  time_t curTime = time(NULL);
  if (curTime >= _startTime + TIMEOUT_SECONDS)
-  handleError(gen->m68k, "Timeout found");
+  handleError("Timeout found");
 }

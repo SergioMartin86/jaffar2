@@ -21,5 +21,5 @@ extern void updateFrameInfo();
 extern void reloadState();
 extern void redraw();
 extern void restartGenesis();
-extern void handleError(m68k_context * context, const char* errorMessage);
+extern void handleError(const char* errorMessage);
 extern void checkTimeout();
