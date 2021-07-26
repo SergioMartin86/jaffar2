@@ -86,6 +86,7 @@ gameStateStruct blastemInstance::getGameState(const uint8_t* state)
  memcpyBigEndian8(&gameState.kidRotation5,       &state[_stateWorkRamOffset + 0x4A75]);
  memcpyBigEndian8(&gameState.kidRotation6,       &state[_stateWorkRamOffset + 0x1965]);
  memcpyBigEndian8(&gameState.kidRotation7,       &state[_stateWorkRamOffset + 0x196F]);
+ memcpyBigEndian8(&gameState.kidHangingTimeLeft, &state[_stateWorkRamOffset + 0x4C87]);
 
  // Level-Specific
  memcpyBigEndian8(&gameState.sandTile1,          &state[_stateWorkRamOffset + 0x6861]);
@@ -182,6 +183,7 @@ uint64_t blastemInstance::computeHash()
   hash.Update(&_state.kidRotation5, sizeof(uint8_t));
   hash.Update(&_state.kidRotation6, sizeof(uint8_t));
   hash.Update(&_state.kidRotation7, sizeof(uint8_t));
+  hash.Update(&_state.kidHangingTimeLeft, sizeof(uint8_t));
 
   hash.Update(&_state.guardFrame, sizeof(uint8_t));
   hash.Update(&_state.guardCurrentHP, sizeof(uint8_t));
