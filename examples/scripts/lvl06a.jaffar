@@ -162,65 +162,8 @@
      { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 17, "Value": 0.0 },
      { "Type": "Set Kid Vertical Magnet Intensity", "Room": 17, "Value": 0.0 },
      { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 4, "Value": 1.0 },
-     { "Type": "Set Kid Horizontal Magnet Position", "Room": 4, "Value": 0.0 }
-    ]
-   },
-   
-   {
-    "Label": 6008,
-    "Description": "Continue Going",
-    "Conditions":
-    [
-     { "Property": "Kid Room", "Op": "==", "Value": 7 }
-    ],
-    
-    "Dependencies": [ ],
-    "Satisfies": [ 6007 ],
-    
-    "Actions":
-    [
-     { "Type": "Add Reward", "Value": 1000 },
-     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 4, "Value": 0.0 },
-     { "Type": "Set Kid Horizontal Magnet Position", "Room": 7,  "Value": 0.0 },
-     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 7, "Value": 1.0 }
-    ]
-   },
-   
-   {
-    "Label": 6009,
-    "Description": "Continue Going",
-    "Conditions":
-    [
-     { "Property": "Kid Room", "Op": "==", "Value": 16 }
-    ],
-    
-    "Dependencies": [ ],
-    "Satisfies": [ 6008 ],
-    
-    "Actions":
-    [
-     { "Type": "Add Reward", "Value": 1000 },
-     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 7, "Value": 0.0 },
-     { "Type": "Set Kid Horizontal Magnet Position", "Room": 16,  "Value": 224.0 },
-     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 16, "Value": 1.0 }
-    ]
-   },
-   
-   {
-    "Label": 6110,
-    "Description": "Win on exiting level",
-    "Conditions":
-    [
-     { "Property": "Kid Room", "Op": "==", "Value": 16 },
-     { "Property": "Kid Frame", "Op": "==", "Value": 217 }
-    ],
-    
-    "Dependencies": [ ],  
-    "Satisfies": [ ],
-    
-    "Actions":
-    [
-      { "Type": "Trigger Win" }
+     { "Type": "Set Kid Horizontal Magnet Position", "Room": 4, "Value": 0.0 },
+     { "Type": "Trigger Win" }
     ]
    },
    
