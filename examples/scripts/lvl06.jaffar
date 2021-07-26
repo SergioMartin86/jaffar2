@@ -31,7 +31,7 @@
     ],
     
     "Dependencies": [ ],
-    "Satisfies": [ 5000 ],
+    "Satisfies": [ 6000 ],
     
     "Actions":
     [
@@ -51,7 +51,7 @@
     ],
     
     "Dependencies": [ ],
-    "Satisfies": [ 5001 ],
+    "Satisfies": [ 6001 ],
     
     "Actions":
     [
@@ -129,7 +129,7 @@
     "Conditions":
     [
      { "Property": "Kid Room", "Op": "==", "Value": 17 },
-     { "Property": "Kid Frame", "Op": "==", "Value": 229 },
+     { "Property": "Kid Frame", "Op": "==", "Value": 229 }
     ],
     
     "Dependencies": [ ],
