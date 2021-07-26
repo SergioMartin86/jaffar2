@@ -453,16 +453,16 @@ std::vector<uint8_t> blastemInstance::getPossibleMoveIds(const gameStateStruct& 
   if (gameState.kidFrame == 243) return {0}; // Gruesome Death
   if (gameState.kidFrame == 244) return {0}; // [Sword] Attacking Downward
   if (gameState.kidFrame == 245) return {0}; // [Sword] Attacking Downward
-  if (gameState.kidFrame == 246) return {0}; // Crawling
-  if (gameState.kidFrame == 247) return {0}; // Crawling
-  if (gameState.kidFrame == 248) return {0}; // Crawling
-  if (gameState.kidFrame == 249) return {0}; // Crawling
-  if (gameState.kidFrame == 250) return {0}; // Crawling
-  if (gameState.kidFrame == 251) return {0}; // Crawling
-  if (gameState.kidFrame == 252) return {0}; // Crawling
-  if (gameState.kidFrame == 253) return {0}; // Crawling
-  if (gameState.kidFrame == 254) return {0}; // Crawling
-  if (gameState.kidFrame == 255) return {0}; // Crawling
+  if (gameState.kidFrame == 246) return {0, 1, 2, 3, 4, 15}; // Crawling
+  if (gameState.kidFrame == 247) return {0, 1, 2, 3, 4, 15}; // Crawling
+  if (gameState.kidFrame == 248) return {0, 1, 2, 3, 4, 15}; // Crawling
+  if (gameState.kidFrame == 249) return {0, 1, 2, 3, 4, 15}; // Crawling
+  if (gameState.kidFrame == 250) return {0, 1, 2, 3, 4, 15}; // Crawling
+  if (gameState.kidFrame == 251) return {0, 1, 2, 3, 4, 15}; // Crawling
+  if (gameState.kidFrame == 252) return {0, 1, 2, 3, 4, 15}; // Crawling
+  if (gameState.kidFrame == 253) return {0, 1, 2, 3, 4, 15}; // Crawling
+  if (gameState.kidFrame == 254) return {0, 1, 2, 3, 4, 15}; // Crawling
+  if (gameState.kidFrame == 255) return {0, 1, 2, 3, 4, 15}; // Crawling
 
   // Default, report unrecognized frame
   EXIT_WITH_ERROR("[Jaffar2] Warning: Frame %d not recognized.\n", gameState.kidFrame);
