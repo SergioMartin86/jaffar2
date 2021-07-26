@@ -486,10 +486,12 @@
     "Conditions":
     [
      { "Property": "Kid Room", "Op": "==", "Value": 3 },
-     { "Property": "Kid Frame", "Op": "==", "Value": 40 }
+     { "Property": "Kid Frame", "Op": "==", "Value": 40 },
+     { "Property": "Level 5 Carpet Hatch State", "Op": ">", "Value": 0 },
+     { "Property": "Kid Position X", "Op": "==", "Value": 268 }
     ],
     
-    "Dependencies": [ 5024 ],
+    "Dependencies": [ ],  
     "Satisfies": [ ],
     
     "Actions":
