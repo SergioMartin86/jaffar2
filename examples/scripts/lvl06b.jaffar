@@ -71,7 +71,7 @@
     "Conditions":
     [
      { "Property": "Kid Room", "Op": "==", "Value": 16 },
-     { "Property": "Kid Frame", "Op": "==", "Value": 217 },
+     { "Property": "Kid Frame", "Op": "==", "Value": 220 },
      { "Property": "Level 6 Right Exit Door State", "Op": ">", "Value": 0 }
     ],
     
