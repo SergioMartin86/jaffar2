@@ -317,7 +317,7 @@
     "Description": "Win on exiting level",
     "Conditions":
     [
-     { "Property": "Kid Frame", "Op": "==", "Value": 220 },
+     { "Property": "Kid Frame", "Op": "==", "Value": 220 }
     ],
     
     "Dependencies": [ ],  
