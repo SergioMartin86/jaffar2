@@ -88,7 +88,7 @@
     "Description": "If Kid dies, then fail.",
     "Conditions":
     [
-     { "Property": "Kid Current HP", "Op": "==", "Value":  0 }
+     { "Property": "Kid Current HP", "Op": "<", "Value":  4 }
     ],
     
     "Dependencies": [ ],
@@ -106,6 +106,24 @@
     "Conditions":
     [
      { "Property": "Kid Falling Speed", "Op": ">", "Value":  32 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ ],
+    
+    "Actions":
+    [
+     { "Type": "Trigger Fail" }
+    ]
+   },
+   
+   {
+    "Label": 6912,
+    "Description": "If Kid falling to death, then fail.",
+    "Conditions":
+    [
+     { "Property": "Kid Current HP", "Op": "<", "Value":  3 },
+     { "Property": "Kid Room", "Op": "==", "Value": 4 }
     ],
     
     "Dependencies": [ ],

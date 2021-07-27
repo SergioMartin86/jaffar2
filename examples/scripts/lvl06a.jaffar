@@ -158,11 +158,6 @@
     
     "Actions":
     [
-     { "Type": "Add Reward", "Value": 1000 },
-     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 17, "Value": 0.0 },
-     { "Type": "Set Kid Vertical Magnet Intensity", "Room": 17, "Value": 0.0 },
-     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 4, "Value": 1.0 },
-     { "Type": "Set Kid Horizontal Magnet Position", "Room": 4, "Value": 0.0 },
      { "Type": "Trigger Win" }
     ]
    },
@@ -186,10 +181,48 @@
    
    {
     "Label": 6911,
+    "Description": "If head too close to kid before trick, then fail.",
+    "Conditions":
+    [
+     { "Property": "Kid Room", "Op": "==", "Value": 4 },
+     { "Property": "Guard Room", "Op": "==", "Value": 4 },
+     { "Property": "Guard Position Y", "Op": ">", "Value": 130 },
+     { "Property": "Kid Has Sword", "Op": "!=", "Value": 0 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ ],
+    
+    "Actions":
+    [
+     { "Type": "Trigger Fail" }
+    ]
+   },
+   
+   {
+    "Label": 6912,
     "Description": "If Kid falling to death, then fail.",
     "Conditions":
     [
      { "Property": "Kid Falling Speed", "Op": ">", "Value":  32 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ ],
+    
+    "Actions":
+    [
+     { "Type": "Trigger Fail" }
+    ]
+   },
+   
+   {
+    "Label": 6913,
+    "Description": "Fail if going for the crawling space.",
+    "Conditions":
+    [
+      { "Property": "Kid Room", "Op": "==", "Value":  18 },
+      { "Property": "Kid Position Y", "Op": ">", "Value":  54 }
     ],
     
     "Dependencies": [ ],
