@@ -49,6 +49,7 @@ struct gameStateStruct
  uint8_t kidRotation6;
  uint8_t kidRotation7;
  uint8_t kidHangingTimeLeft;
+ uint8_t lvl6RightDoor;
 
  uint8_t sandTile1;
  uint8_t sandTile2;

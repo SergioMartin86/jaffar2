@@ -99,6 +99,7 @@ gameStateStruct blastemInstance::getGameState(const uint8_t* state)
  memcpyBigEndian8(&gameState.lvl4ExitDoor,       &state[_stateWorkRamOffset + 0x27CF]);
  memcpyBigEndian8(&gameState.lvl5Room2Door,      &state[_stateWorkRamOffset + 0x1E53]);
  memcpyBigEndian8(&gameState.lvl5CarpetHatch,    &state[_stateWorkRamOffset + 0x1E9F]);
+ memcpyBigEndian8(&gameState.lvl6RightDoor,      &state[_stateWorkRamOffset + 0x2507]);
 
  memcpyBigEndian8(&gameState.kidCurrentSequence, &state[_stateWorkRamOffset + 0x4C55]);
  memcpyBigEndian8(&gameState.kidCurrentSequenceStage, &state[_stateWorkRamOffset + 0x4C53]);
