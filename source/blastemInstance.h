@@ -49,8 +49,6 @@ struct gameStateStruct
  uint8_t kidRotation6;
  uint8_t kidRotation7;
  uint8_t kidHangingTimeLeft;
- uint8_t lvl6RightDoor;
- uint8_t lvl7PostPotionDoor;
 
  uint8_t sandTile1;
  uint8_t sandTile2;
@@ -62,6 +60,9 @@ struct gameStateStruct
  uint8_t lvl4ExitDoor;
  uint8_t lvl5Room2Door;
  uint8_t lvl5CarpetHatch;
+ uint8_t lvl6RightDoor;
+ uint8_t lvl7PostPotionDoor;
+ uint8_t lvl7ExitDoor;
 
  uint8_t guardFrame;
  uint8_t guardCurrentHP;
