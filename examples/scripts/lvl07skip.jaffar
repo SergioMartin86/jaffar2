@@ -1,0 +1,97 @@
+{
+  "Description": "This script searches for the fastest any% solution for Sega Genesis PoP2 level 7",  
+  
+  "Rules":
+  [
+   {
+    "Label": 6910,
+    "Description": "If Kid dies, then fail.",
+    "Conditions":
+    [
+     { "Property": "Kid Current HP", "Op": "==", "Value":  0 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ ],
+    
+    "Actions":
+    [
+     { "Type": "Trigger Fail" }
+    ]
+   },
+   
+   {
+    "Label": 6912,
+    "Description": "If Kid goes up, win",
+    "Conditions":
+    [
+     { "Property": "Kid Position Y", "Op": "<", "Value":  120 },
+     { "Property": "Guard Position X", "Op": ">", "Value":  142 },
+     { "Property": "Guard Room", "Op": "==", "Value":  2 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ ],
+    
+    "Actions":
+    [
+     { "Type": "Trigger Win" }
+    ]
+   },
+   
+   {
+    "Label": 6914,
+    "Description": "If Kid goes up, win",
+    "Conditions":
+    [
+     { "Property": "Kid Position Y", "Op": "<", "Value":  120 },
+     { "Property": "Kid Room", "Op": "==", "Value":  8 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ ],
+    
+    "Actions":
+    [
+     { "Type": "Trigger Win" }
+    ]
+   },
+   
+   {
+    "Label": 6913,
+    "Description": "If Medusa dies, then fail.",
+    "Conditions":
+    [
+     { "Property": "Guard Current HP", "Op": "==", "Value":  0 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ ],
+    
+    "Actions":
+    [
+     { "Type": "Trigger Fail" }
+    ]
+   },
+   
+   
+   {
+    "Label": 6915,
+    "Description": "If Kid goes too far, then fail.",
+    "Conditions":
+    [
+     { "Property": "Kid Position X", "Op": ">", "Value":  226 },
+     { "Property": "Kid Room", "Op": "==", "Value":  2 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ ],
+    
+    "Actions":
+    [
+     { "Type": "Trigger Fail" }
+    ]
+   }
+   
+  ]  
+}
