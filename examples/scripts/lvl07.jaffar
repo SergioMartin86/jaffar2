@@ -364,6 +364,23 @@
     [
      { "Type": "Trigger Fail" }
     ]
+   },
+   
+   {
+    "Label": 6913,
+    "Description": "If Kid in wrong room, fail.",
+    "Conditions":
+    [
+     { "Property": "Kid Room", "Op": "==", "Value":  11 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ ],
+    
+    "Actions":
+    [
+     { "Type": "Trigger Fail" }
+    ]
    }
    
   ]  
