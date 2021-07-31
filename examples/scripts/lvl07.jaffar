@@ -277,6 +277,42 @@
    },
    
    {
+    "Label": 7114,
+    "Description": "Fail if medusa head is clipped",
+    "Conditions":
+    [
+     { "Property": "Guard Room", "Op": "==", "Value": 2 },
+     { "Property": "Guard Position X", "Op": "<", "Value": 120 }
+    ],
+
+    "Dependencies": [ ],
+    "Satisfies": [ ],
+    
+    "Actions":
+    [
+      { "Type": "Trigger Fail" }
+    ]
+   },
+   
+   {
+    "Label": 7115,
+    "Description": "Fail if medusa head is killed",
+    "Conditions":
+    [
+     { "Property": "Kid Room", "Op": "==", "Value": 2 },
+     { "Property": "Guard Current HP", "Op": "==", "Value": 0 }
+    ],
+
+    "Dependencies": [ ],
+    "Satisfies": [ ],
+    
+    "Actions":
+    [
+      { "Type": "Trigger Fail" }
+    ]
+   },
+   
+   {
     "Label": 7013,
     "Description": "Continue Going",
     "Conditions":
@@ -307,7 +343,7 @@
      { "Property": "Kid Position Y", "Op": "<", "Value": 120 },
      { "Property": "Kid Max HP", "Op": ">", "Value": 6 }
     ],
-    
+
     "Dependencies": [ ],
     "Satisfies": [ 7013 ],
     
