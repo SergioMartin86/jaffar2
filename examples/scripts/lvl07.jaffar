@@ -282,7 +282,6 @@
     "Conditions":
     [
      { "Property": "Kid Room", "Op": "==", "Value": 21 },
-     { "Property": "Kid Position Y", "Op": "<", "Value": 120 },
      { "Property": "Kid Max HP", "Op": ">", "Value": 6 }
     ],
 
