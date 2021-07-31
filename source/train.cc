@@ -987,45 +987,11 @@ float Train::getFrameReward(const Frame &frame)
 
   // For positive Y axis kidMagnet, rewarding climbing frames
   if ((float) kidMagnet.intensityY > 0.0f)
-  {
-    // Jumphang, because it preludes climbing (Score + 1-20)
-    if (curKidFrame >= 67 && curKidFrame <= 80)
-     reward += (float) kidMagnet.intensityY * (curKidFrame - 66);
-
-    // Hang, because it preludes climbing (Score +21)
-    if (curKidFrame == 91) reward += 21.0f * (float) kidMagnet.intensityY;
-
-    // Climbing (Score +22-38)
-    if (curKidFrame >= 135 && curKidFrame <= 149) reward += (float) kidMagnet.intensityY * (22.0f + (curKidFrame - 134));
-
-    // Adding absolute reward for Y position
     reward += (float) kidMagnet.intensityY * (512.0f - _blastem->_state.kidPositionY);
-  }
 
   // For negative Y axis kidMagnet, rewarding falling/climbing down frames
   if ((float) kidMagnet.intensityY < 0.0f)
-  {
-    // Turning around, because it generally preludes climbing down
-    if (curKidFrame >= 45 && curKidFrame <= 52) reward += -0.5f * (float) kidMagnet.intensityY;
-
-    // Hanging, because it preludes falling
-    if (curKidFrame >= 87 && curKidFrame <= 99) reward += -0.5f * (float) kidMagnet.intensityY;
-
-    // Hang drop, because it preludes falling
-    if (curKidFrame >= 81 && curKidFrame <= 85) reward += -1.0f * (float) kidMagnet.intensityY;
-
-    // Falling start
-    if (curKidFrame >= 102 && curKidFrame <= 105) reward += -1.0f * (float) kidMagnet.intensityY;
-
-    // Falling itself
-    if (curKidFrame == 106) reward += -2.0f + (float) kidMagnet.intensityY;
-
-    // Climbing down
-    if (curKidFrame == 148) reward += -2.0f + (float) kidMagnet.intensityY;
-
-    // Adding absolute reward for Y position
     reward += (float) -1.0f * kidMagnet.intensityY * (_blastem->_state.kidPositionY);
-  }
 
   // Getting guard room
   int guardCurrentRoom = _blastem->_state.guardRoom;
