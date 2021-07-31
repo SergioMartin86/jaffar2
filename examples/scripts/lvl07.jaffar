@@ -260,7 +260,7 @@
     "Conditions":
     [
      { "Property": "Kid Room", "Op": "==", "Value": 2 },
-     { "Property": "Kid Position Y", "Op": ">", "Value": 117 },
+     { "Property": "Kid Position Y", "Op": "<", "Value": 120 },
      { "Property": "Kid Max HP", "Op": ">", "Value": 6 }
     ],
     
@@ -282,6 +282,7 @@
     "Conditions":
     [
      { "Property": "Kid Room", "Op": "==", "Value": 8 },
+     { "Property": "Kid Position Y", "Op": "<", "Value": 120 },
      { "Property": "Kid Max HP", "Op": ">", "Value": 6 }
     ],
     
@@ -292,6 +293,7 @@
     [
      { "Type": "Add Reward", "Value": 1000 },
      { "Type": "Set Kid Horizontal Magnet Position", "Room": 2, "Value": 0.0 },
+     { "Property": "Kid Position Y", "Op": "<", "Value": 120 },
      { "Type": "Set Kid Horizontal Magnet Position", "Room": 6, "Value": 0.0 },
      { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 6, "Value": 1.0 }
     ]
