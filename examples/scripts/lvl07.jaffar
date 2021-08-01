@@ -301,6 +301,7 @@
     "Conditions":
     [
      { "Property": "Kid Room", "Op": "==", "Value": 16 },
+     { "Property": "Kid Position Y", "Op": "==", "Value": 182 },
      { "Property": "Guard Room", "Op": "==", "Value": 16 }
     ],
 
@@ -311,7 +312,7 @@
     [
      { "Type": "Add Reward", "Value": 1000 },
      { "Type": "Set Kid Horizontal Magnet Position", "Room": 28, "Value": 0.0 },
-     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 28, "Value": 0.0 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 28, "Value": 1.0 },
      { "Type": "Set Kid Horizontal Magnet Position", "Room": 16, "Value": 0.0 },
      { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 16, "Value": 1.0 }
     ]
@@ -322,19 +323,19 @@
     "Description": "Continue Going",
     "Conditions":
     [
-     { "Property": "Kid Room", "Op": "==", "Value": 28 }
+     { "Property": "Kid Room", "Op": "==", "Value": 28 },
+     { "Property": "Kid Position Y", "Op": ">", "Value": 130 },
+     { "Property": "Kid Position X", "Op": "<", "Value": 400 }
     ],
 
-    "Dependencies": [ 7014 ],
-    "Satisfies": [ ],
+    "Dependencies": [ ],
+    "Satisfies": [ 7014 ],
     
     "Actions":
     [
      { "Type": "Add Reward", "Value": 1000 },
      { "Type": "Set Kid Horizontal Magnet Position", "Room": 16, "Value": 0.0 },
-     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 16, "Value": 0.0 },
-     { "Type": "Set Kid Horizontal Magnet Position", "Room": 28, "Value": 0.0 },
-     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 28, "Value": 1.0 }
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 16, "Value": 0.0 }
     ]
    },
    
@@ -344,10 +345,10 @@
     "Conditions":
     [
      { "Property": "Kid Room", "Op": "==", "Value": 20 },
-     { "Property": "Guard Room", "Op": "==", "Value": 16 }
+     { "Property": "Kid Position Y", "Op": ">", "Value": 130 }
     ],
 
-    "Dependencies": [ 7014 ],
+    "Dependencies": [  ],
     "Satisfies": [ 7015 ],
     
     "Actions":
@@ -360,6 +361,86 @@
    },
    
    {
+    "Label": 7017,
+    "Description": "Continue Going",
+    "Conditions":
+    [
+     { "Property": "Kid Room", "Op": "==", "Value": 21 },
+     { "Property": "Kid Position Y", "Op": "==", "Value": 118 }
+    ],
+
+    "Dependencies": [  ],
+    "Satisfies": [ 7016 ],
+    
+    "Actions":
+    [
+     { "Type": "Add Reward", "Value": 1000 },
+     { "Type": "Set Kid Horizontal Magnet Position", "Room": 21, "Value": 512.0 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 21, "Value": 1.0 }
+    ]
+   },
+   
+   {
+    "Label": 7018,
+    "Description": "Continue Going",
+    "Conditions":
+    [
+     { "Property": "Kid Room", "Op": "==", "Value": 8 },
+     { "Property": "Kid Position Y", "Op": "==", "Value": 118 }
+    ],
+
+    "Dependencies": [  ],
+    "Satisfies": [ 7017 ],
+    
+    "Actions":
+    [
+     { "Type": "Add Reward", "Value": 1000 },
+     { "Type": "Set Kid Horizontal Magnet Position", "Room": 8, "Value": 350.0 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 8, "Value": 1.0 }
+    ]
+   },
+   
+   {
+    "Label": 7019,
+    "Description": "Continue Going",
+    "Conditions":
+    [
+     { "Property": "Kid Room", "Op": "==", "Value": 8 },
+     { "Property": "Level 7 Exit Door State", "Op": ">", "Value": 0 }
+    ],
+
+    "Dependencies": [  ],
+    "Satisfies": [ 7018 ],
+    
+    "Actions":
+    [
+     { "Type": "Add Reward", "Value": 1000 },
+     { "Type": "Set Kid Horizontal Magnet Position", "Room": 8, "Value": 0.0 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 8, "Value": 1.0 }
+    ]
+   },
+   
+  {
+    "Label": 7020,
+    "Description": "Continue Going",
+    "Conditions":
+    [
+     { "Property": "Kid Room", "Op": "==", "Value": 21 },
+     { "Property": "Level 7 Exit Door State", "Op": ">", "Value": 0 }
+    ],
+
+    "Dependencies": [  ],
+    "Satisfies": [ 7018 ],
+    
+    "Actions":
+    [
+     { "Type": "Add Reward", "Value": 1000 },
+     { "Type": "Set Kid Horizontal Magnet Position", "Room": 21, "Value": 400.0 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 21, "Value": 1.0 }
+    ]
+   },
+   
+   {
     "Label": 7110,
     "Description": "Win on exiting level",
     "Conditions":
@@ -368,7 +449,7 @@
     ],
     
     "Dependencies": [ ],  
-    "Satisfies": [ 7014 ],
+    "Satisfies": [ 7020 ],
     
     "Actions":
     [
