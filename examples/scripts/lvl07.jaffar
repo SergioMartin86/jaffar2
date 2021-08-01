@@ -296,6 +296,25 @@
    },
    
    {
+    "Label": 7914,
+    "Description": "Fail if taking normal route",
+    "Conditions":
+    [
+     { "Property": "Kid Room", "Op": "==", "Value":  28 },
+     { "Property": "Kid Position Y", "Op": "<", "Value":  120 },
+     { "Property": "Kid Position X", "Op": "<", "Value":  360 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ ],
+    
+    "Actions":
+    [
+     { "Type": "Trigger Fail" }
+    ]
+   },
+   
+   {
     "Label": 7014,
     "Description": "Continue Going",
     "Conditions":
@@ -310,7 +329,7 @@
     
     "Actions":
     [
-     { "Type": "Add Reward", "Value": 1000 },
+     { "Type": "Add Reward", "Value": 5000 },
      { "Type": "Set Kid Horizontal Magnet Position", "Room": 28, "Value": 0.0 },
      { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 28, "Value": 1.0 },
      { "Type": "Set Kid Horizontal Magnet Position", "Room": 16, "Value": 0.0 },
