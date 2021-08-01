@@ -63,6 +63,15 @@ void blastemInstance::setHPValue(const uint8_t& hp)
  _state = getGameState(_stateData);
 }
 
+void blastemInstance::setKidXValue(const uint16_t& x)
+{
+ _state.kidPositionX = x;
+ memcpyBigEndian16((uint16_t*)&_stateData[_stateWorkRamOffset + 0x4C3E], (uint8_t*)&_state.kidPositionX);
+ reloadState();
+ _state = getGameState(_stateData);
+}
+
+
 gameStateStruct blastemInstance::getGameState(const uint8_t* state)
 {
  gameStateStruct gameState;

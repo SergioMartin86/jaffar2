@@ -150,7 +150,7 @@ int main(int argc, char *argv[])
   {
    printw("[Jaffar] Available commands:\n");
    printw("[Jaffar]  n: -1 m: +1 | h: -10 | j: +10 | y: -100 | u: +100 \n");
-   printw("[Jaffar]  s: quicksave | g: set RNG state | p: set HP | q: quit  \n");
+   printw("[Jaffar]  s: quicksave | g: set RNG state | p: set HP | x: set Kid X | q: quit  \n");
   }
 
   refresh();
@@ -245,6 +245,21 @@ int main(int argc, char *argv[])
       char str[80];
       getstr(str);
       blastem.setHPValue(std::stol(str));
+
+      // Replacing current sequence
+      blastem.saveState(frameSequence[currentStep-1]);
+    }
+
+    // RNG setting command
+    if (command == 'x')
+    {
+      // Obtaining RNG state
+      printw("Enter new Kid X: ");
+
+      // Setting input as new hp
+      char str[80];
+      getstr(str);
+      blastem.setKidXValue(std::stol(str));
 
       // Replacing current sequence
       blastem.saveState(frameSequence[currentStep-1]);
