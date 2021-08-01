@@ -302,7 +302,7 @@
     [
      { "Property": "Kid Room", "Op": "==", "Value":  28 },
      { "Property": "Kid Position Y", "Op": "<", "Value":  120 },
-     { "Property": "Kid Position X", "Op": "<", "Value":  360 }
+     { "Property": "Kid Position X", "Op": "<", "Value":  390 }
     ],
     
     "Dependencies": [ ],
@@ -343,8 +343,8 @@
     "Conditions":
     [
      { "Property": "Kid Room", "Op": "==", "Value": 28 },
-     { "Property": "Kid Position Y", "Op": ">", "Value": 130 },
-     { "Property": "Kid Position X", "Op": "<", "Value": 400 }
+     { "Property": "Kid Position Y", "Op": ">", "Value": 160 },
+     { "Property": "Kid Position X", "Op": "<", "Value": 430 }
     ],
 
     "Dependencies": [ ],
