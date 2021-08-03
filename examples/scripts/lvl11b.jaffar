@@ -70,7 +70,8 @@
     "Description": "Continue Going",
     "Conditions":
     [
-     { "Property": "Kid Room", "Op": "==", "Value": 12 }
+     { "Property": "Kid Room", "Op": "==", "Value": 12 },
+     { "Property": "Kid Current HP", "Op": ">", "Value": 7 }
     ],
     
     "Dependencies": [ ],
@@ -94,7 +95,8 @@
     [
      { "Property": "Kid Room", "Op": "==", "Value": 12 },
      { "Property": "Kid Position X", "Op": ">", "Value": 260 },
-     { "Property": "Kid Position Y", "Op": "==", "Value": 54 }
+     { "Property": "Kid Position Y", "Op": "==", "Value": 54 },
+     { "Property": "Kid Current HP", "Op": ">", "Value": 7 }
     ],
     
     "Dependencies": [ ],
@@ -113,7 +115,8 @@
     "Description": "Continue Going",
     "Conditions":
     [
-     { "Property": "Kid Room", "Op": "==", "Value": 7 }
+     { "Property": "Kid Room", "Op": "==", "Value": 7 },
+     { "Property": "Kid Current HP", "Op": ">", "Value": 7 }
     ],
     
     "Dependencies": [ 11004 ],
@@ -133,7 +136,8 @@
     "Description": "Continue Going",
     "Conditions":
     [
-     { "Property": "Kid Room", "Op": "==", "Value": 6 }
+     { "Property": "Kid Room", "Op": "==", "Value": 6 },
+     { "Property": "Kid Current HP", "Op": ">", "Value": 7 }
     ],
     
     "Dependencies": [ ],
