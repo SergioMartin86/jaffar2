@@ -108,8 +108,7 @@
     "Conditions":
     [
      { "Property": "Kid Room", "Op": "==", "Value": 19 },
-     { "Property": "Kid Position Y", "Op": "==", "Value": 118 },
-     { "Property": "Kid Position X", "Op": ">", "Value": 280 }
+     { "Property": "Kid Position X", "Op": ">", "Value": 250 }
     ],
     
     "Dependencies": [ ],
