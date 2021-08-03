@@ -112,6 +112,7 @@ gameStateStruct blastemInstance::getGameState(const uint8_t* state)
  memcpyBigEndian8(&gameState.lvl7PostPotionDoor, &state[_stateWorkRamOffset + 0x2313]);
  memcpyBigEndian8(&gameState.lvl7ExitDoor,       &state[_stateWorkRamOffset + 0x273F]);
  memcpyBigEndian8(&gameState.lvl8ExitDoor,       &state[_stateWorkRamOffset + 0x283F]);
+ memcpyBigEndian8(&gameState.lvl10ExitDoor,      &state[_stateWorkRamOffset + 0x28C3]);
 
  memcpyBigEndian8(&gameState.kidCurrentSequence, &state[_stateWorkRamOffset + 0x4C55]);
  memcpyBigEndian8(&gameState.kidCurrentSequenceStage, &state[_stateWorkRamOffset + 0x4C53]);
@@ -187,6 +188,11 @@ uint64_t blastemInstance::computeHash()
   if (_state.currentLevel == 8)
   {
    hash.Update(&_state.lvl8ExitDoor, sizeof(uint8_t));
+  }
+
+  if (_state.currentLevel == 10)
+  {
+   hash.Update(&_state.lvl10ExitDoor, sizeof(uint8_t));
   }
 
   hash.Update(&_state.kidCurrentSequence, sizeof(uint8_t));
