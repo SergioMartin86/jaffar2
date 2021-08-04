@@ -86,16 +86,6 @@ gameStateStruct blastemInstance::getGameState(const uint8_t* state)
  memcpyBigEndian16(&gameState.twelthSecondsLeft, &state[_stateWorkRamOffset + 0x4FC8]);
  memcpyBigEndian32(&gameState.checkpointPointer, &state[_stateWorkRamOffset + 0x4FF0]);
  memcpyBigEndian8(&gameState.slowfallFramesLeft, &state[_stateWorkRamOffset + 0x4AA1]);
- memcpyBigEndian8(&gameState.kidFallingSpeed,    &state[_stateWorkRamOffset + 0x4C4A]);
- memcpyBigEndian8(&gameState.kidFrameVariant,    &state[_stateWorkRamOffset + 0x4C8A]);
- memcpyBigEndian8(&gameState.kidRotation1,       &state[_stateWorkRamOffset + 0x4C6D]);
- memcpyBigEndian8(&gameState.kidRotation2,       &state[_stateWorkRamOffset + 0x4C71]);
- memcpyBigEndian8(&gameState.kidRotation3,       &state[_stateWorkRamOffset + 0x4A6F]);
- memcpyBigEndian8(&gameState.kidRotation4,       &state[_stateWorkRamOffset + 0x4A71]);
- memcpyBigEndian8(&gameState.kidRotation5,       &state[_stateWorkRamOffset + 0x4A75]);
- memcpyBigEndian8(&gameState.kidRotation6,       &state[_stateWorkRamOffset + 0x1965]);
- memcpyBigEndian8(&gameState.kidRotation7,       &state[_stateWorkRamOffset + 0x196F]);
- memcpyBigEndian8(&gameState.kidHangingTimeLeft, &state[_stateWorkRamOffset + 0x4C87]);
 
  // Level-Specific
  memcpyBigEndian8(&gameState.sandTile1,          &state[_stateWorkRamOffset + 0x6861]);
@@ -125,6 +115,47 @@ gameStateStruct blastemInstance::getGameState(const uint8_t* state)
  memcpyBigEndian8(&gameState.kidDirection,       &state[_stateWorkRamOffset + 0x4C3D]);
  memcpyBigEndian16(&gameState.kidPositionX,      &state[_stateWorkRamOffset + 0x4C3E]);
  memcpyBigEndian16(&gameState.kidPositionY,      &state[_stateWorkRamOffset + 0x4C40]);
+ memcpyBigEndian8(&gameState.kidFallingSpeed,    &state[_stateWorkRamOffset + 0x4C4A]);
+ memcpyBigEndian8(&gameState.kidFrameVariant,    &state[_stateWorkRamOffset + 0x4C8A]);
+ memcpyBigEndian8(&gameState.kidPosition01,       &state[_stateWorkRamOffset + 0x4C6D]);
+ memcpyBigEndian8(&gameState.kidPosition02,       &state[_stateWorkRamOffset + 0x4C71]);
+ memcpyBigEndian8(&gameState.kidPosition03,       &state[_stateWorkRamOffset + 0x4A6F]);
+ memcpyBigEndian8(&gameState.kidPosition04,       &state[_stateWorkRamOffset + 0x4A71]);
+ memcpyBigEndian8(&gameState.kidPosition05,       &state[_stateWorkRamOffset + 0x4A75]);
+ memcpyBigEndian8(&gameState.kidPosition06,       &state[_stateWorkRamOffset + 0x1965]);
+ memcpyBigEndian8(&gameState.kidPosition07,       &state[_stateWorkRamOffset + 0x196F]);
+ memcpyBigEndian8(&gameState.kidPosition08,       &state[_stateWorkRamOffset + 0x4C6B]);
+ memcpyBigEndian8(&gameState.kidPosition09,       &state[_stateWorkRamOffset + 0x4C5B]);
+ memcpyBigEndian8(&gameState.kidPosition10,      &state[_stateWorkRamOffset + 0x4C59]);
+ memcpyBigEndian8(&gameState.kidPosition11,      &state[_stateWorkRamOffset + 0x4C48]);
+ memcpyBigEndian8(&gameState.kidPosition12,      &state[_stateWorkRamOffset + 0x4CB9]);
+ memcpyBigEndian8(&gameState.kidPosition13,      &state[_stateWorkRamOffset + 0x4CDB]);
+ memcpyBigEndian8(&gameState.kidPosition15,      &state[_stateWorkRamOffset + 0x4CD9]);
+ memcpyBigEndian8(&gameState.kidPosition16,      &state[_stateWorkRamOffset + 0x4CD5]);
+ memcpyBigEndian8(&gameState.kidPosition17,      &state[_stateWorkRamOffset + 0x4CD1]);
+ memcpyBigEndian8(&gameState.kidPosition19,      &state[_stateWorkRamOffset + 0x4C71]);
+ memcpyBigEndian8(&gameState.kidPosition20,      &state[_stateWorkRamOffset + 0x4C6D]);
+ memcpyBigEndian8(&gameState.kidPosition21,      &state[_stateWorkRamOffset + 0x4C6B]);
+ memcpyBigEndian8(&gameState.kidPosition22,      &state[_stateWorkRamOffset + 0x4C5F]);
+ memcpyBigEndian8(&gameState.kidPosition23,      &state[_stateWorkRamOffset + 0x4C54]);
+ memcpyBigEndian8(&gameState.kidPosition24,      &state[_stateWorkRamOffset + 0x4C45]);
+ memcpyBigEndian8(&gameState.kidPosition26,      &state[_stateWorkRamOffset + 0x196D]);
+ memcpyBigEndian8(&gameState.kidPosition27,      &state[_stateWorkRamOffset + 0x1969]);
+ memcpyBigEndian8(&gameState.kidPosition28,      &state[_stateWorkRamOffset + 0x1966]);
+ memcpyBigEndian8(&gameState.kidPosition29,      &state[_stateWorkRamOffset + 0x1970]);
+
+ memcpyBigEndian8(&gameState.kidPosition30,      &state[_stateWorkRamOffset + 0x195D]);
+ memcpyBigEndian8(&gameState.kidPosition31,      &state[_stateWorkRamOffset + 0x196A]);
+ memcpyBigEndian8(&gameState.kidPosition32,      &state[_stateWorkRamOffset + 0x1978]);
+ memcpyBigEndian8(&gameState.kidPosition33,      &state[_stateWorkRamOffset + 0x1982]);
+ memcpyBigEndian8(&gameState.kidPosition34,      &state[_stateWorkRamOffset + 0x198C]);
+ memcpyBigEndian8(&gameState.kidPosition35,      &state[_stateWorkRamOffset + 0x199A]);
+ memcpyBigEndian8(&gameState.kidPosition36,      &state[_stateWorkRamOffset + 0x4A31]);
+ memcpyBigEndian8(&gameState.kidPosition37,      &state[_stateWorkRamOffset + 0x4A35]);
+ memcpyBigEndian8(&gameState.kidPosition38,      &state[_stateWorkRamOffset + 0x4D05]);
+
+
+ memcpyBigEndian8(&gameState.kidHangingTimeLeft, &state[_stateWorkRamOffset + 0x4C87]);
 
  memcpyBigEndian8(&gameState.guardFrame,         &state[_stateWorkRamOffset + 0x4AFB]);
  memcpyBigEndian8(&gameState.guardCurrentHP,     &state[_stateWorkRamOffset + 0x4B05]);
@@ -208,13 +239,43 @@ uint64_t blastemInstance::computeHash()
   hash.Update(&_state.kidPositionY, sizeof(uint16_t));
   hash.Update(&_state.kidFallingSpeed, sizeof(uint8_t));
   hash.Update(&_state.kidFrameVariant, sizeof(uint8_t));
-  hash.Update(&_state.kidRotation1, sizeof(uint8_t));
-  hash.Update(&_state.kidRotation2, sizeof(uint8_t));
-  hash.Update(&_state.kidRotation3, sizeof(uint8_t));
-  hash.Update(&_state.kidRotation4, sizeof(uint8_t));
-  hash.Update(&_state.kidRotation5, sizeof(uint8_t));
-  hash.Update(&_state.kidRotation6, sizeof(uint8_t));
-  hash.Update(&_state.kidRotation7, sizeof(uint8_t));
+  hash.Update(&_state.kidPosition01, sizeof(uint8_t));
+  hash.Update(&_state.kidPosition02, sizeof(uint8_t));
+  hash.Update(&_state.kidPosition03, sizeof(uint8_t));
+  hash.Update(&_state.kidPosition04, sizeof(uint8_t));
+  hash.Update(&_state.kidPosition05, sizeof(uint8_t));
+  hash.Update(&_state.kidPosition06, sizeof(uint8_t));
+  hash.Update(&_state.kidPosition07, sizeof(uint8_t));
+  hash.Update(&_state.kidPosition08, sizeof(uint8_t));
+  hash.Update(&_state.kidPosition09, sizeof(uint8_t));
+  hash.Update(&_state.kidPosition10, sizeof(uint8_t));
+  hash.Update(&_state.kidPosition11, sizeof(uint8_t));
+  hash.Update(&_state.kidPosition12, sizeof(uint8_t));
+  hash.Update(&_state.kidPosition13, sizeof(uint8_t));
+  hash.Update(&_state.kidPosition15, sizeof(uint8_t));
+  hash.Update(&_state.kidPosition16, sizeof(uint8_t));
+  hash.Update(&_state.kidPosition17, sizeof(uint8_t));
+  hash.Update(&_state.kidPosition19, sizeof(uint8_t));
+  hash.Update(&_state.kidPosition20, sizeof(uint8_t));
+  hash.Update(&_state.kidPosition21, sizeof(uint8_t));
+  hash.Update(&_state.kidPosition22, sizeof(uint8_t));
+  hash.Update(&_state.kidPosition23, sizeof(uint8_t));
+  hash.Update(&_state.kidPosition24, sizeof(uint8_t));
+  hash.Update(&_state.kidPosition26, sizeof(uint8_t));
+  hash.Update(&_state.kidPosition27, sizeof(uint8_t));
+  hash.Update(&_state.kidPosition28, sizeof(uint8_t));
+  hash.Update(&_state.kidPosition29, sizeof(uint8_t));
+
+  hash.Update(&_state.kidPosition30, sizeof(uint8_t));
+  hash.Update(&_state.kidPosition31, sizeof(uint8_t));
+  hash.Update(&_state.kidPosition32, sizeof(uint8_t));
+  hash.Update(&_state.kidPosition33, sizeof(uint8_t));
+  hash.Update(&_state.kidPosition34, sizeof(uint8_t));
+  hash.Update(&_state.kidPosition35, sizeof(uint8_t));
+  hash.Update(&_state.kidPosition36, sizeof(uint8_t));
+  hash.Update(&_state.kidPosition37, sizeof(uint8_t));
+  hash.Update(&_state.kidPosition38, sizeof(uint8_t));
+
   hash.Update(&_state.kidHangingTimeLeft, sizeof(uint8_t));
 
   hash.Update(&_state.guardFrame, sizeof(uint8_t));
@@ -297,8 +358,8 @@ std::vector<uint8_t> blastemInstance::getPossibleMoveIds(const gameStateStruct& 
   if (gameState.kidFrame == 45) return {0}; // Turning
   if (gameState.kidFrame == 46) return {0}; // Turning
   if (gameState.kidFrame == 47) return {0}; // Turning
-  if (gameState.kidFrame == 48) return {0}; // Turning
-  if (gameState.kidFrame == 49) return {0}; // Stopping after run / Recovering
+  if (gameState.kidFrame == 48) return {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14}; // Turning
+  if (gameState.kidFrame == 49) return {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14}; // Stopping after run / Recovering
   if (gameState.kidFrame == 50) return {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14}; // Stopping after run / Recovering (Can act now)
   if (gameState.kidFrame == 51) return {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14}; // Stopping after run / Recovering (Can act now)
   if (gameState.kidFrame == 52) return {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14}; // Stopping after run / Recovering (Can act now)
