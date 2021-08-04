@@ -82,8 +82,8 @@
      { "Type": "Add Reward", "Value": 1000 },
      { "Type": "Set Kid Vertical Magnet Intensity", "Room": 3, "Value": 0.0 },
      { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 3, "Value": 0.0 },
-     { "Type": "Set Kid Horizontal Magnet Position", "Room": 12, "Value": 275.0 },
-     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 12, "Value": 0.0 },
+     { "Type": "Set Kid Horizontal Magnet Position", "Room": 12, "Value": 512.0 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 12, "Value": 1.0 },
      { "Type": "Set Kid Vertical Magnet Intensity", "Room": 12, "Value": 1.0 }
     ]
    },
@@ -94,8 +94,7 @@
     "Conditions":
     [
      { "Property": "Kid Room", "Op": "==", "Value": 12 },
-     { "Property": "Kid Position X", "Op": ">", "Value": 260 },
-     { "Property": "Kid Position Y", "Op": "==", "Value": 54 },
+     { "Property": "Level 11 Post Potion Door State", "Op": ">", "Value": 0 },
      { "Property": "Kid Current HP", "Op": ">", "Value": 7 }
     ],
     
@@ -105,6 +104,7 @@
     "Actions":
     [
      { "Type": "Add Reward", "Value": 1000 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 12, "Value": 1.0 },
      { "Type": "Set Kid Horizontal Magnet Position", "Room": 12, "Value": 0.0 },
      { "Type": "Set Kid Vertical Magnet Intensity", "Room": 12, "Value": 0.0 }
     ]
@@ -116,11 +116,12 @@
     "Conditions":
     [
      { "Property": "Kid Room", "Op": "==", "Value": 7 },
+     { "Property": "Level 11 Post Potion Door State", "Op": ">", "Value": 0 },
      { "Property": "Kid Current HP", "Op": ">", "Value": 7 }
     ],
     
-    "Dependencies": [ 11004 ],
-    "Satisfies": [ ],
+    "Dependencies": [  ],
+    "Satisfies": [ 11004 ],
     
     "Actions":
     [
