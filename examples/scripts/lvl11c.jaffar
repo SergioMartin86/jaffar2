@@ -54,7 +54,7 @@
     "Actions":
     [
      { "Type": "Add Reward", "Value": 1000 },
-     { "Type": "Set Kid Vertical Magnet Intensity", "Room": 13, "Value": 0.0 }
+     { "Type": "Set Kid Vertical Magnet Intensity", "Room": 13, "Value": 0.0 },
      { "Type": "Set Kid Horizontal Magnet Position", "Room": 18, "Value": 0.0 },
      { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 18, "Value": 1.0 }
     ]
@@ -97,7 +97,7 @@
     [
      { "Type": "Add Reward", "Value": 1000 },
      { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 25, "Value": 0.0 },
-     { "Type": "Set Kid Vertical Magnet Intensity", "Room": 25, "Value": 0.0 }
+     { "Type": "Set Kid Vertical Magnet Intensity", "Room": 25, "Value": 0.0 },
      { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 18, "Value": 1.0 },
      { "Type": "Set Kid Horizontal Magnet Position", "Room": 18, "Value": 232 },
      { "Type": "Set Kid Vertical Magnet Intensity", "Room": 18, "Value": 1.0 }
