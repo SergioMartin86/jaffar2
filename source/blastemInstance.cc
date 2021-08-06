@@ -238,6 +238,7 @@ uint64_t blastemInstance::computeHash()
   {
    hash.Update(&_state.lvl12FirstDoor, sizeof(uint8_t));
    hash.Update(&_state.lvl12ExitDoor, sizeof(uint8_t));
+   hash.Update(&_state.lvl12WeirdRoomDoor, sizeof(uint8_t));
   }
 
   hash.Update(&_state.kidCurrentSequence, sizeof(uint8_t));

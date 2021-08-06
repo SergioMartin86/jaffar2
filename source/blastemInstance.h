@@ -99,6 +99,7 @@ struct gameStateStruct
  uint8_t lvl11ExitRoomLeftDoor;
  uint8_t lvl12FirstDoor;
  uint8_t lvl12ExitDoor;
+ uint8_t lvl12WeirdRoomDoor;
 
  uint8_t guardFrame;
  uint8_t guardCurrentHP;
