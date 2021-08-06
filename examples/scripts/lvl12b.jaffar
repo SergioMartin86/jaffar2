@@ -27,7 +27,8 @@
     "Description": "Continue Going",
     "Conditions":
     [
-     { "Property": "Kid Room", "Op": "==", "Value": 24 }
+     { "Property": "Kid Room", "Op": "==", "Value": 24 },
+     { "Property": "Level 12 Weird Room Door State", "Op": ">", "Value": 0 }
     ],
     
     "Dependencies": [ ],
@@ -36,6 +37,7 @@
     "Actions":
     [
      { "Type": "Add Reward", "Value": 1000 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 18, "Value": 0.0 },
      { "Type": "Set Kid Horizontal Magnet Position", "Room": 24, "Value": 512.0 },
      { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 24, "Value": 1.0 }
     ]
@@ -96,6 +98,24 @@
     ]
    },
   
+   {
+    "Label": 12195,
+    "Description": "If Kid falling to death, then fail.",
+    "Conditions":
+    [
+     { "Property": "Kid Room", "Op": "==", "Value": 24 },
+     { "Property": "Level 12 Weird Room Door State", "Op": "==", "Value": 0 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ ],
+    
+    "Actions":
+    [
+     { "Type": "Trigger Fail" }
+    ]
+   },
+   
    {
     "Label": 4911,
     "Description": "If Kid falling to death, then fail.",
