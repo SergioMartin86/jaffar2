@@ -27,7 +27,8 @@
     "Description": "Continue Going",
     "Conditions":
     [
-     { "Property": "Kid Room", "Op": "==", "Value": 24 }
+     { "Property": "Kid Room", "Op": "==", "Value": 24 },
+     { "Property": "Level 12 Weird Room Door State", "Op": ">", "Value": 0 }
     ],
     
     "Dependencies": [ ],
