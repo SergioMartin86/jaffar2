@@ -77,7 +77,28 @@
     
     "Actions":
     [
-      { "Type": "Trigger Win" }
+     { "Type": "Add Reward", "Value": 1000 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 24, "Value": 0.0 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 18, "Value": 1.0 },
+     { "Type": "Set Kid Horizontal Magnet Position", "Room": 18, "Value": 0.0 }
+    ]
+   },
+   
+   {
+    "Label": 12004,
+    "Description": "Continue Going",
+    "Conditions":
+    [
+     { "Property": "Kid Room", "Op": "==", "Value": 22 },
+     { "Property": "Level 12 Exit Door State", "Op": ">", "Value": 0 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ 12003 ],
+    
+    "Actions":
+    [
+     { "Type": "Trigger Win" }
     ]
    },
    
