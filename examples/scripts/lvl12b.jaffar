@@ -38,7 +38,7 @@
     [
      { "Type": "Add Reward", "Value": 1000 },
      { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 18, "Value": 0.0 },
-     { "Type": "Set Kid Horizontal Magnet Position", "Room": 24, "Value": 512.0 },
+     { "Type": "Set Kid Horizontal Magnet Position", "Room": 24, "Value": 290.0 },
      { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 24, "Value": 1.0 }
     ]
    },
