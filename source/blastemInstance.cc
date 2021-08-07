@@ -246,7 +246,8 @@ uint64_t blastemInstance::computeHash()
 
   if (_state.currentLevel == 13)
   {
-   hash.Update(&_state.lvl13FirstRoomDoor, sizeof(uint8_t));
+   uint8_t doorState = _state.lvl13FirstRoomDoor > 0 ? 1 : 0;
+   hash.Update(&doorState, sizeof(uint8_t));
    hash.Update(&_state.lvl13ExitDoor, sizeof(uint8_t));
   }
 
