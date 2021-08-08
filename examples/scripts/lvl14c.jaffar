@@ -1,8 +1,9 @@
 {
-  "Description": "This script searches for the fastest any% solution for Sega Genesis PoP2 level 14b",  
+  "Description": "This script searches for the fastest any% solution for Sega Genesis PoP2 level 14c",  
   
   "Rules":
   [
+  
    {
     "Label": 14000,
     "Description": "Reward Guard Hurt",
@@ -89,11 +90,29 @@
    },
    
    {
-    "Label": 14100,
-    "Description": "Win on increased health",
+    "Label": 14005,
+    "Description": "Reward increased health",
     "Conditions":
     [
-     { "Property": "Kid Max HP", "Op": ">", "Value": 9 }
+     { "Property": "Kid Max HP", "Op": ">", "Value": 10 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ 14004 ],
+    
+    "Actions":
+    [
+      { "Type": "Add Reward", "Value": 1000 },
+      { "Type": "Set Kid Vertical Magnet Intensity", "Room": 3, "Value": 1.0 }
+    ]
+   },
+   
+   {
+    "Label": 14100,
+    "Description": "Win on going back",
+    "Conditions":
+    [
+     { "Property": "Kid Room", "Op": "==", "Value": 4 }
     ],
     
     "Dependencies": [ ],
@@ -101,7 +120,7 @@
     
     "Actions":
     [
-      { "Type": "Trigger Win" }
+     { "Type": "Trigger Win" }
     ]
    },
    
