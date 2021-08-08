@@ -280,6 +280,7 @@ size_t Rule::getPropertyType(const std::string &property)
  if (property == "Level 12 Weird Room Door State") return 8;
  if (property == "Level 13 First Room Door State") return 8;
  if (property == "Level 13 Exit Door State") return 8;
+ if (property == "Level 14 Fake Jaffars Left") return 8;
 
  EXIT_WITH_ERROR("[Error] Rule %lu, unrecognized property: %s\n", _label, property.c_str());
 
@@ -328,6 +329,7 @@ void *Rule::getPropertyPointer(const std::string &property, blastemInstance *bla
   if (property == "Level 12 Weird Room Door State") return &blastem->_state.lvl12WeirdRoomDoor;
   if (property == "Level 13 First Room Door State") return &blastem->_state.lvl13FirstRoomDoor;
   if (property == "Level 13 Exit Door State") return &blastem->_state.lvl13ExitDoor;
+  if (property == "Level 14 Fake Jaffars Left") return &blastem->_state.lvl14FakeJaffarsLeft;
 
   EXIT_WITH_ERROR("[Error] Rule %lu, unrecognized property: %s\n", _label, property.c_str());
 
