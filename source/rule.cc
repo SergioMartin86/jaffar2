@@ -252,6 +252,7 @@ size_t Rule::getPropertyType(const std::string &property)
 
  if (property == "Guard Frame") return 8;
  if (property == "Guard Current HP") return 8;
+ if (property == "Guard 2 Current HP") return 8;
  if (property == "Guard Max HP") return 8;
  if (property == "Guard Position X") return 16;
  if (property == "Guard Position Y") return 16;
@@ -301,6 +302,7 @@ void *Rule::getPropertyPointer(const std::string &property, blastemInstance *bla
 
   if (property == "Guard Frame") return &blastem->_state.guardFrame;
   if (property == "Guard Current HP") return &blastem->_state.guardCurrentHP;
+  if (property == "Guard 2 Current HP") return &blastem->_state.guard2CurrentHP;
   if (property == "Guard Max HP") return &blastem->_state.guardMaxHP;
   if (property == "Guard Position X") return &blastem->_state.guardPositionX;
   if (property == "Guard Position Y") return &blastem->_state.guardPositionY;

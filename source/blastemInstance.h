@@ -106,6 +106,7 @@ struct gameStateStruct
 
  uint8_t guardFrame;
  uint8_t guardCurrentHP;
+ uint8_t guard2CurrentHP;
  uint8_t guardMaxHP;
  uint8_t guardRoom;
  uint8_t guardDirection;

@@ -168,6 +168,7 @@ gameStateStruct blastemInstance::getGameState(const uint8_t* state)
 
  memcpyBigEndian8(&gameState.guardFrame,         &state[_stateWorkRamOffset + 0x4AFB]);
  memcpyBigEndian8(&gameState.guardCurrentHP,     &state[_stateWorkRamOffset + 0x4B05]);
+ memcpyBigEndian8(&gameState.guard2CurrentHP,    &state[_stateWorkRamOffset + 0x4B47]);
  memcpyBigEndian8(&gameState.guardMaxHP,         &state[_stateWorkRamOffset + 0x4B06]);
  memcpyBigEndian8(&gameState.guardRoom,          &state[_stateWorkRamOffset + 0x4B01]);
  memcpyBigEndian8(&gameState.guardDirection,     &state[_stateWorkRamOffset + 0x4AF3]);
@@ -311,6 +312,7 @@ uint64_t blastemInstance::computeHash()
 
   hash.Update(&_state.guardFrame, sizeof(uint8_t));
   hash.Update(&_state.guardCurrentHP, sizeof(uint8_t));
+  hash.Update(&_state.guard2CurrentHP, sizeof(uint8_t));
   hash.Update(&_state.guardMaxHP, sizeof(uint8_t));
   hash.Update(&_state.guardRoom, sizeof(uint8_t));
   hash.Update(&_state.guardDirection, sizeof(uint8_t));
@@ -341,7 +343,7 @@ void blastemInstance::printState()
  }
 
  printf("[Jaffar2]  + [Kid]   Room: %d, Pos.x: %3d, Pos.y: %3d (+%3d), Frame: %2d, Direction: %s, HP: %d/%d\n", _state.kidRoom, _state.kidPositionX, _state.kidPositionY, _state.kidFallingSpeed, _state.kidFrame, _state.kidDirection == 255 ? "L" : "R", _state.kidCurrentHP, _state.kidMaxHP);
- printf("[Jaffar2]  + [Guard] Room: %d, Pos.x: %3d, Pos.y: %3d, Frame: %3d, Direction: %s, HP: %d/%d\n", _state.guardRoom, _state.guardPositionX, _state.guardPositionY, _state.guardFrame, _state.guardDirection == 255 ? "L" : "R", _state.guardCurrentHP, _state.guardMaxHP);
+ printf("[Jaffar2]  + [Guard] Room: %d, Pos.x: %3d, Pos.y: %3d, Frame: %3d, Direction: %s, HP: %d(%d)/%d\n", _state.guardRoom, _state.guardPositionX, _state.guardPositionY, _state.guardFrame, _state.guardDirection == 255 ? "L" : "R", _state.guardCurrentHP, _state.guard2CurrentHP, _state.guardMaxHP);
 }
 
 //                                   Move Ids =    0    1    2    3    4    5     6     7     8    9     10    11    12    13   14    15   16
