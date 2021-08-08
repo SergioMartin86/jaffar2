@@ -5,6 +5,91 @@
   [
    {
     "Label": 14000,
+    "Description": "Reward Guard Hurt",
+    "Conditions":
+    [
+     { "Property": "Guard Current HP", "Op": "==", "Value": 4 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ ],
+    
+    "Actions":
+    [
+       { "Type": "Add Reward", "Value": 100 }
+    ]
+   },
+   
+   {
+    "Label": 14001,
+    "Description": "Reward Guard Hurt",
+    "Conditions":
+    [
+     { "Property": "Guard Current HP", "Op": "==", "Value": 3 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ 14000 ],
+    
+    "Actions":
+    [
+       { "Type": "Add Reward", "Value": 100 }
+    ]
+   },
+   
+   {
+    "Label": 14002,
+    "Description": "Reward Guard Hurt",
+    "Conditions":
+    [
+     { "Property": "Guard Current HP", "Op": "==", "Value": 2 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ 14001 ],
+    
+    "Actions":
+    [
+       { "Type": "Add Reward", "Value": 100 }
+    ]
+   },
+   
+   {
+    "Label": 14003,
+    "Description": "Reward Guard Hurt",
+    "Conditions":
+    [
+     { "Property": "Guard Current HP", "Op": "==", "Value": 1 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ 14002 ],
+    
+    "Actions":
+    [
+       { "Type": "Add Reward", "Value": 100 }
+    ]
+   },
+   
+   {
+    "Label": 14004,
+    "Description": "Reward Guard Hurt",
+    "Conditions":
+    [
+     { "Property": "Guard Current HP", "Op": "==", "Value": 0 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ 14003 ],
+    
+    "Actions":
+    [
+       { "Type": "Add Reward", "Value": 100 }
+    ]
+   },
+   
+   {
+    "Label": 14100,
     "Description": "Win on increased health",
     "Conditions":
     [
