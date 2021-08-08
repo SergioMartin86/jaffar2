@@ -56,7 +56,9 @@
     "Actions":
     [
      { "Type": "Add Reward", "Value": 1000 },
-     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 5, "Value": 0.0 }
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 5, "Value": 0.0 },
+     { "Type": "Set Kid Horizontal Magnet Position", "Room": 6, "Value": 250.0 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 6, "Value": 1.0 }
     ]
    },
    
@@ -73,7 +75,8 @@
     
     "Actions":
     [
-     { "Type": "Add Reward", "Value": 1000 }
+     { "Type": "Add Reward", "Value": 10000 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 6, "Value": 0.0 }
     ]
    },
    
@@ -90,7 +93,7 @@
     
     "Actions":
     [
-     { "Type": "Add Reward", "Value": 1000 }
+     { "Type": "Add Reward", "Value": 10000 }
     ]
    },
    
@@ -107,7 +110,7 @@
     
     "Actions":
     [
-     { "Type": "Add Reward", "Value": 1000 }
+     { "Type": "Add Reward", "Value": 10000 }
     ]
    },
    
@@ -124,6 +127,7 @@
     
     "Actions":
     [
+     { "Type": "Add Reward", "Value": 10000 },
      { "Type": "Set Kid Vertical Magnet Intensity", "Room": 6, "Value": 1.0 }
     ]
    },
@@ -172,6 +176,23 @@
     "Conditions":
     [
      { "Property": "Kid Current HP", "Op": "==", "Value":  0 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ ],
+    
+    "Actions":
+    [
+     { "Type": "Trigger Fail" }
+    ]
+   },
+   
+   {
+    "Label": 6911,
+    "Description": "Prevent returning to body",
+    "Conditions":
+    [
+     { "Property": "Kid Frame", "Op": "==", "Value":  182 }
     ],
     
     "Dependencies": [ ],
