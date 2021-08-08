@@ -112,6 +112,7 @@
     "Description": "Win on going back",
     "Conditions":
     [
+     { "Property": "Kid Max HP", "Op": ">", "Value": 9 },
      { "Property": "Kid Room", "Op": "==", "Value": 4 }
     ],
     
