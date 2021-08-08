@@ -28,7 +28,7 @@
     "Conditions":
     [
      { "Property": "Kid Room", "Op": "==", "Value": 8 },
-     { "Property": "Kid Current HP", "Op": ">", "Value": 2 }
+     { "Property": "Kid Current HP", "Op": "==", "Value": 5 }
     ],
     
     "Dependencies": [ ],
@@ -50,7 +50,8 @@
     "Conditions":
     [
      { "Property": "Kid Room", "Op": "==", "Value": 8 },
-     { "Property": "Kid Position Y", "Op": "==", "Value": 54 }
+     { "Property": "Kid Position Y", "Op": "==", "Value": 54 },
+     { "Property": "Kid Current HP", "Op": "==", "Value": 5 }
     ],
     
     "Dependencies": [ ],
