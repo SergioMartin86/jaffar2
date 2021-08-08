@@ -94,7 +94,7 @@
     "Description": "Reward increased health",
     "Conditions":
     [
-     { "Property": "Kid Max HP", "Op": ">", "Value": 10 }
+     { "Property": "Kid Max HP", "Op": ">", "Value": 9 }
     ],
     
     "Dependencies": [ ],
