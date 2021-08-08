@@ -77,7 +77,28 @@
     "Actions":
     [
      { "Type": "Add Reward", "Value": 10000 },
-     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 6, "Value": 0.0 }
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 6, "Value": 0.0 },
+     { "Type": "Set Kid Vertical Magnet Intensity", "Room": 6, "Value": 1.0 }
+    ]
+   },
+   
+   {
+    "Label": 14103,
+    "Description": "One less fake jaffar",
+    "Conditions":
+    [
+     { "Property": "Kid Room", "Op": "==", "Value": 6 },
+     { "Property": "Level 14 Fake Jaffars Left", "Op": "==", "Value": 4 },
+     { "Property": "Kid Position Y", "Op": "==", "Value": 54 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ 14003 ],
+    
+    "Actions":
+    [
+     { "Type": "Add Reward", "Value": 10000 },
+     { "Type": "Set Kid Vertical Magnet Intensity", "Room": 6, "Value": 0.0 }
     ]
    },
    
@@ -91,11 +112,13 @@
     ],
     
     "Dependencies": [ ],
-    "Satisfies": [ 14003 ],
+    "Satisfies": [ 14103 ],
     
     "Actions":
     [
-     { "Type": "Add Reward", "Value": 10000 }
+     { "Type": "Add Reward", "Value": 10000 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 6, "Value": 1.0 },
+     { "Type": "Set Kid Horizontal Magnet Position", "Room": 6, "Value": 350.0 }
     ]
    },
    
@@ -132,6 +155,7 @@
     "Actions":
     [
      { "Type": "Add Reward", "Value": 10000 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 6, "Value": 0.0 },
      { "Type": "Set Kid Vertical Magnet Intensity", "Room": 6, "Value": 1.0 }
     ]
    },
