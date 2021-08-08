@@ -335,6 +335,11 @@ void blastemInstance::printState()
   printf("[Jaffar2]  + Weird Door Status: %d\n", _state.lvl12WeirdRoomDoor);
  }
 
+ if (_state.currentLevel == 14)
+ {
+  printf("[Jaffar2]  + Fake Jaffars Remaining: %d\n", _state.lvl14FakeJaffarsLeft);
+ }
+
  printf("[Jaffar2]  + [Kid]   Room: %d, Pos.x: %3d, Pos.y: %3d (+%3d), Frame: %2d, Direction: %s, HP: %d/%d\n", _state.kidRoom, _state.kidPositionX, _state.kidPositionY, _state.kidFallingSpeed, _state.kidFrame, _state.kidDirection == 255 ? "L" : "R", _state.kidCurrentHP, _state.kidMaxHP);
  printf("[Jaffar2]  + [Guard] Room: %d, Pos.x: %3d, Pos.y: %3d, Frame: %3d, Direction: %s, HP: %d/%d\n", _state.guardRoom, _state.guardPositionX, _state.guardPositionY, _state.guardFrame, _state.guardDirection == 255 ? "L" : "R", _state.guardCurrentHP, _state.guardMaxHP);
 }
