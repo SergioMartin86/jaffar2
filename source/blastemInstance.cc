@@ -59,6 +59,13 @@ void blastemInstance::setHPValue(const uint8_t& hp)
 {
  _state.kidCurrentHP = hp;
  memcpyBigEndian8((uint8_t*)&_stateData[_stateWorkRamOffset + 0x4C4F], (uint8_t*)&_state.kidCurrentHP);
+
+ if (hp > _state.kidMaxHP)
+ {
+  _state.kidMaxHP = hp;
+  memcpyBigEndian8((uint8_t*)&_stateData[_stateWorkRamOffset + 0x4C50], (uint8_t*)&_state.kidMaxHP);
+ }
+
  reloadState();
  _state = getGameState(_stateData);
 }

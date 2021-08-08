@@ -16,6 +16,7 @@
     
     "Actions":
     [
+     { "Type": "Add Reward", "Value": 1000 },
      { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 7, "Value": 1.0 },
      { "Type": "Set Kid Horizontal Magnet Position", "Room": 7, "Value": 512.0 }
     ]
@@ -26,7 +27,8 @@
     "Description": "Get to jaffar's screen",
     "Conditions":
     [
-     { "Property": "Kid Room", "Op": "==", "Value": 8 }
+     { "Property": "Kid Room", "Op": "==", "Value": 8 },
+     { "Property": "Kid Current HP", "Op": ">", "Value": 2 }
     ],
     
     "Dependencies": [ ],
@@ -34,6 +36,7 @@
     
     "Actions":
     [
+     { "Type": "Add Reward", "Value": 1000 },
      { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 7, "Value": 0.0 },
      { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 8, "Value": 1.0 },
      { "Type": "Set Kid Vertical Magnet Intensity", "Room": 8, "Value": 1.0 },
@@ -55,6 +58,7 @@
     
     "Actions":
     [
+     { "Type": "Add Reward", "Value": 1000 },
      { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 8, "Value": 0.0 },
      { "Type": "Set Kid Vertical Magnet Intensity", "Room": 8, "Value": 0.0 },
      { "Type": "Set Kid Horizontal Magnet Position", "Room": 8, "Value": 0.0 }
