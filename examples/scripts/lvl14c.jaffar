@@ -126,6 +126,24 @@
    },
    
    {
+    "Label": 6911,
+    "Description": "If Kid falls, then fail.",
+    "Conditions":
+    [
+     { "Property": "Kid Room", "Op": "==", "Value": 3 },
+     { "Property": "Kid Position Y", "Op": ">", "Value":  118 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ ],
+    
+    "Actions":
+    [
+     { "Type": "Trigger Fail" }
+    ]
+   },
+   
+   {
     "Label": 6910,
     "Description": "If Kid dies, then fail.",
     "Conditions":
