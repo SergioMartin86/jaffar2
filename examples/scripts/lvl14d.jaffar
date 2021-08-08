@@ -188,6 +188,24 @@
    },
    
    {
+    "Label": 6912,
+    "Description": "If Kid below ceratin point, lose.",
+    "Conditions":
+    [
+      { "Property": "Kid Room", "Op": "==", "Value": 6 },
+      { "Property": "Kid Position Y", "Op": ">", "Value": 118 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ ],
+    
+    "Actions":
+    [
+     { "Type": "Trigger Fail" }
+    ]
+   },
+   
+   {
     "Label": 6911,
     "Description": "Prevent returning to body",
     "Conditions":
