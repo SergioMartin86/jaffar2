@@ -67,7 +67,7 @@
     "Description": "One less fake jaffar",
     "Conditions":
     [
-     { "Property": "Level 14 Fake Jaffars Left", "Op": "==", "Value": 3 }
+     { "Property": "Level 14 Fake Jaffars Left", "Op": "==", "Value": 4 }
     ],
     
     "Dependencies": [ ],
@@ -85,7 +85,7 @@
     "Description": "One less fake jaffar",
     "Conditions":
     [
-     { "Property": "Level 14 Fake Jaffars Left", "Op": "==", "Value": 2 }
+     { "Property": "Level 14 Fake Jaffars Left", "Op": "==", "Value": 3 }
     ],
     
     "Dependencies": [ ],
@@ -102,7 +102,7 @@
     "Description": "One less fake jaffar",
     "Conditions":
     [
-     { "Property": "Level 14 Fake Jaffars Left", "Op": "==", "Value": 1 }
+     { "Property": "Level 14 Fake Jaffars Left", "Op": "==", "Value": 2 }
     ],
     
     "Dependencies": [ ],
@@ -119,7 +119,7 @@
     "Description": "No more fake jaffars",
     "Conditions":
     [
-     { "Property": "Level 14 Fake Jaffars Left", "Op": "==", "Value": 0 }
+     { "Property": "Level 14 Fake Jaffars Left", "Op": "==", "Value": 1 }
     ],
     
     "Dependencies": [ ],
