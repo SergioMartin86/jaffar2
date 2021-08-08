@@ -67,6 +67,7 @@
     "Description": "One less fake jaffar",
     "Conditions":
     [
+     { "Property": "Kid Room", "Op": "==", "Value": 6 },
      { "Property": "Level 14 Fake Jaffars Left", "Op": "==", "Value": 4 }
     ],
     
@@ -85,6 +86,7 @@
     "Description": "One less fake jaffar",
     "Conditions":
     [
+     { "Property": "Kid Room", "Op": "==", "Value": 6 },
      { "Property": "Level 14 Fake Jaffars Left", "Op": "==", "Value": 3 }
     ],
     
@@ -102,6 +104,7 @@
     "Description": "One less fake jaffar",
     "Conditions":
     [
+     { "Property": "Kid Room", "Op": "==", "Value": 6 },
      { "Property": "Level 14 Fake Jaffars Left", "Op": "==", "Value": 2 }
     ],
     
@@ -119,6 +122,7 @@
     "Description": "No more fake jaffars",
     "Conditions":
     [
+     { "Property": "Kid Room", "Op": "==", "Value": 6 },
      { "Property": "Level 14 Fake Jaffars Left", "Op": "==", "Value": 1 }
     ],
     
@@ -137,7 +141,7 @@
     "Description": "Go up",
     "Conditions":
     [
-     { "Property": "Level 14 Fake Jaffars Left", "Op": "==", "Value": 0 },
+     { "Property": "Level 14 Fake Jaffars Left", "Op": "==", "Value": 1 },
      { "Property": "Kid Room", "Op": "==", "Value": 7 }
     ],
     
@@ -157,7 +161,7 @@
     "Description": "Get to jaffar's screen",
     "Conditions":
     [
-     { "Property": "Level 14 Fake Jaffars Left", "Op": "==", "Value": 0 },
+     { "Property": "Level 14 Fake Jaffars Left", "Op": "==", "Value": 1 },
      { "Property": "Kid Room", "Op": "==", "Value": 8 }
     ],
     
