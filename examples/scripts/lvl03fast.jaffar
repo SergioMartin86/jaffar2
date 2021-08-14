@@ -193,6 +193,25 @@
      { "Type": "Trigger Fail" }
     ]
    },
+   
+   {
+    "Label": 3901,
+    "Description": "If Kid dies, then fail.",
+    "Conditions":
+    [
+     { "Property": "Kid Room", "Op": "==", "Value":  8 },
+     { "Property": "Kid Position X", "Op": ">", "Value":  410 },
+     { "Property": "Kid Position Y", "Op": ">", "Value":  150 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ ],
+    
+    "Actions":
+    [
+     { "Type": "Trigger Fail" }
+    ]
+   },
      
    {
     "Label": 3911,
