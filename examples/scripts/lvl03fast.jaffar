@@ -117,19 +117,16 @@
      { "Type": "Add Reward", "Value": 1000 },
      { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 8, "Value": 0.0 },
      { "Type": "Set Kid Horizontal Magnet Position", "Room": 11,  "Value": 512.0 },
-     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 11, "Value": 1.0 },
-     { "Type": "Set Guard Horizontal Magnet Position", "Room": 11,  "Value": 512.0 },
-     { "Type": "Set Guard Horizontal Magnet Intensity", "Room": 11, "Value": 1.0 }
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 11, "Value": 1.0 }
     ]
    },
    
    {
     "Label": 3006,
-    "Description": "Rewarding kid for advancing to the next screen with skeleton",
+    "Description": "Rewarding kid for advancing to the next screen",
     "Conditions":
     [
-     { "Property": "Kid Room", "Op": "==", "Value":  13 },
-     { "Property": "Guard Room", "Op": "==", "Value":  13 }
+     { "Property": "Kid Room", "Op": "==", "Value":  13 }
     ],
     
     "Dependencies": [  ],
@@ -139,19 +136,19 @@
     [
      { "Type": "Add Reward", "Value": 1000 },
      { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 11, "Value": 0.0 },
-     { "Type": "Set Guard Horizontal Magnet Intensity", "Room": 11, "Value": 0.0 },
-     { "Type": "Set Guard Horizontal Magnet Position", "Room": 13,  "Value": 512.0 },
-     { "Type": "Set Guard Horizontal Magnet Intensity", "Room": 13, "Value": 1.0 }
+     { "Type": "Set Kid Horizontal Magnet Position", "Room": 13,  "Value": 275.0 },
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 13, "Value": 1.0 },
+     { "Type": "Set Kid Vertical Magnet Intensity", "Room": 13, "Value": 1.0 }
     ]
    },
    
    {
     "Label": 3007,
-    "Description": "Win on opened door",
+    "Description": "Rewarding kid for drinking potion",
     "Conditions":
     [
      { "Property": "Kid Room", "Op": "==", "Value":  13 },
-     { "Property": "Level 3 Fast Exit Door State", "Op": ">", "Value":  0 }
+     { "Property": "Kid Position Y", "Op": ">", "Value":  117 }
     ],
     
     "Dependencies": [ ],
@@ -159,8 +156,6 @@
     
     "Actions":
     [
-     { "Type": "Add Reward", "Value": 1000 },
-     { "Type": "Set Kid Horizontal Magnet Position", "Room": 13,  "Value": 345.0 },
      { "Type": "Trigger Win" }
     ]
    },
