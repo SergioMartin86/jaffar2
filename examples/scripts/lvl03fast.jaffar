@@ -117,16 +117,19 @@
      { "Type": "Add Reward", "Value": 1000 },
      { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 8, "Value": 0.0 },
      { "Type": "Set Kid Horizontal Magnet Position", "Room": 11,  "Value": 512.0 },
-     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 11, "Value": 1.0 }
+     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 11, "Value": 1.0 },
+     { "Type": "Set Guard Horizontal Magnet Position", "Room": 11,  "Value": 512.0 },
+     { "Type": "Set Guard Horizontal Magnet Intensity", "Room": 11, "Value": 1.0 }
     ]
    },
    
    {
     "Label": 3006,
-    "Description": "Rewarding kid for advancing to the next screen",
+    "Description": "Rewarding kid for advancing to the next screen with skeleton",
     "Conditions":
     [
-     { "Property": "Kid Room", "Op": "==", "Value":  13 }
+     { "Property": "Kid Room", "Op": "==", "Value":  13 },
+     { "Property": "Guard Room", "Op": "==", "Value":  13 }
     ],
     
     "Dependencies": [  ],
@@ -136,14 +139,15 @@
     [
      { "Type": "Add Reward", "Value": 1000 },
      { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 11, "Value": 0.0 },
-     { "Type": "Set Kid Horizontal Magnet Position", "Room": 13,  "Value": 416.0 },
-     { "Type": "Set Kid Horizontal Magnet Intensity", "Room": 13, "Value": 1.0 }
+     { "Type": "Set Guard Horizontal Magnet Intensity", "Room": 11, "Value": 0.0 },
+     { "Type": "Set Guard Horizontal Magnet Position", "Room": 13,  "Value": 512.0 },
+     { "Type": "Set Guard Horizontal Magnet Intensity", "Room": 13, "Value": 1.0 }
     ]
    },
    
    {
     "Label": 3007,
-    "Description": "Rewarding kid for drinking potion",
+    "Description": "Win on opened door",
     "Conditions":
     [
      { "Property": "Kid Room", "Op": "==", "Value":  13 },
@@ -156,7 +160,8 @@
     "Actions":
     [
      { "Type": "Add Reward", "Value": 1000 },
-     { "Type": "Set Kid Horizontal Magnet Position", "Room": 13,  "Value": 345.0 }
+     { "Type": "Set Kid Horizontal Magnet Position", "Room": 13,  "Value": 345.0 },
+     { "Type": "Trigger Win" }
     ]
    },
    
