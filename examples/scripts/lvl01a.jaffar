@@ -211,6 +211,25 @@
    },
    
    {
+    "Label": 1903,
+    "Description": "If Kid gets to death place, stop.",
+    "Conditions":
+    [
+     { "Property": "Kid Room", "Op": "==", "Value": 10 },
+     { "Property": "Kid Position X", "Op": "<", "Value": 265 },
+     { "Property": "Kid Position Y", "Op": ">", "Value": 100 }
+    ],
+    
+    "Dependencies": [ ],
+    "Satisfies": [ ],
+    
+    "Actions":
+    [
+     { "Type": "Trigger Fail" }
+    ]
+   },
+   
+   {
     "Label": 1902,
     "Description": "If Kid gets to death room, stop.",
     "Conditions":
