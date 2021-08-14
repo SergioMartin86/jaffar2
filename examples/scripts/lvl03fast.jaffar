@@ -129,8 +129,8 @@
      { "Property": "Kid Room", "Op": "==", "Value":  13 }
     ],
     
-    "Dependencies": [ 3005 ],
-    "Satisfies": [ ],
+    "Dependencies": [  ],
+    "Satisfies": [ 3005 ],
     
     "Actions":
     [
@@ -151,7 +151,7 @@
     ],
     
     "Dependencies": [ ],
-    "Satisfies": [ 3006, 3005, 3004 ],
+    "Satisfies": [ 3006 ],
     
     "Actions":
     [
