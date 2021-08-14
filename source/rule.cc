@@ -267,6 +267,8 @@ size_t Rule::getPropertyType(const std::string &property)
  if (property == "Is Feather Fall") return 8;
 
  if (property == "Level 3 Exit Door State") return 8;
+ if (property == "Level 3 Fast Exit Door State") return 8;
+ if (property == "Level 3 Fast Route Door State") return 8;
  if (property == "Level 4 Exit Door State") return 8;
  if (property == "Level 5 Carpet Hatch State") return 8;
  if (property == "Level 6 Right Exit Door State") return 8;
@@ -317,6 +319,8 @@ void *Rule::getPropertyPointer(const std::string &property, blastemInstance *bla
   if (property == "Is Feather Fall") return &blastem->_state.slowfallFramesLeft;
 
   if (property == "Level 3 Exit Door State") return &blastem->_state.lvl3ExitDoor;
+  if (property == "Level 3 Fast Exit Door State") return &blastem->_state.lvl3FastExitDoor;
+  if (property == "Level 3 Fast Route Door State") return &blastem->_state.lvl3FastRouteDoor;
   if (property == "Level 4 Exit Door State") return &blastem->_state.lvl4ExitDoor;
   if (property == "Level 5 Carpet Hatch State") return &blastem->_state.lvl5CarpetHatch;
   if (property == "Level 6 Right Exit Door State") return &blastem->_state.lvl6RightDoor;

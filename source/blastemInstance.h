@@ -86,6 +86,8 @@ struct gameStateStruct
  uint8_t sandTile5;
  uint8_t caveEntrancePos;
  uint8_t lvl3ExitDoor;
+ uint8_t lvl3FastExitDoor;
+ uint8_t lvl3FastRouteDoor;
  uint8_t lvl4ExitDoor;
  uint8_t lvl5Room2Door;
  uint8_t lvl5CarpetHatch;
