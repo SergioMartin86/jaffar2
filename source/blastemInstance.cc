@@ -514,13 +514,13 @@ std::vector<uint8_t> blastemInstance::getPossibleMoveIds(const gameStateStruct& 
   if (gameState.kidFrame == 147) return {0}; // Climbing Up
   if (gameState.kidFrame == 148) return {0}; // Climbing Down/Up
   if (gameState.kidFrame == 149) return {0}; // Climbing Up
-  if (gameState.kidFrame == 150) return {0, 10, 11, 14}; // [Sword] Parrying 2 - Can Attack
-  if (gameState.kidFrame == 151) return {0, 2, }; // [Sword] Attack
-  if (gameState.kidFrame == 152) return {0, 2}; // [Sword] Attack
-  if (gameState.kidFrame == 153) return {0, 2}; // [Sword] Attack
-  if (gameState.kidFrame == 154) return {0, 2}; // [Sword] Attack
-  if (gameState.kidFrame == 155) return {0, 2}; // [Sword] Attack
-  if (gameState.kidFrame == 156) return {0, 2}; // [Sword] After Attack / Recovering from Hit
+  if (gameState.kidFrame == 150) return {0, 3, 4, 5, 10, 11, 14, 15}; // [Sword] Parrying 2 - Can Attack
+  if (gameState.kidFrame == 151) return {0, 3, 4, 5, 10, 11, 14, 15}; // [Sword] Attack
+  if (gameState.kidFrame == 152) return {0, 3, 4, 5, 10, 11, 14, 15}; // [Sword] Attack
+  if (gameState.kidFrame == 153) return {0, 3, 4, 5, 10, 11, 14, 15}; // [Sword] Attack
+  if (gameState.kidFrame == 154) return {0, 3, 4, 5, 10, 11, 14, 15}; // [Sword] Attack
+  if (gameState.kidFrame == 155) return {0, 3, 4, 5, 10, 11, 14, 15}; // [Sword] Attack
+  if (gameState.kidFrame == 156) return {0, 3, 4, 5, 10, 11, 14, 15}; // [Sword] After Attack / Recovering from Hit
   if (gameState.kidFrame == 157) return {0, 3, 4, 5, 10, 11, 14, 15}; // [Sword] After Attack / Recovering from Hit
   if (gameState.kidFrame == 158) return {0, 3, 4, 5, 10, 11, 14, 15}; // [Sword] En Guarde
   if (gameState.kidFrame == 159) return {0, 3, 4, 5, 10, 11, 14, 15}; // [Sword] Parry
@@ -600,8 +600,8 @@ std::vector<uint8_t> blastemInstance::getPossibleMoveIds(const gameStateStruct& 
   if (gameState.kidFrame == 241) return {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14}; // Standing??
   if (gameState.kidFrame == 242) return {0}; // Gruesome Death
   if (gameState.kidFrame == 243) return {0}; // Gruesome Death
-  if (gameState.kidFrame == 244) return {0}; // [Sword] Attacking Downward
-  if (gameState.kidFrame == 245) return {0}; // [Sword] Attacking Downward
+  if (gameState.kidFrame == 244) return {0, 3, 4, 5, 10, 11, 14, 15}; // [Sword] Attacking Downward
+  if (gameState.kidFrame == 245) return {0, 3, 4, 5, 10, 11, 14, 15}; // [Sword] Attacking Downward
   if (gameState.kidFrame == 246) return {0, 1, 2, 3, 4, 15}; // Crawling
   if (gameState.kidFrame == 247) return {0, 1, 2, 3, 4, 15}; // Crawling
   if (gameState.kidFrame == 248) return {0, 1, 2, 3, 4, 15}; // Crawling
